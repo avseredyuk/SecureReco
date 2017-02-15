@@ -22,29 +22,15 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <intent-filter>
-                <category android:name="android.intent.category.BROWSABLE"/>
-                <data android:scheme="com.android.ApplicationName"/>
-            </intent-filter>
         </activity>
-
-        <receiver
-            android:name=".MyDeviceAdminReceiver"
-            android:permission="android.permission.BIND_DEVICE_ADMIN" >
-            <meta-data
-                android:name="android.app.device_admin"
-                android:resource="@xml/my_admin" />
-            <intent-filter>
-                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
-                <action android:name="android.app.action.DEVICE_ADMIN_DISABLED" />
-                <action android:name="android.app.action.DEVICE_ADMIN_DISABLE_REQUESTED" />
-            </intent-filter>
-        </receiver>
 
         <receiver
             android:name=".MyStartAtBootReceiver"
@@ -54,8 +40,8 @@
             </intent-filter>
         </receiver>
 
-        <service android:name=".TService" >
-        </service>
+        <service android:name=".TService"/>
+
     </application>
 
 </manifest>
