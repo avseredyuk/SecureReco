@@ -17,6 +17,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
 
+import static com.avseredyuk.securereco.util.Constant.*;
+
 /**
  * Created by lenfer on 2/15/17.
  */
@@ -118,7 +120,6 @@ public class PhonecallReceiver extends BroadcastReceiver {
 
     private FileDescriptor getStreamFd() {
         ParcelFileDescriptor[] pipe=null;
-
         try {
             pipe=ParcelFileDescriptor.createPipe();
 
@@ -128,12 +129,11 @@ public class PhonecallReceiver extends BroadcastReceiver {
         catch (IOException e) {
             Log.e(getClass().getSimpleName(), "Exception opening pipe", e);
         }
-
         return pipe[1].getFileDescriptor();
     }
 
     private File getOutputFile() {
-        File sampleDir = new File(Environment.getExternalStorageDirectory(), "/TestRecordingDasa1");
+        File sampleDir = new File(Environment.getExternalStorageDirectory(), "/" + CALL_LOGS_DIRECTORY);
         if (!sampleDir.exists()) {
             sampleDir.mkdirs();
         }
@@ -162,6 +162,5 @@ public class PhonecallReceiver extends BroadcastReceiver {
 
     protected void onMissedCall(Context ctx, String number, Date start) {
         Log.d("onMissedCall", number + " " + start.toString());
-//        PostCallHandler postCallHandler = new PostCallHandler(number, "janskd" , "")
     }
 }

@@ -32,7 +32,14 @@
             </intent-filter>
         </activity>
 
-        <receiver
+        <activity
+            android:name=".PrepareActivity"
+            android:label="@string/app_name"
+            android:parentActivityName=".MainActivity" >
+        </activity>
+
+
+    <receiver
             android:name=".receiver.StartupReceiver"
             android:label="StartMyServiceAtBootReceiver">
             <intent-filter>
