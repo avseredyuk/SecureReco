@@ -13,4 +13,9 @@ public class StringUtil {
                 callNumber,
                 ".amr");
     }
+
+    public static String formatDate(Date date) {
+        return new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(date);
+    }
+
 }
