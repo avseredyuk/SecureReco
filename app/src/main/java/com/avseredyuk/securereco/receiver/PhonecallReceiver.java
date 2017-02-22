@@ -29,6 +29,7 @@ public class PhonecallReceiver extends BroadcastReceiver {
     private String savedNumber;
     private MediaRecorder recorder;
     private boolean recordstarted = false;
+    private ParcelFileDescriptor[] pipe;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -51,7 +52,6 @@ public class PhonecallReceiver extends BroadcastReceiver {
 
     public void onCallStateChanged(Context context, int state, String number) {
         if (lastState == state) {
-            //No change, debounce extras
             return;
         }
         switch (state) {
@@ -98,7 +98,6 @@ public class PhonecallReceiver extends BroadcastReceiver {
         recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
         recorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
         recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-        //recorder.setOutputFile(audiofile.getAbsolutePath());
         recorder.setOutputFile(getStreamFd());
         try {
             recorder.prepare();
@@ -115,13 +114,17 @@ public class PhonecallReceiver extends BroadcastReceiver {
         if (recordstarted) {
             recorder.stop();
             recordstarted = false;
+            try {
+                pipe[1].close();
+            } catch (IOException e) {
+                //todo
+            }
         }
     }
 
     private FileDescriptor getStreamFd() {
-        ParcelFileDescriptor[] pipe=null;
         try {
-            pipe=ParcelFileDescriptor.createPipe();
+            pipe = ParcelFileDescriptor.createPipe();
 
             new PipeProcessingThread(new ParcelFileDescriptor.AutoCloseInputStream(pipe[0]),
                     new FileOutputStream(getOutputFile())).start();

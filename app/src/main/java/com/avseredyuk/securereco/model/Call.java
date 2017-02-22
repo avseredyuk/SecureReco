@@ -1,5 +1,6 @@
 package com.avseredyuk.securereco.model;
 
+import java.util.Comparator;
 import java.util.Date;
 
 /**
@@ -8,18 +9,26 @@ import java.util.Date;
 public class Call {
     private String callNumber;
     private Date datetimeStarted;
-    private Date datetimeEnded;
     private boolean isIncoming;
 
-    public Call(String callNumber, Date datetimeStarted, Date datetimeEnded, boolean isIncoming) {
+    public Call() {
+    }
+
+    public Call(String callNumber, Date datetimeStarted, boolean isIncoming) {
         this.callNumber = callNumber;
         this.datetimeStarted = datetimeStarted;
-        this.datetimeEnded = datetimeEnded;
         this.isIncoming = isIncoming;
     }
 
-    public String getCallNumber() {
+    public static Comparator<Call> CallDateComparator = new Comparator<Call>() {
 
+        public int compare(Call call1, Call call2) {
+            return call2.getDatetimeStarted().compareTo(call1.getDatetimeStarted());
+        }
+
+    };
+
+    public String getCallNumber() {
         return callNumber;
     }
 
@@ -33,14 +42,6 @@ public class Call {
 
     public void setDatetimeStarted(Date datetimeStarted) {
         this.datetimeStarted = datetimeStarted;
-    }
-
-    public Date getDatetimeEnded() {
-        return datetimeEnded;
-    }
-
-    public void setDatetimeEnded(Date datetimeEnded) {
-        this.datetimeEnded = datetimeEnded;
     }
 
     public boolean isIncoming() {

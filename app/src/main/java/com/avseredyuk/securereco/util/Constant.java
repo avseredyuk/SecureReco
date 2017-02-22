@@ -8,4 +8,5 @@ public class Constant {
     public static final String CALL_LOGS_DIRECTORY = APP_DIRECTORY + "/calls";
     public static final String PRIVATE_KEY_FILENAME = "private.key";
     public static final String PUBLIC_KEY_FILENAME = "public.key";
+    public static final int BUF_SIZE = 8192;
 }

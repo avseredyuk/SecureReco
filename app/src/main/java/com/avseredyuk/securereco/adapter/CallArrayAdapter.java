@@ -1,4 +1,4 @@
-package com.avseredyuk.securereco;
+package com.avseredyuk.securereco.adapter;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.avseredyuk.securereco.R;
 import com.avseredyuk.securereco.model.Call;
 import com.avseredyuk.securereco.util.StringUtil;
 

@@ -2,7 +2,7 @@ package com.avseredyuk.securereco.util;
 
 import android.os.Environment;
 
-import com.avseredyuk.securereco.util.crypto.CryptoUtil;
+import com.avseredyuk.securereco.util.crypto.*;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -35,11 +35,11 @@ public class ConfigUtil {
 
     public static void makeKeys(String password) {
         try {
-            KeyPair keyPair = CryptoUtil.generateKeyPair();
+            KeyPair keyPair = RSA.generateKeyPair();
             PublicKey publicKey = keyPair.getPublic();
             PrivateKey privateKey = keyPair.getPrivate();
 
-            byte[] privateKeyEncrypted = CryptoUtil.encryptAES(password, privateKey.getEncoded());
+            byte[] privateKeyEncrypted = AES.encryptWithPassword(password, privateKey.getEncoded());
 
             File privateKeyFile = new File(Environment.getExternalStorageDirectory(), "/" + APP_DIRECTORY + "/" + PRIVATE_KEY_FILENAME);
             ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(privateKeyFile));
