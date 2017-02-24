@@ -26,6 +26,14 @@ import static com.avseredyuk.securereco.util.Constant.*;
  * Created by lenfer on 2/16/17.
  */
 public class CallDao {
+    private static CallDao instance = new CallDao();
+
+    private CallDao() {
+    }
+
+    public static CallDao getInstance() {
+        return instance;
+    }
 
     //public int getCount() {}
 
@@ -37,7 +45,7 @@ public class CallDao {
             if (!fileEntry.isDirectory()) {
 
                 try {
-                    Call call = parseCallRecord(fileEntry);
+                    Call call = parseCallFromFilename(fileEntry.getName());
                     calls.add(call);
                 } catch (IllegalArgumentException e) {
                     // todo smth
@@ -48,8 +56,13 @@ public class CallDao {
         return calls;
     }
 
-    private Call parseCallRecord(File file) throws IllegalArgumentException {
-        Call call = StringUtil.getCallFromFilename(file.getName());
+    private Call parseCallFromFilename(String filename)  {
+        return StringUtil.getCallFromFilename(filename);
+    }
+
+    //TODO player ???
+    private Call parseCallFromFile(String filename) throws IllegalArgumentException {
+        Call call = parseCallFromFilename(filename);
 
         byte[] content;
         byte[] iv = new byte[16];
@@ -57,7 +70,7 @@ public class CallDao {
         byte[] buf = new byte[BUF_SIZE];
 
         try {
-            content = IOUtil.readFile(file);
+            content = IOUtil.readFile(filename);
 
             File yourFile = new File("/storage/emulated/0/SecureRecoApp/file.amr");
 

@@ -23,12 +23,11 @@ public class PipeProcessingThread extends Thread {
 
     @Override
     public void run() {
-        /*RSA rsa = new RSA();
+        RSA rsa = new RSA();
         if (!rsa.initPublicKey()) {
             // todo
             return;
         }
-        */
         AES aes = new AES();
         if (!aes.initRandom(true)) {
             // todo

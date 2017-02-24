@@ -11,7 +11,6 @@ import com.avseredyuk.securereco.model.Call;
 import com.avseredyuk.securereco.service.RecorderService;
 import com.avseredyuk.securereco.util.ConfigUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -21,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
 
         ListView callsListView = (ListView) findViewById(R.id.listView);
-        List<Call> calls = new CallDao().findAllSortedByDate();
+        List<Call> calls = CallDao.getInstance().findAllSortedByDate();
         callsListView.setAdapter(new CallArrayAdapter(this, calls));
     }
 
@@ -37,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         ListView callsListView = (ListView) findViewById(R.id.listView);
-        List<Call> calls = new CallDao().findAllSortedByDate();
+        List<Call> calls = CallDao.getInstance().findAllSortedByDate();
         callsListView.setAdapter(new CallArrayAdapter(this, calls));
 
         startService(new Intent(MainActivity.this, RecorderService.class));

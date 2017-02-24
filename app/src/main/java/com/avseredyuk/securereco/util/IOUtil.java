@@ -9,6 +9,10 @@ import java.io.RandomAccessFile;
  */
 public class IOUtil {
 
+    public static byte[] readFile(String filename) throws IOException {
+        return readFile(new File(filename));
+    }
+
     public static byte[] readFile(File file) throws IOException {
         // Open file
         RandomAccessFile f = new RandomAccessFile(file, "r");
