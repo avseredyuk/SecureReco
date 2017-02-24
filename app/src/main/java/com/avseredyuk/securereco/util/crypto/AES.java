@@ -46,7 +46,6 @@ public class AES {
     }
 
     public byte[] getKey() {
-        Log.d("KEYSIZE", Integer.toString(secretKey.getEncoded().length));
         return secretKey.getEncoded();
     }
 

@@ -140,7 +140,7 @@ public class PhonecallReceiver extends BroadcastReceiver {
         if (!sampleDir.exists()) {
             sampleDir.mkdirs();
         }
-        return new File(sampleDir, StringUtil.formatFileName(savedNumber, callStartTime));
+        return new File(sampleDir, StringUtil.formatFileName(savedNumber, callStartTime, isIncoming));
     }
 
     protected void onIncomingCallReceived(Context ctx, String number, Date start) {

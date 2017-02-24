@@ -37,6 +37,7 @@ public class PipeProcessingThread extends Thread {
         byte[] buf = new byte[BUF_SIZE];
         int len;
         try {
+
             out.write(aes.getKey());
             out.write(aes.getCipher().getIV());
 

@@ -1,18 +1,16 @@
 package com.avseredyuk.securereco.adapter;
 
-import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.avseredyuk.securereco.R;
-import com.avseredyuk.securereco.dao.CallDao;
 import com.avseredyuk.securereco.model.Call;
 import com.avseredyuk.securereco.util.ContactResolverUtil;
 import com.avseredyuk.securereco.util.StringUtil;
@@ -41,6 +39,7 @@ public class CallArrayAdapter extends ArrayAdapter<Call> {
         TextView firstLine = (TextView) rowView.findViewById(R.id.firstLine);
         firstLine.setText(ContactResolverUtil.getContactName(context,
                 calls.get(position).getCallNumber()));
+        firstLine.setTextColor(calls.get(position).isIncoming() ? Color.parseColor("#039F00") : Color.BLUE);
 
         TextView secondLine = (TextView) rowView.findViewById(R.id.secondLine);
         secondLine.setText(calls.get(position).getCallNumber());
