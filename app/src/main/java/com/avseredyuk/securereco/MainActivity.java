@@ -20,8 +20,10 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
 
         ListView callsListView = (ListView) findViewById(R.id.listView);
-        List<Call> calls = CallDao.getInstance().findAllSortedByDate();
+        List<Call> calls = CallDao.getInstance().findAll(Call.CallDateComparator);
         callsListView.setAdapter(new CallArrayAdapter(this, calls));
+
+        System.out.println("RESUMED");
     }
 
     @Override
@@ -35,11 +37,22 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-        ListView callsListView = (ListView) findViewById(R.id.listView);
-        List<Call> calls = CallDao.getInstance().findAllSortedByDate();
-        callsListView.setAdapter(new CallArrayAdapter(this, calls));
-
         startService(new Intent(MainActivity.this, RecorderService.class));
+
+        System.out.println("CREATED");
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        //todo clear key from memory
+        System.out.println("PAUSED");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        //todo clear key from memory
+        System.out.println("STOPPED");
+    }
 }

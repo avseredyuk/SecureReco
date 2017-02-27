@@ -6,7 +6,10 @@ package com.avseredyuk.securereco.util;
 public class Constant {
     public static final String APP_DIRECTORY = "SecureRecoApp";
     public static final String CALL_LOGS_DIRECTORY = APP_DIRECTORY + "/calls";
-    public static final String PRIVATE_KEY_FILENAME = "private.key";
-    public static final String PUBLIC_KEY_FILENAME = "public.key";
+    public static final String CONFIG_FILE = "configuration.json";
+    public static final String PRIVATE_KEY_HMAC = "privateKeyHMAC";
+    public static final String PUBLIC_KEY = "publicKey";
+    public static final String PRIVATE_KEY_ENCODED = "privateKeyEncoded";
+    public static final String PRIVATE_KEY_IV = "privateKeyIV";
     public static final int BUF_SIZE = 8192;
 }

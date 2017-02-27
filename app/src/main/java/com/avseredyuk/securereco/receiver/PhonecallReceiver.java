@@ -28,7 +28,7 @@ public class PhonecallReceiver extends BroadcastReceiver {
     private boolean isIncoming;
     private String savedNumber;
     private MediaRecorder recorder;
-    private boolean recordstarted = false;
+    private boolean recordStarted = false;
     private ParcelFileDescriptor[] pipe;
 
     @Override
@@ -107,13 +107,13 @@ public class PhonecallReceiver extends BroadcastReceiver {
             e.printStackTrace();
         }
         recorder.start();
-        recordstarted = true;
+        recordStarted = true;
     }
 
     private void stopRecording() {
-        if (recordstarted) {
+        if (recordStarted) {
             recorder.stop();
-            recordstarted = false;
+            recordStarted = false;
             try {
                 pipe[1].close();
             } catch (IOException e) {

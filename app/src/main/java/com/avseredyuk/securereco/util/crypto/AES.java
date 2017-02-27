@@ -1,11 +1,8 @@
 package com.avseredyuk.securereco.util.crypto;
 
-import android.util.Log;
-
-import java.security.NoSuchAlgorithmException;
-
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
+import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
@@ -16,6 +13,7 @@ import javax.crypto.spec.SecretKeySpec;
 public class AES {
     private SecretKey secretKey;
     private Cipher cipher;
+    private Mac HMAC;
 
     public boolean initRandom(boolean isEncrypting) {
         try {
@@ -28,7 +26,6 @@ public class AES {
             return true;
         } catch (Exception e) {
             //todo
-            e.printStackTrace();
         }
         return false;
     }
@@ -36,7 +33,7 @@ public class AES {
     public boolean initWithKeyAndIV(byte[] key, byte[] iv) {
         try {
             secretKey = new SecretKeySpec(key, 0, key.length, "AES");
-            Cipher cipher = Cipher.getInstance ( "AES/CBC/PKCS5Padding" );
+            cipher = Cipher.getInstance ("AES/CBC/PKCS5Padding");
             cipher.init(Cipher.DECRYPT_MODE, secretKey, new IvParameterSpec(iv));
             return true;
         } catch (Exception e) {
@@ -45,24 +42,59 @@ public class AES {
         return false;
     }
 
+    public boolean initWithPassword(String password, int opMode) {
+        try {
+            byte[] key = HashingUtil.hashPassword(password);
+            HMAC = Mac.getInstance("HmacSHA256");
+            secretKey = new SecretKeySpec(key, "HmacSHA256");
+            HMAC.init(secretKey);
+            cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+            cipher.init(opMode, secretKey);
+            return true;
+        } catch (Exception e) {
+            //todo
+        }
+        return false;
+    }
+
+    public boolean initWithPassword(String password, int opMode, byte[] iv) {
+        try {
+            byte[] key = HashingUtil.hashPassword(password);
+            HMAC = Mac.getInstance("HmacSHA256");
+            secretKey = new SecretKeySpec(key, "HmacSHA256");
+            HMAC.init(secretKey);
+            cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+            cipher.init(opMode, secretKey, new IvParameterSpec(iv));
+            return true;
+        } catch (Exception e) {
+            //todo
+        }
+        return false;
+    }
+
+    public byte[] doFinal(byte[] input) {
+        try {
+            return cipher.doFinal(input);
+        } catch (Exception e) {
+            // todo
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    public byte[] getHMAC(byte[] input) {
+        if (HMAC != null) {
+            return HMAC.doFinal(input);
+        } else {
+            //todo
+            throw new IllegalArgumentException();
+        }
+    }
+
     public byte[] getKey() {
         return secretKey.getEncoded();
     }
 
     public Cipher getCipher() {
         return cipher;
-    }
-
-    public static byte[] encryptWithPassword(String password, byte[] input) {
-        try {
-            byte[] key = HashingUtil.hashPassword(password);
-            SecretKeySpec keySpec = new SecretKeySpec(key, "AES");
-            Cipher localCipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-            localCipher.init(Cipher.ENCRYPT_MODE, keySpec);
-            return localCipher.doFinal(input);
-        } catch (Exception e) {
-            // todo
-            throw new IllegalArgumentException(e);
-        }
     }
 }

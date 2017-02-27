@@ -11,6 +11,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.avseredyuk.securereco.R;
+import com.avseredyuk.securereco.dao.CallDao;
+import com.avseredyuk.securereco.listener.PlayButtonClickListener;
 import com.avseredyuk.securereco.model.Call;
 import com.avseredyuk.securereco.util.ContactResolverUtil;
 import com.avseredyuk.securereco.util.StringUtil;
@@ -51,14 +53,8 @@ public class CallArrayAdapter extends ArrayAdapter<Call> {
         imageView.setImageResource(R.drawable.ic_launcher);
 
         ImageButton playBtn = (ImageButton) rowView.findViewById(R.id.playButton);
-        playBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //todo
-                //calls.get(position).getFilename();
-                System.out.println("SHIT " + position);
-            }
-        });
+        playBtn.setTag(calls.get(position));
+        playBtn.setOnClickListener(new PlayButtonClickListener(context));
 
         return rowView;
 

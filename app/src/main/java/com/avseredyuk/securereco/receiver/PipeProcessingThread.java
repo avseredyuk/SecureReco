@@ -1,6 +1,8 @@
 package com.avseredyuk.securereco.receiver;
 
 import android.util.Log;
+
+import com.avseredyuk.securereco.util.ArrayUtil;
 import com.avseredyuk.securereco.util.crypto.*;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -38,8 +40,7 @@ public class PipeProcessingThread extends Thread {
         int len;
         try {
 
-            out.write(aes.getKey());
-            out.write(aes.getCipher().getIV());
+            out.write(rsa.doFinal(ArrayUtil.combineArrays(aes.getKey(), aes.getCipher().getIV())));
 
             CipherOutputStream outCipher = new CipherOutputStream(out, aes.getCipher());
             while ((len = in.read(buf)) > 0) {

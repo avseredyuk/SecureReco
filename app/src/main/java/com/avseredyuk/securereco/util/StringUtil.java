@@ -1,5 +1,7 @@
 package com.avseredyuk.securereco.util;
 
+import android.os.Environment;
+
 import com.avseredyuk.securereco.model.Call;
 
 import java.text.SimpleDateFormat;
@@ -7,6 +9,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static com.avseredyuk.securereco.util.Constant.CALL_LOGS_DIRECTORY;
 
 /**
  * Created by lenfer on 2/15/17.
@@ -26,6 +30,7 @@ public class StringUtil {
 
     public static Call getCallFromFilename(String filename) {
         Call call = new Call();
+        call.setFilename(Environment.getExternalStorageDirectory() + "/" + CALL_LOGS_DIRECTORY + "/" + filename);
         Pattern p = Pattern.compile("^(\\d{2})_(\\d{2})_(\\d{4})_(\\d{2})_(\\d{2})_(\\d{2})_(.+)_([IO])\\.bin$");
         Matcher m = p.matcher(filename);
 
