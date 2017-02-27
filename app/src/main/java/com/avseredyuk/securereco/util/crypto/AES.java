@@ -1,6 +1,10 @@
 package com.avseredyuk.securereco.util.crypto;
 
+import com.avseredyuk.securereco.exception.CryptoException;
+
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyGenerator;
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
@@ -15,7 +19,7 @@ public class AES {
     private Cipher cipher;
     private Mac HMAC;
 
-    public boolean initRandom(boolean isEncrypting) {
+    public void initRandom(boolean isEncrypting) throws CryptoException{
         try {
             KeyGenerator keyGen = KeyGenerator.getInstance("AES");
             keyGen.init(256);
@@ -23,26 +27,22 @@ public class AES {
             cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
             int opMode = isEncrypting ? Cipher.ENCRYPT_MODE : Cipher.DECRYPT_MODE;
             cipher.init(opMode, secretKey);
-            return true;
         } catch (Exception e) {
-            //todo
+            throw new CryptoException(e);
         }
-        return false;
     }
 
-    public boolean initWithKeyAndIV(byte[] key, byte[] iv) {
+    public void init(byte[] key, byte[] iv) throws CryptoException{
         try {
             secretKey = new SecretKeySpec(key, 0, key.length, "AES");
             cipher = Cipher.getInstance ("AES/CBC/PKCS5Padding");
             cipher.init(Cipher.DECRYPT_MODE, secretKey, new IvParameterSpec(iv));
-            return true;
         } catch (Exception e) {
-            //todo
+            throw new CryptoException(e);
         }
-        return false;
     }
 
-    public boolean initWithPassword(String password, int opMode) {
+    public void init(String password, int opMode) throws CryptoException{
         try {
             byte[] key = HashingUtil.hashPassword(password);
             HMAC = Mac.getInstance("HmacSHA256");
@@ -50,14 +50,12 @@ public class AES {
             HMAC.init(secretKey);
             cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
             cipher.init(opMode, secretKey);
-            return true;
         } catch (Exception e) {
-            //todo
+            throw new CryptoException(e);
         }
-        return false;
     }
 
-    public boolean initWithPassword(String password, int opMode, byte[] iv) {
+    public void init(String password, int opMode, byte[] iv) throws CryptoException{
         try {
             byte[] key = HashingUtil.hashPassword(password);
             HMAC = Mac.getInstance("HmacSHA256");
@@ -65,28 +63,24 @@ public class AES {
             HMAC.init(secretKey);
             cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
             cipher.init(opMode, secretKey, new IvParameterSpec(iv));
-            return true;
         } catch (Exception e) {
-            //todo
+            throw new CryptoException(e);
         }
-        return false;
     }
 
-    public byte[] doFinal(byte[] input) {
+    public byte[] doFinal(byte[] input) throws CryptoException{
         try {
             return cipher.doFinal(input);
-        } catch (Exception e) {
-            // todo
-            throw new IllegalArgumentException(e);
+        } catch (IllegalBlockSizeException | BadPaddingException e) {
+            throw new CryptoException(e);
         }
     }
 
-    public byte[] getHMAC(byte[] input) {
+    public byte[] getHMAC(byte[] input) throws CryptoException{
         if (HMAC != null) {
             return HMAC.doFinal(input);
         } else {
-            //todo
-            throw new IllegalArgumentException();
+            throw new CryptoException("Exception getting HMAC");
         }
     }
 

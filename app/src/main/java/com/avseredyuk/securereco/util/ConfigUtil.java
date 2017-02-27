@@ -2,7 +2,9 @@ package com.avseredyuk.securereco.util;
 
 import android.os.Environment;
 import android.util.Base64;
+import android.util.Log;
 
+import com.avseredyuk.securereco.exception.CryptoException;
 import com.avseredyuk.securereco.util.crypto.*;
 
 import org.json.JSONException;
@@ -17,7 +19,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.security.KeyPair;
-import java.security.NoSuchAlgorithmException;
 
 import javax.crypto.Cipher;
 
@@ -44,15 +45,16 @@ public class ConfigUtil {
     public static String readValue(String key)  {
         File configFile = new File(Environment.getExternalStorageDirectory(), "/" + APP_DIRECTORY + "/" + CONFIG_FILE);
         if (!configFile.isDirectory()) {
-            JSONObject json = null;
             try {
                 InputStream in = new FileInputStream(configFile);
-                json = new JSONObject(IOUtil.readText(in, "UTF-8"));
+                JSONObject json = new JSONObject(IOUtil.readText(in, "UTF-8"));
                 return json.getString(key);
             } catch (JSONException e) {
-                //todo
-            } catch (FileNotFoundException e) {
-                //todo
+                Log.e(ConfigUtil.class.getSimpleName(),
+                        "Exception at reading JSON parameters", e);
+            } catch (IOException e) {
+                Log.e(ConfigUtil.class.getSimpleName(),
+                        "Exception at reading config file", e);
             }
         }
         return "";
@@ -63,7 +65,7 @@ public class ConfigUtil {
             KeyPair keyPair = RSA.generateKeyPair();
 
             AES aes = new AES();
-            aes.initWithPassword(password, Cipher.ENCRYPT_MODE);
+            aes.init(password, Cipher.ENCRYPT_MODE);
             byte[] privateKeyEncrypted = aes.doFinal(keyPair.getPrivate().getEncoded());
             byte[] hmac = aes.getHMAC(keyPair.getPrivate().getEncoded());
             byte[] iv = aes.getCipher().getIV();
@@ -79,12 +81,15 @@ public class ConfigUtil {
             out.write(json.toString().getBytes(Charset.forName("UTF-8")));
             out.close();
 
-        } catch (NoSuchAlgorithmException e) {
-            // todo log
+        } catch (CryptoException e) {
+            Log.e(ConfigUtil.class.getSimpleName(),
+                    "Exception at crypto stuff", e);
         } catch (JSONException e) {
-            //todo
+            Log.e(ConfigUtil.class.getSimpleName(),
+                    "Exception at saving JSON parameters", e);
         } catch (IOException e) {
-            //todo log
+            Log.e(ConfigUtil.class.getSimpleName(),
+                    "Exception at writing to output stream to config file", e);
         }
     }
 

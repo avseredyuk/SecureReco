@@ -11,7 +11,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.avseredyuk.securereco.R;
-import com.avseredyuk.securereco.dao.CallDao;
 import com.avseredyuk.securereco.listener.PlayButtonClickListener;
 import com.avseredyuk.securereco.model.Call;
 import com.avseredyuk.securereco.util.ContactResolverUtil;

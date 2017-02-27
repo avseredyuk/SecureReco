@@ -62,7 +62,6 @@ public class PhonecallReceiver extends BroadcastReceiver {
                 onIncomingCallReceived(context, number, callStartTime);
                 break;
             case TelephonyManager.CALL_STATE_OFFHOOK:
-                //Transition of ringing->offhook are pickups of incoming calls.  Nothing done on them
                 if (lastState != TelephonyManager.CALL_STATE_RINGING) {
                     isIncoming = false;
                     callStartTime = new Date();
@@ -74,12 +73,9 @@ public class PhonecallReceiver extends BroadcastReceiver {
                     startRecording();
                     onIncomingCallAnswered(context, savedNumber, callStartTime);
                 }
-
                 break;
             case TelephonyManager.CALL_STATE_IDLE:
-                //Went to idle-  this is the end of a call.  What type depends on previous state(s)
                 if (lastState == TelephonyManager.CALL_STATE_RINGING) {
-                    //Ring but no pickup-  a miss
                     onMissedCall(context, savedNumber, callStartTime);
                 } else if (isIncoming) {
                     stopRecording();
@@ -98,16 +94,18 @@ public class PhonecallReceiver extends BroadcastReceiver {
         recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
         recorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
         recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-        recorder.setOutputFile(getStreamFd());
         try {
+            recorder.setOutputFile(getStreamFd());
             recorder.prepare();
+            recorder.start();
+            recordStarted = true;
         } catch (IllegalStateException e) {
-            e.printStackTrace();
+            Log.e(getClass().getSimpleName(),
+                    "Exception at starting recording: audio source not set", e);
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(getClass().getSimpleName(),
+                    "Exception at starting recording", e);
         }
-        recorder.start();
-        recordStarted = true;
     }
 
     private void stopRecording() {
@@ -117,29 +115,22 @@ public class PhonecallReceiver extends BroadcastReceiver {
             try {
                 pipe[1].close();
             } catch (IOException e) {
-                //todo
+                Log.e(getClass().getSimpleName(),
+                        "Exception at closing pipe during recording", e);
             }
         }
     }
 
-    private FileDescriptor getStreamFd() {
-        try {
-            pipe = ParcelFileDescriptor.createPipe();
-
-            new PipeProcessingThread(new ParcelFileDescriptor.AutoCloseInputStream(pipe[0]),
-                    new FileOutputStream(getOutputFile())).start();
-        }
-        catch (IOException e) {
-            Log.e(getClass().getSimpleName(), "Exception opening pipe", e);
-        }
+    private FileDescriptor getStreamFd() throws IOException{
+        pipe = ParcelFileDescriptor.createPipe();
+        new PipeProcessingThread(new ParcelFileDescriptor.AutoCloseInputStream(pipe[0]),
+                new FileOutputStream(getOutputFile())).start();
         return pipe[1].getFileDescriptor();
     }
 
     private File getOutputFile() {
         File sampleDir = new File(Environment.getExternalStorageDirectory(), "/" + CALL_LOGS_DIRECTORY);
-        if (!sampleDir.exists()) {
-            sampleDir.mkdirs();
-        }
+        sampleDir.mkdirs();
         return new File(sampleDir, StringUtil.formatFileName(savedNumber, callStartTime, isIncoming));
     }
 

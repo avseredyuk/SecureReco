@@ -1,7 +1,10 @@
 package com.avseredyuk.securereco.dao;
 
 import android.os.Environment;
+import android.util.Log;
 
+import com.avseredyuk.securereco.exception.CryptoException;
+import com.avseredyuk.securereco.exception.ParserException;
 import com.avseredyuk.securereco.model.Call;
 import com.avseredyuk.securereco.util.AuthenticationUtil;
 import com.avseredyuk.securereco.util.IOUtil;
@@ -15,7 +18,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.security.InvalidKeyException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -39,8 +41,6 @@ public class CallDao {
         return instance;
     }
 
-    //public int getCount() {}
-
     public List<Call> findAll(Comparator<Call> comparator) {
         List<Call> calls = findAll();
         Collections.sort(calls, comparator);
@@ -53,24 +53,20 @@ public class CallDao {
 
         for (final File fileEntry : callFolder.listFiles()) {
             if (!fileEntry.isDirectory()) {
-
                 try {
-                    Call call = parseCallFromFilename(fileEntry.getName());
+                    Call call = StringUtil.getCallFromFilename(fileEntry.getName());
                     calls.add(call);
-                } catch (IllegalArgumentException e) {
-                    // todo smth
+                } catch (ParserException e) {
+                    Log.e(getClass().getSimpleName(),
+                            "Exception at parsing call filename", e);
                 }
             }
         }
         return calls;
     }
 
-    private Call parseCallFromFilename(String filename)  {
-        return StringUtil.getCallFromFilename(filename);
-    }
-
     //TODO player ???
-    public boolean play(Call call, String password) throws IllegalArgumentException {
+    public boolean play(Call call, String password)  {
         byte[] content;
         byte[] iv = new byte[16];
         byte[] key = new byte[32];
@@ -87,40 +83,35 @@ public class CallDao {
 
             File yourFile = new File("/storage/emulated/0/SecureRecoApp/file.amr");
 
-            try {
-                InputStream is = new ByteArrayInputStream(content);
-                is.read(headerEncrypted);
-                byte[] fileHeader = rsa.doFinal(headerEncrypted);
-                key = Arrays.copyOfRange(fileHeader, 0, key.length);
-                iv = Arrays.copyOfRange(fileHeader, key.length, key.length + iv.length);
+            InputStream is = new ByteArrayInputStream(content);
+            is.read(headerEncrypted);
+            byte[] fileHeader = rsa.doFinal(headerEncrypted);
+            key = Arrays.copyOfRange(fileHeader, 0, key.length);
+            iv = Arrays.copyOfRange(fileHeader, key.length, key.length + iv.length);
 
-                AES aes = new AES();
-                if (!aes.initWithKeyAndIV(key, iv)) {
-                    //todo
-                    //return null;
-                    return false;
-                }
+            AES aes = new AES();
+            aes.init(key, iv);
 
-                OutputStream out = new FileOutputStream(yourFile);
-                CipherInputStream inCipher = new CipherInputStream(is, aes.getCipher());
+            OutputStream out = new FileOutputStream(yourFile);
+            CipherInputStream inCipher = new CipherInputStream(is, aes.getCipher());
 
-                int numRead = 0;
-                while ((numRead = inCipher.read(buf)) >= 0) {
-                    out.write(buf, 0, numRead);
-                }
-
-                inCipher.close();
-                out.close();
-            } catch (Exception e) {
-                //todo
-                e.printStackTrace();
+            int numRead = 0;
+            while ((numRead = inCipher.read(buf)) >= 0) {
+                out.write(buf, 0, numRead);
             }
-        } catch (InvalidKeyException e) {
-            return false;
-        } catch (IOException e) {
-            throw new IllegalArgumentException(e);
-        }
 
-        return true;
+            inCipher.close();
+            out.close();
+
+            return true;
+
+        } catch (CryptoException e) {
+            Log.e(getClass().getSimpleName(),
+                    "Exception at crypto stuff", e);
+        } catch (IOException e) {
+            Log.e(getClass().getSimpleName(),
+                    "Exception at playing decrypted call file", e);
+        }
+        return false;
     }
 }

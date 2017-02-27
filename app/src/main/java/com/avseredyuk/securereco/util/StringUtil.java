@@ -2,6 +2,7 @@ package com.avseredyuk.securereco.util;
 
 import android.os.Environment;
 
+import com.avseredyuk.securereco.exception.ParserException;
 import com.avseredyuk.securereco.model.Call;
 
 import java.text.SimpleDateFormat;
@@ -28,7 +29,7 @@ public class StringUtil {
         return new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(date);
     }
 
-    public static Call getCallFromFilename(String filename) {
+    public static Call getCallFromFilename(String filename) throws ParserException{
         Call call = new Call();
         call.setFilename(Environment.getExternalStorageDirectory() + "/" + CALL_LOGS_DIRECTORY + "/" + filename);
         Pattern p = Pattern.compile("^(\\d{2})_(\\d{2})_(\\d{4})_(\\d{2})_(\\d{2})_(\\d{2})_(.+)_([IO])\\.bin$");
@@ -55,8 +56,7 @@ public class StringUtil {
 
             return call;
         } else {
-            //todo
-            return null;
+            throw new ParserException("Exception at parsing encrypted call filename");
         }
     }
 

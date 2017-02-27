@@ -2,6 +2,7 @@ package com.avseredyuk.securereco.receiver;
 
 import android.util.Log;
 
+import com.avseredyuk.securereco.exception.CryptoException;
 import com.avseredyuk.securereco.util.ArrayUtil;
 import com.avseredyuk.securereco.util.crypto.*;
 import java.io.FileOutputStream;
@@ -25,20 +26,14 @@ public class PipeProcessingThread extends Thread {
 
     @Override
     public void run() {
-        RSA rsa = new RSA();
-        if (!rsa.initPublicKey()) {
-            // todo
-            return;
-        }
-        AES aes = new AES();
-        if (!aes.initRandom(true)) {
-            // todo
-            return;
-        }
-
-        byte[] buf = new byte[BUF_SIZE];
-        int len;
         try {
+            RSA rsa = new RSA();
+            rsa.initPublicKey();
+            AES aes = new AES();
+            aes.initRandom(true);
+
+            byte[] buf = new byte[BUF_SIZE];
+            int len;
 
             out.write(rsa.doFinal(ArrayUtil.combineArrays(aes.getKey(), aes.getCipher().getIV())));
 
@@ -49,10 +44,12 @@ public class PipeProcessingThread extends Thread {
             outCipher.close();
             in.close();
 
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (CryptoException e) {
             Log.e(getClass().getSimpleName(),
-                    "Exception transferring file", e);
+                    "Exception at crypto stuff", e);
+        } catch (IOException e) {
+            Log.e(getClass().getSimpleName(),
+                    "Exception writing from pool to file", e);
         }
     }
 }
