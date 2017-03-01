@@ -1,10 +1,11 @@
-package com.avseredyuk.securereco;
+package com.avseredyuk.securereco.activity;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ListView;
 
+import com.avseredyuk.securereco.R;
 import com.avseredyuk.securereco.adapter.CallArrayAdapter;
 import com.avseredyuk.securereco.dao.CallDao;
 import com.avseredyuk.securereco.model.Call;

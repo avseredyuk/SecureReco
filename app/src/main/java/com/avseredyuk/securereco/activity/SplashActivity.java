@@ -1,4 +1,4 @@
-package com.avseredyuk.securereco;
+package com.avseredyuk.securereco.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -15,8 +15,6 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        //setContentView(R.layout.first_run);
 
         final Class<? extends Activity> activityClass;
         if (!ConfigUtil.isKeysPresent()) {

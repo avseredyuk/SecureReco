@@ -1,4 +1,4 @@
-package com.avseredyuk.securereco;
+package com.avseredyuk.securereco.application;
 
 import android.os.SystemClock;
 

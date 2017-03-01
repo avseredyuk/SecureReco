@@ -1,4 +1,4 @@
-package com.avseredyuk.securereco;
+package com.avseredyuk.securereco.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.avseredyuk.securereco.R;
 import com.avseredyuk.securereco.util.ConfigUtil;
 
 /**
