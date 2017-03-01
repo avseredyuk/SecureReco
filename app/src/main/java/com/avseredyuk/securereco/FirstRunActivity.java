@@ -14,7 +14,7 @@ import com.avseredyuk.securereco.util.ConfigUtil;
 /**
  * Created by lenfer on 2/15/17.
  */
-public class PrepareActivity extends AppCompatActivity {
+public class FirstRunActivity extends AppCompatActivity {
     private Context context;
 
     @Override

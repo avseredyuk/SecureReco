@@ -49,7 +49,8 @@ public class CallArrayAdapter extends ArrayAdapter<Call> {
         thirdLine.setText(StringUtil.formatDate(calls.get(position).getDatetimeStarted()));
 
         ImageView imageView = (ImageView) rowView.findViewById(R.id.avatar);
-        imageView.setImageResource(R.drawable.ic_launcher);
+        imageView.setImageBitmap(ContactResolverUtil.retrieveContactPhoto(context, calls.get(position).getCallNumber()));
+        //imageView.setImageResource(R.drawable.ic_launcher);
 
         ImageButton playBtn = (ImageButton) rowView.findViewById(R.id.playButton);
         playBtn.setTag(calls.get(position));

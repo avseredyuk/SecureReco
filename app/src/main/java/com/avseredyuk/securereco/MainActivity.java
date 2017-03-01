@@ -30,14 +30,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (!ConfigUtil.isKeysPresent()) {
-            Intent intent = new Intent(this, PrepareActivity.class);
-            startActivity(intent);
-        }
-
         setContentView(R.layout.activity_main);
-
-        startService(new Intent(MainActivity.this, RecorderService.class));
 
         System.out.println("CREATED");
     }
