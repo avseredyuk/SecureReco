@@ -3,6 +3,10 @@ package com.avseredyuk.securereco.activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.ListView;
 
 import com.avseredyuk.securereco.R;
@@ -25,6 +29,25 @@ public class MainActivity extends AppCompatActivity {
         callsListView.setAdapter(new CallArrayAdapter(this, calls));
 
         System.out.println("RESUMED");
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_activity_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_show_settings:
+                Intent newActivity = new Intent(this, SettingsActivity.class);
+                startActivity(newActivity);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override

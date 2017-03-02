@@ -24,7 +24,7 @@ public class FirstRunActivity extends AppCompatActivity {
 
         context = this.getApplicationContext();
 
-        setContentView(R.layout.first_run);
+        setContentView(R.layout.activity_firstrun);
         Button buttonStart = (Button) findViewById(R.id.button);
         buttonStart.setOnClickListener(new View.OnClickListener() {
             @Override

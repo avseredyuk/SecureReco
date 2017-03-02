@@ -26,7 +26,7 @@ public class CallArrayAdapter extends ArrayAdapter<Call> {
     List<Call> calls;
 
     public CallArrayAdapter(Context context, List<Call> calls) {
-        super(context, R.layout.item, calls);
+        super(context, R.layout.list_item, calls);
         this.context = context;
         this.calls = calls;
     }
@@ -35,7 +35,7 @@ public class CallArrayAdapter extends ArrayAdapter<Call> {
     public View getView(final int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View rowView = inflater.inflate(R.layout.item, parent, false);
+        View rowView = inflater.inflate(R.layout.list_item, parent, false);
 
         TextView firstLine = (TextView) rowView.findViewById(R.id.firstLine);
         firstLine.setText(ContactResolverUtil.getContactName(context,
