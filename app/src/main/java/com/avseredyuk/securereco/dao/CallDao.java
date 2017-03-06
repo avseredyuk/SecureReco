@@ -3,10 +3,11 @@ package com.avseredyuk.securereco.dao;
 import android.os.Environment;
 import android.util.Log;
 
+import com.avseredyuk.securereco.exception.AuthenticationException;
 import com.avseredyuk.securereco.exception.CryptoException;
 import com.avseredyuk.securereco.exception.ParserException;
 import com.avseredyuk.securereco.model.Call;
-import com.avseredyuk.securereco.util.AuthenticationUtil;
+import com.avseredyuk.securereco.auth.AuthenticationManager;
 import com.avseredyuk.securereco.util.IOUtil;
 import com.avseredyuk.securereco.util.StringUtil;
 import com.avseredyuk.securereco.util.crypto.AES;
@@ -50,15 +51,16 @@ public class CallDao {
     public List<Call> findAll() {
         List<Call> calls = new ArrayList<>();
         File callFolder = new File(Environment.getExternalStorageDirectory(), "/" + CALL_LOGS_DIRECTORY + "/");
-
-        for (final File fileEntry : callFolder.listFiles()) {
-            if (!fileEntry.isDirectory()) {
-                try {
-                    Call call = StringUtil.getCallFromFilename(fileEntry.getName());
-                    calls.add(call);
-                } catch (ParserException e) {
-                    Log.e(getClass().getSimpleName(),
-                            "Exception at parsing call filename", e);
+        if (callFolder.listFiles() != null) {
+            for (final File fileEntry : callFolder.listFiles()) {
+                if (!fileEntry.isDirectory()) {
+                    try {
+                        Call call = StringUtil.getCallFromFilename(fileEntry.getName());
+                        calls.add(call);
+                    } catch (ParserException e) {
+                        Log.e(getClass().getSimpleName(),
+                                "Exception at parsing call filename", e);
+                    }
                 }
             }
         }
@@ -75,7 +77,8 @@ public class CallDao {
         byte[] privateKey;
 
         try {
-            privateKey = AuthenticationUtil.authenticate(password);
+            AuthenticationManager authMan = new AuthenticationManager();
+            privateKey = authMan.authenticate(password);
             RSA rsa = new RSA();
             rsa.initPrivateKey(privateKey);
 
@@ -105,6 +108,9 @@ public class CallDao {
 
             return true;
 
+        } catch (AuthenticationException e) {
+            Log.e(getClass().getSimpleName(),
+                    "Exception while authentication", e);
         } catch (CryptoException e) {
             Log.e(getClass().getSimpleName(),
                     "Exception at crypto stuff", e);

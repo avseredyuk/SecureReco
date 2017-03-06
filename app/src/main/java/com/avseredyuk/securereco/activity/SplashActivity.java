@@ -17,7 +17,7 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         final Class<? extends Activity> activityClass;
-        if (!ConfigUtil.isKeysPresent()) {
+        if (!ConfigUtil.isConfigValid()) {
             activityClass = FirstRunActivity.class;
         } else {
             activityClass = MainActivity.class;

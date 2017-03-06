@@ -29,7 +29,7 @@ import static com.avseredyuk.securereco.util.Constant.*;
  */
 public class ConfigUtil {
 
-    public static boolean isKeysPresent() {
+    public static boolean isConfigValid() {
         File sampleDir = new File(Environment.getExternalStorageDirectory(), "/" + APP_DIRECTORY + "/");
         if (sampleDir.exists()) {
             File configFile = new File(Environment.getExternalStorageDirectory(), "/" + APP_DIRECTORY + "/" + CONFIG_FILE);
@@ -42,55 +42,75 @@ public class ConfigUtil {
         return false;
     }
 
-    public static String readValue(String key)  {
+    private static JSONObject readObject() {
         File configFile = new File(Environment.getExternalStorageDirectory(), "/" + APP_DIRECTORY + "/" + CONFIG_FILE);
         if (!configFile.isDirectory()) {
+            InputStream in = null;
             try {
-                InputStream in = new FileInputStream(configFile);
-                JSONObject json = new JSONObject(IOUtil.readText(in, "UTF-8"));
-                return json.getString(key);
+                in = new FileInputStream(configFile);
+                return new JSONObject(IOUtil.readText(in, "UTF-8"));
             } catch (JSONException e) {
                 Log.e(ConfigUtil.class.getSimpleName(),
                         "Exception at reading JSON parameters", e);
             } catch (IOException e) {
                 Log.e(ConfigUtil.class.getSimpleName(),
                         "Exception at reading config file", e);
+            } finally {
+                try {
+                    if (in != null)
+                        in.close();
+                } catch (IOException ex) {
+                    Log.e(ConfigUtil.class.getSimpleName(),
+                            "Exception at reading config file");
+                }
             }
+        }
+        return null;
+    }
+
+    public static String readValue(String key)  {
+        try {
+            JSONObject json = readObject();
+            if (json != null) {
+                return (String) json.get(key);
+            }
+        } catch (JSONException e) {
+            Log.e(ConfigUtil.class.getSimpleName(),
+                    "Exception at parsing JSON parameters", e);
         }
         return "";
     }
 
-    public static void makeKeys(String password) {
+    public static boolean writeValue(String name, String value) {
+        JSONObject json = readObject();
+        if (json == null) {
+            json = new JSONObject();
+        }
+
+        File configFile = new File(Environment.getExternalStorageDirectory(), "/" + APP_DIRECTORY + "/" + CONFIG_FILE);
+        OutputStream out = null;
         try {
-            KeyPair keyPair = RSA.generateKeyPair();
-
-            AES aes = new AES();
-            aes.init(password, Cipher.ENCRYPT_MODE);
-            byte[] privateKeyEncrypted = aes.doFinal(keyPair.getPrivate().getEncoded());
-            byte[] hmac = aes.getHMAC(keyPair.getPrivate().getEncoded());
-            byte[] iv = aes.getCipher().getIV();
-
-            File configFile = new File(Environment.getExternalStorageDirectory(), "/" + APP_DIRECTORY + "/" + CONFIG_FILE);
-            OutputStream out = new FileOutputStream(configFile);
-
-            JSONObject json = new JSONObject();
-            json.put(PRIVATE_KEY_ENCODED, Base64.encodeToString(privateKeyEncrypted, Base64.DEFAULT));
-            json.put(PRIVATE_KEY_HMAC, Base64.encodeToString(hmac, Base64.DEFAULT));
-            json.put(PRIVATE_KEY_IV, Base64.encodeToString(iv, Base64.DEFAULT));
-            json.put(PUBLIC_KEY, Base64.encodeToString(keyPair.getPublic().getEncoded(), Base64.DEFAULT));
+            out = new FileOutputStream(configFile);
+            json.put(name, value);
             out.write(json.toString().getBytes(Charset.forName("UTF-8")));
-            out.close();
+            return true;
 
-        } catch (CryptoException e) {
-            Log.e(ConfigUtil.class.getSimpleName(),
-                    "Exception at crypto stuff", e);
         } catch (JSONException e) {
             Log.e(ConfigUtil.class.getSimpleName(),
                     "Exception at saving JSON parameters", e);
         } catch (IOException e) {
             Log.e(ConfigUtil.class.getSimpleName(),
                     "Exception at writing to output stream to config file", e);
+        } finally {
+            try {
+                if (out != null)
+                    out.close();
+            } catch (IOException ex) {
+                Log.e(ConfigUtil.class.getSimpleName(),
+                        "Exception at writing config file");
+            }
         }
+        return false;
     }
 
 }

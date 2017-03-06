@@ -10,7 +10,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.avseredyuk.securereco.R;
-import com.avseredyuk.securereco.util.ConfigUtil;
+import com.avseredyuk.securereco.auth.AuthenticationManager;
 
 /**
  * Created by lenfer on 2/15/17.
@@ -36,7 +36,8 @@ public class FirstRunActivity extends AppCompatActivity {
                     msg.show();
                 } else {
                     String password = input.getText().toString();
-                    ConfigUtil.makeKeys(password);
+                    AuthenticationManager authMan = new AuthenticationManager();
+                    authMan.makeKeys(password);
                     Intent intent = new Intent(context, MainActivity.class);
                     startActivity(intent);
                 }

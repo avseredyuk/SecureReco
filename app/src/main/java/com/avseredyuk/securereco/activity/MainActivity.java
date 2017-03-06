@@ -3,7 +3,6 @@ package com.avseredyuk.securereco.activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -13,8 +12,6 @@ import com.avseredyuk.securereco.R;
 import com.avseredyuk.securereco.adapter.CallArrayAdapter;
 import com.avseredyuk.securereco.dao.CallDao;
 import com.avseredyuk.securereco.model.Call;
-import com.avseredyuk.securereco.service.RecorderService;
-import com.avseredyuk.securereco.util.ConfigUtil;
 
 import java.util.List;
 
