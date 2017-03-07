@@ -59,7 +59,7 @@ public class ConfigUtil {
                 try {
                     if (in != null)
                         in.close();
-                } catch (IOException ex) {
+                } catch (IOException e) {
                     Log.e(ConfigUtil.class.getSimpleName(),
                             "Exception at reading config file");
                 }
@@ -105,7 +105,7 @@ public class ConfigUtil {
             try {
                 if (out != null)
                     out.close();
-            } catch (IOException ex) {
+            } catch (IOException e) {
                 Log.e(ConfigUtil.class.getSimpleName(),
                         "Exception at writing config file");
             }

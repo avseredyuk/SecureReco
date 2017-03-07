@@ -37,15 +37,15 @@ public class CallArrayAdapter extends ArrayAdapter<Call> {
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(R.layout.list_item, parent, false);
 
-        TextView firstLine = (TextView) rowView.findViewById(R.id.firstLine);
+        TextView firstLine = (TextView) rowView.findViewById(R.id.contactName);
         firstLine.setText(ContactResolverUtil.getContactName(context,
                 calls.get(position).getCallNumber()));
         firstLine.setTextColor(calls.get(position).isIncoming() ? Color.parseColor("#039F00") : Color.BLUE);
 
-        TextView secondLine = (TextView) rowView.findViewById(R.id.secondLine);
+        TextView secondLine = (TextView) rowView.findViewById(R.id.callNumber);
         secondLine.setText(calls.get(position).getCallNumber());
 
-        TextView thirdLine = (TextView) rowView.findViewById(R.id.thirdLine);
+        TextView thirdLine = (TextView) rowView.findViewById(R.id.callDate);
         thirdLine.setText(StringUtil.formatDate(calls.get(position).getDatetimeStarted()));
 
         ImageView imageView = (ImageView) rowView.findViewById(R.id.avatar);
