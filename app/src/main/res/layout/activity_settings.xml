@@ -86,4 +86,58 @@
         android:layout_alignLeft="@+id/newPasswordEdit2"
         android:layout_alignStart="@+id/newPasswordEdit2" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Regenerate RSA key-pair"
+        android:id="@+id/changeKeysHeader"
+
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="15dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="15dp"
+        android:layout_below="@id/changePasswordButton"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Password:"
+        android:id="@+id/regenPasswordLabel"
+        android:layout_below="@+id/changeKeysHeader"
+        android:layout_alignLeft="@+id/textView4"
+        android:layout_alignStart="@+id/textView4"
+        android:layout_marginTop="12dp" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:ems="10"
+        android:id="@+id/regenCurrentPasswordEdit"
+        android:layout_below="@+id/regenPasswordLabel"
+        android:layout_alignLeft="@+id/textView3"
+        android:layout_alignStart="@+id/textView3" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Re-generate"
+        android:id="@+id/regenButton"
+        android:layout_below="@+id/regenCurrentPasswordEdit"
+        android:layout_alignLeft="@+id/newPasswordEdit2"
+        android:layout_alignStart="@+id/newPasswordEdit2" />
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/textView4"
+        android:layout_alignEnd="@+id/textView4" />
+
+
 </RelativeLayout>
