@@ -26,7 +26,7 @@ public class StringUtil {
     }
 
     public static String formatDate(Date date) {
-        return new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(date);
+        return new SimpleDateFormat("dd/MM/yyyy HH:mm").format(date);
     }
 
     public static Call getCallFromFilename(String filename) throws ParserException{
