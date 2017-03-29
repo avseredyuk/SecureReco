@@ -47,7 +47,7 @@ public class StringUtil {
             String isIncoming = m.group(8);
 
             Calendar c = Calendar.getInstance();
-            c.set(year, month, day, hour, minute, second);
+            c.set(year, month - 1, day, hour, minute, second);
             Date datetimeStarted = c.getTime();
 
             call.setDatetimeStarted(datetimeStarted);
