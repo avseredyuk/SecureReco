@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.avseredyuk.securereco.R;
 import com.avseredyuk.securereco.auth.AuthenticationManager;
+import com.avseredyuk.securereco.exception.AuthenticationException;
 
 /**
  * Created by lenfer on 3/1/17.
@@ -29,8 +30,8 @@ public class SettingsActivity extends AppCompatActivity {
         final EditText newPasswordEdit1 = (EditText) findViewById(R.id.newPasswordEdit1);
         final EditText newPasswordEdit2 = (EditText) findViewById(R.id.newPasswordEdit2);
 
-        Button button = (Button) findViewById(R.id.changePasswordButton);
-        button.setOnClickListener(new View.OnClickListener() {
+        Button changePasswordButton = (Button) findViewById(R.id.changePasswordButton);
+        changePasswordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String oldPassword = oldPasswordEdit.getText().toString();
@@ -49,6 +50,24 @@ public class SettingsActivity extends AppCompatActivity {
                     }
                 } else {
                     Toast.makeText(context, "Error in input", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        final EditText currentPasswordEdit = (EditText) findViewById(R.id.regenCurrentPasswordEdit);
+        Button regenerateRSAKeysButton = (Button) findViewById(R.id.regenButton);
+        regenerateRSAKeysButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String currentPassword = currentPasswordEdit.getText().toString();
+                if (currentPassword.length() > 0) {
+                    AuthenticationManager authMan = new AuthenticationManager();
+                    if (authMan.regenerateKeyPair(currentPassword)) {
+                        Toast.makeText(context, "Keys regenerated", Toast.LENGTH_SHORT).show();
+                        //finish();
+                    } else {
+                        Toast.makeText(context, "Wrong password", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });

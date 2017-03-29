@@ -1,10 +1,12 @@
 package com.avseredyuk.securereco.auth;
 
+import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
 
 import com.avseredyuk.securereco.exception.AuthenticationException;
 import com.avseredyuk.securereco.exception.CryptoException;
+import com.avseredyuk.securereco.task.ChangeCallKeyTask;
 import com.avseredyuk.securereco.util.ConfigUtil;
 import com.avseredyuk.securereco.util.crypto.*;
 
@@ -64,6 +66,25 @@ public class AuthenticationManager {
         } catch (CryptoException e) {
             Log.e(ConfigUtil.class.getSimpleName(), "Exception at crypto stuff", e);
         }
+    }
+
+    public boolean regenerateKeyPair(String password) {
+        try {
+            initAuth(password);
+
+            //makeKeys or so
+            // we should replace keys in config before doing asynctask
+
+
+
+            ChangeCallKeyTask workerTask = new ChangeCallKeyTask();
+            workerTask.execute();
+
+            return true;
+        } catch (CryptoException e) {
+            //todo
+        }
+        return false;
     }
 
     public boolean changePassword(String oldPassword, String newPassword) {
