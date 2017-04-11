@@ -59,7 +59,7 @@ public class ContactResolverUtil {
         }
 
         Bitmap photo = BitmapFactory.decodeResource(context.getResources(),
-                R.drawable.ic_launcher);
+                R.drawable.avatar_unknown);
 
         try {
             if (contactId != null) {
