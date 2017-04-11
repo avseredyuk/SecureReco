@@ -42,32 +42,6 @@ public class ConfigUtil {
         return false;
     }
 
-    private static JSONObject readObject() {
-        File configFile = new File(Environment.getExternalStorageDirectory(), "/" + APP_DIRECTORY + "/" + CONFIG_FILE);
-        if (!configFile.isDirectory()) {
-            InputStream in = null;
-            try {
-                in = new FileInputStream(configFile);
-                return new JSONObject(IOUtil.readText(in, "UTF-8"));
-            } catch (JSONException e) {
-                Log.e(ConfigUtil.class.getSimpleName(),
-                        "Exception at reading JSON parameters", e);
-            } catch (IOException e) {
-                Log.e(ConfigUtil.class.getSimpleName(),
-                        "Exception at reading config file", e);
-            } finally {
-                try {
-                    if (in != null)
-                        in.close();
-                } catch (IOException e) {
-                    Log.e(ConfigUtil.class.getSimpleName(),
-                            "Exception at reading config file");
-                }
-            }
-        }
-        return null;
-    }
-
     public static String readValue(String key)  {
         try {
             JSONObject json = readObject();
@@ -79,6 +53,10 @@ public class ConfigUtil {
                     "Exception at parsing JSON parameters", e);
         }
         return "";
+    }
+
+    public static Boolean readBoolean(String key) {
+        return Boolean.valueOf(readValue(key));
     }
 
     public static boolean writeValue(String name, String value) {
@@ -111,6 +89,32 @@ public class ConfigUtil {
             }
         }
         return false;
+    }
+
+    private static JSONObject readObject() {
+        File configFile = new File(Environment.getExternalStorageDirectory(), "/" + APP_DIRECTORY + "/" + CONFIG_FILE);
+        if (!configFile.isDirectory()) {
+            InputStream in = null;
+            try {
+                in = new FileInputStream(configFile);
+                return new JSONObject(IOUtil.readText(in, "UTF-8"));
+            } catch (JSONException e) {
+                Log.e(ConfigUtil.class.getSimpleName(),
+                        "Exception at reading JSON parameters", e);
+            } catch (IOException e) {
+                Log.e(ConfigUtil.class.getSimpleName(),
+                        "Exception at reading config file", e);
+            } finally {
+                try {
+                    if (in != null)
+                        in.close();
+                } catch (IOException e) {
+                    Log.e(ConfigUtil.class.getSimpleName(),
+                            "Exception at reading config file");
+                }
+            }
+        }
+        return null;
     }
 
 }

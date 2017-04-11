@@ -11,6 +11,9 @@ import android.widget.Toast;
 
 import com.avseredyuk.securereco.R;
 import com.avseredyuk.securereco.auth.AuthenticationManager;
+import com.avseredyuk.securereco.util.ConfigUtil;
+
+import static com.avseredyuk.securereco.util.Constant.*;
 
 /**
  * Created by lenfer on 2/15/17.
@@ -38,6 +41,7 @@ public class FirstRunActivity extends AppCompatActivity {
                     String password = input.getText().toString();
                     AuthenticationManager authMan = new AuthenticationManager();
                     authMan.makeKeys(password);
+                    ConfigUtil.writeValue(IS_ENABLED, "true");
                     Intent intent = new Intent(context, MainActivity.class);
                     startActivity(intent);
                 }

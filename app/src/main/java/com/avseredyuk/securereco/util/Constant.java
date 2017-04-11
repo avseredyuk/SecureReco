@@ -11,5 +11,6 @@ public class Constant {
     public static final String PUBLIC_KEY = "publicKey";
     public static final String PRIVATE_KEY_ENCODED = "privateKeyEncoded";
     public static final String PRIVATE_KEY_IV = "privateKeyIV";
+    public static final String IS_ENABLED = "isEnabled";
     public static final int BUF_SIZE = 8192;
 }

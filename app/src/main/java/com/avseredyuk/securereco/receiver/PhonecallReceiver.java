@@ -9,6 +9,7 @@ import android.os.ParcelFileDescriptor;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import com.avseredyuk.securereco.util.ConfigUtil;
 import com.avseredyuk.securereco.util.StringUtil;
 
 import java.io.File;
@@ -33,24 +34,26 @@ public class PhonecallReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (intent.getAction().equals("android.intent.action.NEW_OUTGOING_CALL")) {
-            savedNumber = intent.getExtras().getString("android.intent.extra.PHONE_NUMBER");
-        } else {
-            String stateStr = intent.getExtras().getString(TelephonyManager.EXTRA_STATE);
-            String number = intent.getExtras().getString(TelephonyManager.EXTRA_INCOMING_NUMBER);
-            int state = 0;
-            if (TelephonyManager.EXTRA_STATE_IDLE.equals(stateStr)) {
-                state = TelephonyManager.CALL_STATE_IDLE;
-            } else if (TelephonyManager.EXTRA_STATE_OFFHOOK.equals(stateStr)) {
-                state = TelephonyManager.CALL_STATE_OFFHOOK;
-            } else if (TelephonyManager.EXTRA_STATE_RINGING.equals(stateStr)) {
-                state = TelephonyManager.CALL_STATE_RINGING;
+        if (ConfigUtil.readBoolean(IS_ENABLED)) {
+            if (intent.getAction().equals("android.intent.action.NEW_OUTGOING_CALL")) {
+                savedNumber = intent.getExtras().getString("android.intent.extra.PHONE_NUMBER");
+            } else {
+                String stateStr = intent.getExtras().getString(TelephonyManager.EXTRA_STATE);
+                String number = intent.getExtras().getString(TelephonyManager.EXTRA_INCOMING_NUMBER);
+                int state = 0;
+                if (TelephonyManager.EXTRA_STATE_IDLE.equals(stateStr)) {
+                    state = TelephonyManager.CALL_STATE_IDLE;
+                } else if (TelephonyManager.EXTRA_STATE_OFFHOOK.equals(stateStr)) {
+                    state = TelephonyManager.CALL_STATE_OFFHOOK;
+                } else if (TelephonyManager.EXTRA_STATE_RINGING.equals(stateStr)) {
+                    state = TelephonyManager.CALL_STATE_RINGING;
+                }
+                onCallStateChanged(context, state, number);
             }
-            onCallStateChanged(context, state, number);
         }
     }
 
-    public void onCallStateChanged(Context context, int state, String number) {
+    private void onCallStateChanged(Context context, int state, String number) {
         if (lastState == state) {
             return;
         }

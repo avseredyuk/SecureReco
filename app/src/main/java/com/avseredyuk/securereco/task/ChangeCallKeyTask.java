@@ -17,7 +17,7 @@ public class ChangeCallKeyTask extends AsyncTask<Void, Integer, Void> {
         for(Call call : calls) {
             System.out.println(call.getFilename());
             try {
-                Thread.sleep(500);
+                Thread.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
