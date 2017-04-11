@@ -25,6 +25,14 @@ public class CallArrayAdapter extends ArrayAdapter<Call> {
     Context context;
     List<Call> calls;
 
+    private static class ViewHolder {
+        TextView firstLine;
+        TextView secondLine;
+        TextView thirdLine;
+        ImageView imageView;
+        ImageButton playBtn;
+    }
+
     public CallArrayAdapter(Context context, List<Call> calls) {
         super(context, R.layout.list_item, calls);
         this.context = context;
@@ -33,29 +41,32 @@ public class CallArrayAdapter extends ArrayAdapter<Call> {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        LayoutInflater inflater = (LayoutInflater) context
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View rowView = inflater.inflate(R.layout.list_item, parent, false);
+        Call call = calls.get(position);
+        ViewHolder viewHolder;
+        if (convertView == null) {
+            viewHolder = new ViewHolder();
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = inflater.inflate(R.layout.list_item, parent, false);
 
-        TextView firstLine = (TextView) rowView.findViewById(R.id.contactName);
-        firstLine.setText(ContactResolverUtil.getContactName(context,
-                calls.get(position).getCallNumber()));
-        firstLine.setTextColor(calls.get(position).isIncoming() ? Color.parseColor("#039F00") : Color.BLUE);
+            viewHolder.firstLine = (TextView) convertView.findViewById(R.id.contactName);
+            viewHolder.secondLine = (TextView) convertView.findViewById(R.id.callNumber);
+            viewHolder.thirdLine = (TextView) convertView.findViewById(R.id.callDate);
+            viewHolder.imageView = (ImageView) convertView.findViewById(R.id.avatar);
+            viewHolder.playBtn = (ImageButton) convertView.findViewById(R.id.playButton);
 
-        TextView secondLine = (TextView) rowView.findViewById(R.id.callNumber);
-        secondLine.setText(calls.get(position).getCallNumber());
+            convertView.setTag(viewHolder);
+        } else {
+            viewHolder = (ViewHolder) convertView.getTag();
+        }
 
-        TextView thirdLine = (TextView) rowView.findViewById(R.id.callDate);
-        thirdLine.setText(StringUtil.formatDate(calls.get(position).getDatetimeStarted()));
+        viewHolder.firstLine.setText(ContactResolverUtil.getContactName(context, call.getCallNumber()));
+        viewHolder.firstLine.setTextColor(call.isIncoming() ? Color.parseColor("#039F00") : Color.BLUE);
+        viewHolder.secondLine.setText(call.getCallNumber());
+        viewHolder.thirdLine.setText(StringUtil.formatDate(call.getDatetimeStarted()));
+        viewHolder.imageView.setImageBitmap(ContactResolverUtil.retrieveContactPhoto(context, call.getCallNumber()));
+        viewHolder.playBtn.setTag(call);
+        viewHolder.playBtn.setOnClickListener(new PlayButtonClickListener(context));
 
-        ImageView imageView = (ImageView) rowView.findViewById(R.id.avatar);
-        imageView.setImageBitmap(ContactResolverUtil.retrieveContactPhoto(context, calls.get(position).getCallNumber()));
-
-        ImageButton playBtn = (ImageButton) rowView.findViewById(R.id.playButton);
-        playBtn.setTag(calls.get(position));
-        playBtn.setOnClickListener(new PlayButtonClickListener(context));
-
-        return rowView;
-
+        return convertView;
     }
 }
