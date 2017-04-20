@@ -6,8 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.avseredyuk.securereco.R;
@@ -16,7 +19,9 @@ import com.avseredyuk.securereco.model.Call;
 import com.avseredyuk.securereco.util.ContactResolverUtil;
 import com.avseredyuk.securereco.util.StringUtil;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by lenfer on 2/15/17.
@@ -24,6 +29,7 @@ import java.util.List;
 public class CallArrayAdapter extends ArrayAdapter<Call> {
     Context context;
     List<Call> calls;
+    Boolean[] checkedStatuses;
 
     private static class ViewHolder {
         TextView firstLine;
@@ -31,12 +37,14 @@ public class CallArrayAdapter extends ArrayAdapter<Call> {
         TextView thirdLine;
         ImageView imageView;
         ImageButton playBtn;
+        CheckBox checkBox;
     }
 
     public CallArrayAdapter(Context context, List<Call> calls) {
         super(context, R.layout.list_item, calls);
         this.context = context;
         this.calls = calls;
+        checkedStatuses = new Boolean[calls.size()];
     }
 
     @Override
@@ -53,6 +61,7 @@ public class CallArrayAdapter extends ArrayAdapter<Call> {
             viewHolder.thirdLine = (TextView) convertView.findViewById(R.id.callDate);
             viewHolder.imageView = (ImageView) convertView.findViewById(R.id.avatar);
             viewHolder.playBtn = (ImageButton) convertView.findViewById(R.id.playButton);
+            viewHolder.checkBox = (CheckBox) convertView.findViewById(R.id.checkBox);
 
             convertView.setTag(viewHolder);
         } else {
@@ -66,6 +75,18 @@ public class CallArrayAdapter extends ArrayAdapter<Call> {
         viewHolder.imageView.setImageBitmap(ContactResolverUtil.retrieveContactPhoto(context, call.getCallNumber()));
         viewHolder.playBtn.setTag(call);
         viewHolder.playBtn.setOnClickListener(new PlayButtonClickListener(context));
+
+        viewHolder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                checkedStatuses[position] = isChecked;
+            }
+        });
+        Boolean isItemChecked = checkedStatuses[position];
+        if (isItemChecked == null) {
+            isItemChecked = false;
+        }
+        viewHolder.checkBox.setChecked(isItemChecked);
 
         return convertView;
     }

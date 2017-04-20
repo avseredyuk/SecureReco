@@ -5,4 +5,6 @@
     <item android:id="@+id/action_on_off"
         android:title="@string/menu_item_on_off"
         android:checkable="true"/>
+    <item android:id="@+id/action_delete_selected"
+        android:title="@string/menu_item_delete_selected"/>
 </menu>
