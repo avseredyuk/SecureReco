@@ -24,13 +24,12 @@ public class MainActivity extends AppCompatActivity {
     private MenuItem enabledDisabledMenuItem;
     private MenuItem deleteSelectedMenuItem;
     private CallArrayAdapter callArrayAdapter;
-    private List<Call> calls;
 
     @Override
     protected void onResume() {
         super.onResume();
         ListView callsListView = (ListView) findViewById(R.id.listView);
-        calls = CallDao.getInstance().findAll(Call.CallDateComparator);
+        List<Call>  calls = CallDao.getInstance().findAll(Call.CallDateComparator);
         callArrayAdapter = new CallArrayAdapter(this, calls);
         callsListView.setAdapter(callArrayAdapter);
         System.out.println("RESUMED");
