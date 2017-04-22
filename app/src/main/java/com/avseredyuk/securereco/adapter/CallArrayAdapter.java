@@ -10,7 +10,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.avseredyuk.securereco.R;
@@ -19,17 +18,15 @@ import com.avseredyuk.securereco.model.Call;
 import com.avseredyuk.securereco.util.ContactResolverUtil;
 import com.avseredyuk.securereco.util.StringUtil;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by lenfer on 2/15/17.
  */
 public class CallArrayAdapter extends ArrayAdapter<Call> {
-    Context context;
-    List<Call> calls;
-    Boolean[] checkedStatuses;
+    private Context context;
+    private List<Integer> checkedItemsIndexes = new ArrayList<>();
 
     private static class ViewHolder {
         TextView firstLine;
@@ -43,13 +40,11 @@ public class CallArrayAdapter extends ArrayAdapter<Call> {
     public CallArrayAdapter(Context context, List<Call> calls) {
         super(context, R.layout.list_item, calls);
         this.context = context;
-        this.calls = calls;
-        checkedStatuses = new Boolean[calls.size()];
     }
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        Call call = calls.get(position);
+        Call call = this.getItem(position);
         ViewHolder viewHolder;
         if (convertView == null) {
             viewHolder = new ViewHolder();
@@ -79,15 +74,29 @@ public class CallArrayAdapter extends ArrayAdapter<Call> {
         viewHolder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                checkedStatuses[position] = isChecked;
+                if (isChecked) {
+                    checkedItemsIndexes.add(position);
+                } else {
+                    checkedItemsIndexes.remove(Integer.valueOf(position));
+                }
             }
         });
-        Boolean isItemChecked = checkedStatuses[position];
-        if (isItemChecked == null) {
-            isItemChecked = false;
-        }
+        boolean isItemChecked = checkedItemsIndexes.contains(position);
         viewHolder.checkBox.setChecked(isItemChecked);
 
         return convertView;
     }
+
+    public List<Integer> getCheckedStatuses() {
+        return new ArrayList<>(checkedItemsIndexes);
+    }
+
+    public int getCheckedCount() {
+        return checkedItemsIndexes.size();
+    }
+
+    public void resetCheckedItems() {
+        checkedItemsIndexes.clear();
+    }
+
 }

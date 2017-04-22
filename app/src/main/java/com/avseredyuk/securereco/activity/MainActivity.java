@@ -1,12 +1,13 @@
 package com.avseredyuk.securereco.activity;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.avseredyuk.securereco.R;
 import com.avseredyuk.securereco.adapter.CallArrayAdapter;
@@ -14,19 +15,24 @@ import com.avseredyuk.securereco.dao.CallDao;
 import com.avseredyuk.securereco.model.Call;
 import com.avseredyuk.securereco.util.ConfigUtil;
 
+import java.io.File;
 import java.util.List;
 
-import static com.avseredyuk.securereco.util.Constant.*;
+import static com.avseredyuk.securereco.util.Constant.IS_ENABLED;
 
 public class MainActivity extends AppCompatActivity {
     private MenuItem enabledDisabledMenuItem;
+    private MenuItem deleteSelectedMenuItem;
+    private CallArrayAdapter callArrayAdapter;
+    private List<Call> calls;
 
     @Override
     protected void onResume() {
         super.onResume();
         ListView callsListView = (ListView) findViewById(R.id.listView);
-        List<Call> calls = CallDao.getInstance().findAll(Call.CallDateComparator);
-        callsListView.setAdapter(new CallArrayAdapter(this, calls));
+        calls = CallDao.getInstance().findAll(Call.CallDateComparator);
+        callArrayAdapter = new CallArrayAdapter(this, calls);
+        callsListView.setAdapter(callArrayAdapter);
         System.out.println("RESUMED");
     }
 
@@ -35,12 +41,21 @@ public class MainActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_activity_menu, menu);
         enabledDisabledMenuItem = menu.findItem(R.id.action_on_off);
+        deleteSelectedMenuItem = menu.findItem(R.id.action_delete_selected);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         enabledDisabledMenuItem.setChecked(ConfigUtil.readBoolean(IS_ENABLED));
+        int selectedCount = callArrayAdapter.getCheckedCount();
+        String itemTitle;
+        if (selectedCount == 0) {
+            itemTitle = getString(R.string.menu_item_delete_selected);
+        } else {
+            itemTitle = getString(R.string.menu_item_delete_selected) + " (" + selectedCount + ")";
+        }
+        deleteSelectedMenuItem.setTitle(itemTitle);
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -51,13 +66,30 @@ public class MainActivity extends AppCompatActivity {
                 Intent newActivity = new Intent(this, SettingsActivity.class);
                 startActivity(newActivity);
                 return true;
+
             case R.id.action_on_off:
-                if (ConfigUtil.readBoolean(IS_ENABLED)) {
-                    ConfigUtil.writeValue(IS_ENABLED, "false");
-                } else {
-                    ConfigUtil.writeValue(IS_ENABLED, "true");
-                }
+                Boolean isEnabled = ConfigUtil.readBoolean(IS_ENABLED);
+                ConfigUtil.writeValue(IS_ENABLED, isEnabled.toString().toLowerCase());
                 return true;
+
+            case R.id.action_delete_selected:
+                String toastText;
+                if (callArrayAdapter.getCheckedCount() > 0) {
+                    List<Integer> checkedIndexes = callArrayAdapter.getCheckedStatuses();
+                    for (Integer i : checkedIndexes) {
+                        Call call = callArrayAdapter.getItem(i);
+                        File file = new File(call.getFilename());
+                        file.delete();
+                        callArrayAdapter.remove(call);
+                    }
+                    callArrayAdapter.resetCheckedItems();
+                    toastText = "Records deleted";
+                } else {
+                    toastText = "Nothing to delete";
+                }
+                Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_SHORT).show();
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
