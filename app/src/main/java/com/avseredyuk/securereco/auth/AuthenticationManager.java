@@ -1,6 +1,5 @@
 package com.avseredyuk.securereco.auth;
 
-import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
 
@@ -8,25 +7,29 @@ import com.avseredyuk.securereco.exception.AuthenticationException;
 import com.avseredyuk.securereco.exception.CryptoException;
 import com.avseredyuk.securereco.task.ChangeCallKeyTask;
 import com.avseredyuk.securereco.util.ConfigUtil;
-import com.avseredyuk.securereco.util.crypto.*;
+import com.avseredyuk.securereco.util.crypto.AES;
+import com.avseredyuk.securereco.util.crypto.RSA;
 
 import java.security.KeyPair;
 import java.util.Arrays;
 
 import javax.crypto.Cipher;
 
-import static com.avseredyuk.securereco.util.Constant.*;
+import static com.avseredyuk.securereco.util.Constant.PRIVATE_KEY_ENCODED;
+import static com.avseredyuk.securereco.util.Constant.PRIVATE_KEY_HMAC;
+import static com.avseredyuk.securereco.util.Constant.PRIVATE_KEY_IV;
+import static com.avseredyuk.securereco.util.Constant.PUBLIC_KEY;
 
 /**
  * Created by lenfer on 2/27/17.
  */
 public class AuthenticationManager {
-    byte[] hmacFromConfig;
-    byte[] privateKeyEncoded;
-    byte[] privateKeyIV;
-    byte[] privateKey;
-    byte[] hmacFromPassword;
-    KeyPair keyPair;
+    private byte[] hmacFromConfig;
+    private byte[] privateKeyEncoded;
+    private byte[] privateKeyIV;
+    private byte[] privateKey;
+    private byte[] hmacFromPassword;
+    private KeyPair keyPair;
 
     private void initAuth(String password) throws CryptoException {
         String hmacFromConfigString = ConfigUtil.readValue(PRIVATE_KEY_HMAC);

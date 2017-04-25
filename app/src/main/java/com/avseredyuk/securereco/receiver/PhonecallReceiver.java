@@ -137,27 +137,27 @@ public class PhonecallReceiver extends BroadcastReceiver {
         return new File(sampleDir, StringUtil.formatFileName(savedNumber, callStartTime, isIncoming));
     }
 
-    protected void onIncomingCallReceived(Context ctx, String number, Date start) {
+    private void onIncomingCallReceived(Context ctx, String number, Date start) {
         Log.d("onIncomingCallReceived", number + " " + start.toString());
     }
 
-    protected void onIncomingCallAnswered(Context ctx, String number, Date start) {
+    private void onIncomingCallAnswered(Context ctx, String number, Date start) {
         Log.d("onIncomingCallAnswered", number + " " + start.toString());
     }
 
-    protected void onIncomingCallEnded(Context ctx, String number, Date start, Date end) {
+    private void onIncomingCallEnded(Context ctx, String number, Date start, Date end) {
         Log.d("onIncomingCallEnded", number + " " + start.toString() + "\t" + end.toString());
     }
 
-    protected void onOutgoingCallStarted(Context ctx, String number, Date start) {
+    private void onOutgoingCallStarted(Context ctx, String number, Date start) {
         Log.d("onOutgoingCallStarted", number + " " + start.toString());
     }
 
-    protected void onOutgoingCallEnded(Context ctx, String number, Date start, Date end) {
+    private void onOutgoingCallEnded(Context ctx, String number, Date start, Date end) {
         Log.d("onOutgoingCallEnded", number + " " + start.toString() + "\t" + end.toString());
     }
 
-    protected void onMissedCall(Context ctx, String number, Date start) {
+    private void onMissedCall(Context ctx, String number, Date start) {
         Log.d("onMissedCall", number + " " + start.toString());
     }
 }

@@ -1,24 +1,12 @@
 package com.avseredyuk.securereco.service;
 
 import android.app.Service;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.media.MediaRecorder;
-import android.os.Environment;
 import android.os.IBinder;
-import android.os.ParcelFileDescriptor;
 import android.util.Log;
 
 import com.avseredyuk.securereco.receiver.PhonecallReceiver;
-
-import java.io.File;
-import java.io.FileDescriptor;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Date;
 
 /**
  * Created by lenfer on 2/11/17.

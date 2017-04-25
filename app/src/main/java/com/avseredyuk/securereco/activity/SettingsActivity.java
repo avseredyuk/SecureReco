@@ -10,7 +10,6 @@ import android.widget.Toast;
 
 import com.avseredyuk.securereco.R;
 import com.avseredyuk.securereco.auth.AuthenticationManager;
-import com.avseredyuk.securereco.exception.AuthenticationException;
 
 /**
  * Created by lenfer on 3/1/17.

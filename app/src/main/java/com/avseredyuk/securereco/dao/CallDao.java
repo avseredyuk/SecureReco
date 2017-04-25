@@ -33,7 +33,7 @@ import static com.avseredyuk.securereco.util.Constant.*;
  * Created by lenfer on 2/16/17.
  */
 public class CallDao {
-    private static CallDao instance = new CallDao();
+    private static final CallDao instance = new CallDao();
 
     private CallDao() {
     }
@@ -98,7 +98,7 @@ public class CallDao {
             OutputStream out = new FileOutputStream(yourFile);
             CipherInputStream inCipher = new CipherInputStream(is, aes.getCipher());
 
-            int numRead = 0;
+            int numRead;
             while ((numRead = inCipher.read(buf)) >= 0) {
                 out.write(buf, 0, numRead);
             }

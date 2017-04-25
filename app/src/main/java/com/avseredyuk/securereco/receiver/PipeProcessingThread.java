@@ -16,8 +16,8 @@ import static com.avseredyuk.securereco.util.Constant.*;
  * Created by lenfer on 2/15/17.
  */
 public class PipeProcessingThread extends Thread {
-    InputStream in;
-    FileOutputStream out;
+    private final InputStream in;
+    private final FileOutputStream out;
 
     PipeProcessingThread(InputStream in, FileOutputStream out) {
         this.in = in;

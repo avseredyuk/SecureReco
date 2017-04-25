@@ -1,28 +1,24 @@
 package com.avseredyuk.securereco.util;
 
 import android.os.Environment;
-import android.util.Base64;
 import android.util.Log;
-
-import com.avseredyuk.securereco.exception.CryptoException;
-import com.avseredyuk.securereco.util.crypto.*;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
-import java.security.KeyPair;
 
-import javax.crypto.Cipher;
-
-import static com.avseredyuk.securereco.util.Constant.*;
+import static com.avseredyuk.securereco.util.Constant.APP_DIRECTORY;
+import static com.avseredyuk.securereco.util.Constant.CONFIG_FILE;
+import static com.avseredyuk.securereco.util.Constant.PRIVATE_KEY_ENCODED;
+import static com.avseredyuk.securereco.util.Constant.PRIVATE_KEY_HMAC;
+import static com.avseredyuk.securereco.util.Constant.PUBLIC_KEY;
 
 /**
  * Created by lenfer on 2/15/17.

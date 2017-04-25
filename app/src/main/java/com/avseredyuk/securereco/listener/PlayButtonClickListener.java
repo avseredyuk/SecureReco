@@ -16,7 +16,7 @@ import com.avseredyuk.securereco.model.Call;
  * Created by lenfer on 2/26/17.
  */
 public class PlayButtonClickListener implements View.OnClickListener {
-    private Context context;
+    private final Context context;
 
     public PlayButtonClickListener(Context context) {
         this.context = context;

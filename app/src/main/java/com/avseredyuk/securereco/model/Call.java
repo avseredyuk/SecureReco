@@ -15,14 +15,7 @@ public class Call {
     public Call() {
     }
 
-    public Call(String callNumber, Date datetimeStarted, boolean isIncoming, String filename) {
-        this.callNumber = callNumber;
-        this.datetimeStarted = datetimeStarted;
-        this.isIncoming = isIncoming;
-        this.filename = filename;
-    }
-
-    public static Comparator<Call> CallDateComparator = new Comparator<Call>() {
+    public static final Comparator<Call> CallDateComparator = new Comparator<Call>() {
 
         public int compare(Call call1, Call call2) {
             return call2.getDatetimeStarted().compareTo(call1.getDatetimeStarted());

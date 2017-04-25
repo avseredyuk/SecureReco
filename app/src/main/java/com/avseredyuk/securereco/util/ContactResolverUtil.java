@@ -30,7 +30,7 @@ public class ContactResolverUtil {
             contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
         }
 
-        if(cursor != null && !cursor.isClosed()) {
+        if(!cursor.isClosed()) {
             cursor.close();
         }
         return contactName;
@@ -64,7 +64,7 @@ public class ContactResolverUtil {
         try {
             if (contactId != null) {
                 InputStream inputStream = ContactsContract.Contacts.openContactPhotoInputStream(context.getContentResolver(),
-                        ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, new Long(contactId)));
+                        ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, Long.valueOf(contactId)));
 
                 if (inputStream != null) {
                     photo = BitmapFactory.decodeStream(inputStream);

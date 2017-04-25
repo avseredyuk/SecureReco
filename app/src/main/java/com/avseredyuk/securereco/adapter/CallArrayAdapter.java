@@ -25,8 +25,8 @@ import java.util.List;
  * Created by lenfer on 2/15/17.
  */
 public class CallArrayAdapter extends ArrayAdapter<Call> {
-    private Context context;
-    private List<Integer> checkedItemsIndexes = new ArrayList<>();
+    private final Context context;
+    private final List<Integer> checkedItemsIndexes = new ArrayList<>();
 
     private static class ViewHolder {
         TextView firstLine;
