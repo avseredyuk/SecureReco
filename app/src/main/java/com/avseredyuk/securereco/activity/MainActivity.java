@@ -50,11 +50,12 @@ public class MainActivity extends AppCompatActivity {
         int selectedCount = callArrayAdapter.getCheckedCount();
         String itemTitle;
         if (selectedCount == 0) {
-            itemTitle = getString(R.string.menu_item_delete_selected);
+            deleteSelectedMenuItem.setVisible(false);
         } else {
             itemTitle = getString(R.string.menu_item_delete_selected) + " (" + selectedCount + ")";
+            deleteSelectedMenuItem.setTitle(itemTitle);
+            deleteSelectedMenuItem.setVisible(true);
         }
-        deleteSelectedMenuItem.setTitle(itemTitle);
         return super.onPrepareOptionsMenu(menu);
     }
 
