@@ -9,35 +9,53 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.ContactsContract;
 
-import com.avseredyuk.securereco.R;
+import com.avseredyuk.securereco.application.Application;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
 
 /**
  * Created by lenfer on 2/23/17.
  */
 public class ContactResolverUtil {
-    public static String getContactName(Context context, String phoneNumber) {
+    public static String getContactName(Context context, String number) {
+        Application application = (Application) context.getApplicationContext();
+        Map<String, String> contactNameCache = application.getContactNameCache();
+        String contactName = contactNameCache.get(number);
+        if (contactName != null) {
+            return contactName;
+        }
+
         ContentResolver cr = context.getContentResolver();
-        Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
+        Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(number));
         Cursor cursor = cr.query(uri, new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME}, null, null, null);
         if (cursor == null) {
-            return phoneNumber;
+            contactNameCache.put(number, number);
+            return number;
         }
-        String contactName = phoneNumber;
-        if(cursor.moveToFirst()) {
+        contactName = number;
+        if (cursor.moveToFirst()) {
             contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
         }
 
         if(!cursor.isClosed()) {
             cursor.close();
         }
+        contactNameCache.put(number, contactName);
         return contactName;
     }
 
     public static Bitmap retrieveContactPhoto(Context context, String number) {
-            ContentResolver contentResolver = context.getContentResolver();
+        Application application = (Application) context.getApplicationContext();
+        Map<String, Bitmap> contactPhotoCache = application.getContactPhotoCache();
+        Bitmap photo = contactPhotoCache.get(number);
+        if (photo != null) {
+            return photo;
+        }
+
+        ContentResolver contentResolver = context.getContentResolver();
+
         String contactId = null;
         Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(number));
 
@@ -58,8 +76,7 @@ public class ContactResolverUtil {
             cursor.close();
         }
 
-        Bitmap photo = BitmapFactory.decodeResource(context.getResources(),
-                R.drawable.avatar_unknown);
+        photo = contactPhotoCache.get(null);
 
         try {
             if (contactId != null) {
@@ -75,6 +92,7 @@ public class ContactResolverUtil {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        contactPhotoCache.put(number, photo);
         return photo;
     }
 }
