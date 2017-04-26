@@ -1,5 +1,6 @@
 package com.avseredyuk.securereco.auth;
 
+import android.content.Context;
 import android.util.Base64;
 import android.util.Log;
 
@@ -71,16 +72,18 @@ public class AuthenticationManager {
         }
     }
 
-    public boolean regenerateKeyPair(String password) {
+    public boolean regenerateKeyPair(String password, Context context) {
         try {
             initAuth(password);
+
+//            makeKeys(password);
 
             //makeKeys or so
             // we should replace keys in config before doing asynctask
 
 
 
-            ChangeCallKeyTask workerTask = new ChangeCallKeyTask();
+            ChangeCallKeyTask workerTask = new ChangeCallKeyTask(context);
             workerTask.execute();
 
             return true;

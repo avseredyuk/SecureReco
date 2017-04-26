@@ -55,6 +55,7 @@ public class SettingsActivity extends AppCompatActivity {
         });
 
         final EditText currentPasswordEdit = (EditText) findViewById(R.id.regenCurrentPasswordEdit);
+        //todo: check whether asynctask is already running
         Button regenerateRSAKeysButton = (Button) findViewById(R.id.regenButton);
         regenerateRSAKeysButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,8 +63,9 @@ public class SettingsActivity extends AppCompatActivity {
                 String currentPassword = currentPasswordEdit.getText().toString();
                 if (currentPassword.length() > 0) {
                     AuthenticationManager authMan = new AuthenticationManager();
-                    if (authMan.regenerateKeyPair(currentPassword)) {
-                        Toast.makeText(context, "Keys regenerated", Toast.LENGTH_SHORT).show();
+                    if (authMan.regenerateKeyPair(currentPassword, context)) {
+                        Toast.makeText(context, "Keys regeneration started", Toast.LENGTH_SHORT).show();
+                        //todo: disable this button
                         //finish();
                     } else {
                         Toast.makeText(context, "Wrong password", Toast.LENGTH_SHORT).show();
