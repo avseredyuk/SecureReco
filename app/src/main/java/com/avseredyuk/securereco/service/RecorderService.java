@@ -1,6 +1,7 @@
 package com.avseredyuk.securereco.service;
 
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.IBinder;
@@ -14,6 +15,7 @@ import com.avseredyuk.securereco.receiver.PhonecallReceiver;
 public class RecorderService extends Service {
     private static final String ACTION_IN = "android.intent.action.PHONE_STATE";
     private static final String ACTION_OUT = "android.intent.action.NEW_OUTGOING_CALL";
+    private BroadcastReceiver phoneCallReciever;
 
     @Override
     public IBinder onBind(Intent arg0) {
@@ -25,6 +27,7 @@ public class RecorderService extends Service {
     public void onDestroy() {
         Log.d("service", "destroy");
         super.onDestroy();
+        this.unregisterReceiver(phoneCallReciever);
     }
 
     @Override
@@ -33,8 +36,11 @@ public class RecorderService extends Service {
         final IntentFilter filter = new IntentFilter();
         filter.addAction(ACTION_OUT);
         filter.addAction(ACTION_IN);
-        this.registerReceiver(new PhonecallReceiver(), filter);
+        phoneCallReciever = new PhonecallReceiver();
+        this.registerReceiver(phoneCallReciever, filter);
         return super.onStartCommand(intent, flags, startId);
     }
+
+
 
 }
