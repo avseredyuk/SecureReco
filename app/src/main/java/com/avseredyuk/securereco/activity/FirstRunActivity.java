@@ -21,6 +21,7 @@ import static com.avseredyuk.securereco.util.Constant.*;
 public class FirstRunActivity extends AppCompatActivity {
     private Context context;
 
+    //todo: refactor this trash
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

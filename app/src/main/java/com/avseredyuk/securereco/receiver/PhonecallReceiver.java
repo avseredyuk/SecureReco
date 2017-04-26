@@ -53,6 +53,7 @@ public class PhonecallReceiver extends BroadcastReceiver {
         }
     }
 
+    //todo: refactor this trash
     private void onCallStateChanged(Context context, int state, String number) {
         if (lastState == state) {
             return;

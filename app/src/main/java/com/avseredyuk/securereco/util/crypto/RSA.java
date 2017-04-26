@@ -54,7 +54,6 @@ public class RSA {
         } catch (NoSuchAlgorithmException e) {
             throw new CryptoException(e);
         }
-
     }
 
     public byte[] doFinal(byte[] input) throws CryptoException{

@@ -17,6 +17,7 @@ import com.avseredyuk.securereco.auth.AuthenticationManager;
 public class SettingsActivity extends AppCompatActivity {
     private Context context;
 
+    //todo: refactor this trash
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

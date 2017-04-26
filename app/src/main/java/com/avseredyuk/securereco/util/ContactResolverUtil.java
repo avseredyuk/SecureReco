@@ -19,6 +19,8 @@ import java.util.Map;
  * Created by lenfer on 2/23/17.
  */
 public class ContactResolverUtil {
+
+    //todo: refactor this trash
     public static String getContactName(Context context, String number) {
         Application application = (Application) context.getApplicationContext();
         Map<String, String> contactNameCache = application.getContactNameCache();
@@ -26,7 +28,6 @@ public class ContactResolverUtil {
         if (contactName != null) {
             return contactName;
         }
-
         ContentResolver cr = context.getContentResolver();
         Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(number));
         Cursor cursor = cr.query(uri, new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME}, null, null, null);
@@ -38,7 +39,6 @@ public class ContactResolverUtil {
         if (cursor.moveToFirst()) {
             contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
         }
-
         if(!cursor.isClosed()) {
             cursor.close();
         }
@@ -46,6 +46,7 @@ public class ContactResolverUtil {
         return contactName;
     }
 
+    //todo: refactor this trash
     public static Bitmap retrieveContactPhoto(Context context, String number) {
         Application application = (Application) context.getApplicationContext();
         Map<String, Bitmap> contactPhotoCache = application.getContactPhotoCache();
@@ -82,13 +83,11 @@ public class ContactResolverUtil {
             if (contactId != null) {
                 InputStream inputStream = ContactsContract.Contacts.openContactPhotoInputStream(context.getContentResolver(),
                         ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, Long.valueOf(contactId)));
-
                 if (inputStream != null) {
                     photo = BitmapFactory.decodeStream(inputStream);
                     inputStream.close();
                 }
             }
-
         } catch (IOException e) {
             e.printStackTrace();
         }
