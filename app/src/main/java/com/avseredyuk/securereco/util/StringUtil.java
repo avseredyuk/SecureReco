@@ -17,16 +17,29 @@ import static com.avseredyuk.securereco.util.Constant.CALL_LOGS_DIRECTORY;
  * Created by lenfer on 2/15/17.
  */
 public class StringUtil {
+    private static ThreadLocal<SimpleDateFormat> simpleDateFormatFileName = new ThreadLocal<SimpleDateFormat>() {
+        @Override
+        protected SimpleDateFormat initialValue() {
+            return new SimpleDateFormat("dd_MM_yyyy_HH_mm_ss");
+        }
+    };
+    private static ThreadLocal<SimpleDateFormat> simpleDateFormatDate = new ThreadLocal<SimpleDateFormat>() {
+        @Override
+        protected SimpleDateFormat initialValue() {
+            return new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        }
+    };
+
     public static String formatFileName(String callNumber, Date datetimeStarted, boolean isIncoming) {
         return String.format("%s_%s_%s%s",
-                new SimpleDateFormat("dd_MM_yyyy_HH_mm_ss").format(datetimeStarted),
+                simpleDateFormatFileName.get().format(datetimeStarted),
                 callNumber,
                 isIncoming ? "I" : "O",
                 ".bin");
     }
 
     public static String formatDate(Date date) {
-        return new SimpleDateFormat("dd/MM/yyyy HH:mm").format(date);
+        return simpleDateFormatDate.get().format(date);
     }
 
     public static Call getCallFromFilename(String filename) throws ParserException{
