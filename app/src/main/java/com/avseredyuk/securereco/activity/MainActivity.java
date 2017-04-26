@@ -79,8 +79,9 @@ public class MainActivity extends AppCompatActivity {
                     for (Integer i : checkedIndexes) {
                         Call call = callArrayAdapter.getItem(i);
                         File file = new File(call.getFilename());
-                        file.delete();
-                        callArrayAdapter.remove(call);
+                        if (file.delete()) {
+                            callArrayAdapter.remove(call);
+                        }
                     }
                     callArrayAdapter.resetCheckedItems();
                     toastText = "Records deleted";

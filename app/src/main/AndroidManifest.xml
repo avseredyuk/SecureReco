@@ -53,13 +53,14 @@
             android:parentActivityName=".activity.MainActivity" >
         </activity>
 
-    <receiver
+        <receiver
             android:name=".receiver.StartupReceiver"
             android:label="StartMyServiceAtBootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+
         <service android:name=".service.RecorderService"/>
     </application>
 
