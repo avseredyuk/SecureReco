@@ -110,7 +110,8 @@ public class AuthenticationManager {
         return false;
     }
 
-    public byte[] authenticate(String password) throws AuthenticationException {
+    @Deprecated
+    public byte[] authenticateOld(String password) throws AuthenticationException {
         try {
             initAuth(password);
 
@@ -123,4 +124,16 @@ public class AuthenticationManager {
             throw new AuthenticationException("Exception during authentication");
         }
     }
+
+    public void authenticate(String password) throws AuthenticationException {
+        try {
+            initAuth(password);
+            if (!Arrays.equals(hmacFromConfig, hmacFromPassword)) {
+                throw new AuthenticationException("Exception during authentication");
+            }
+        } catch (CryptoException e) {
+            throw new AuthenticationException("Exception during authentication");
+        }
+    }
+
 }

@@ -78,7 +78,7 @@ public class CallDao {
 
         try {
             AuthenticationManager authMan = new AuthenticationManager();
-            privateKey = authMan.authenticate(password);
+            privateKey = authMan.authenticateOld(password);
             RSA rsa = new RSA();
             rsa.initPrivateKey(privateKey);
 

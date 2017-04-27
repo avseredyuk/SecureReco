@@ -73,5 +73,25 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             }
         });
+
+        System.out.println("CREATED");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        System.out.println("RESUMED");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        System.out.println("PAUSED");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        System.out.println("DESTROYED");
     }
 }
