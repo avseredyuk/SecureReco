@@ -62,6 +62,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.action_authenticate:
+
+                return true;
+
             case R.id.action_show_settings:
                 Intent newActivity = new Intent(this, SettingsActivity.class);
                 startActivity(newActivity);
