@@ -3,11 +3,10 @@ package com.avseredyuk.securereco.dao;
 import android.os.Environment;
 import android.util.Log;
 
-import com.avseredyuk.securereco.exception.AuthenticationException;
+import com.avseredyuk.securereco.auth.AuthenticationManager;
 import com.avseredyuk.securereco.exception.CryptoException;
 import com.avseredyuk.securereco.exception.ParserException;
 import com.avseredyuk.securereco.model.Call;
-import com.avseredyuk.securereco.auth.AuthenticationManager;
 import com.avseredyuk.securereco.util.IOUtil;
 import com.avseredyuk.securereco.util.StringUtil;
 import com.avseredyuk.securereco.util.crypto.AES;
@@ -27,7 +26,8 @@ import java.util.List;
 
 import javax.crypto.CipherInputStream;
 
-import static com.avseredyuk.securereco.util.Constant.*;
+import static com.avseredyuk.securereco.util.Constant.BUF_SIZE;
+import static com.avseredyuk.securereco.util.Constant.CALL_LOGS_DIRECTORY;
 
 /**
  * Created by lenfer on 2/16/17.
@@ -68,7 +68,7 @@ public class CallDao {
     }
 
     //TODO player ???
-    public boolean play(Call call, String password)  {
+    public boolean play(Call call, AuthenticationManager authMan)  {
         byte[] content;
         byte[] iv = new byte[16];
         byte[] key = new byte[32];
@@ -77,8 +77,7 @@ public class CallDao {
         byte[] privateKey;
 
         try {
-            AuthenticationManager authMan = new AuthenticationManager();
-            privateKey = authMan.authenticateOld(password);
+            privateKey = authMan.getPrivateKey();
             RSA rsa = new RSA();
             rsa.initPrivateKey(privateKey);
 
@@ -108,9 +107,6 @@ public class CallDao {
 
             return true;
 
-        } catch (AuthenticationException e) {
-            Log.e(getClass().getSimpleName(),
-                    "Exception while authentication", e);
         } catch (CryptoException e) {
             Log.e(getClass().getSimpleName(),
                     "Exception at crypto stuff", e);

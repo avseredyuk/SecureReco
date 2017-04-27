@@ -110,21 +110,6 @@ public class AuthenticationManager {
         return false;
     }
 
-    @Deprecated
-    public byte[] authenticateOld(String password) throws AuthenticationException {
-        try {
-            initAuth(password);
-
-            if (Arrays.equals(hmacFromConfig, hmacFromPassword)) {
-                return privateKey;
-            } else {
-                throw new AuthenticationException("Exception during authentication");
-            }
-        } catch (CryptoException e) {
-            throw new AuthenticationException("Exception during authentication");
-        }
-    }
-
     public void authenticate(String password) throws AuthenticationException {
         try {
             initAuth(password);
@@ -134,6 +119,10 @@ public class AuthenticationManager {
         } catch (CryptoException e) {
             throw new AuthenticationException("Exception during authentication");
         }
+    }
+
+    public byte[] getPrivateKey() {
+        return privateKey;
     }
 
 }
