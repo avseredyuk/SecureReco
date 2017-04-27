@@ -5,6 +5,7 @@
     <string name="start_button">Start!</string>
     <string name="text_greeting">Hello! Welcome!</string>
     <string name="menu_item_authenticate">Authenticate</string>
+    <string name="menu_item_deauthenticate">De-authenticate</string>
     <string name="menu_item_settings">Settings</string>
     <string name="menu_item_on_off">Enabled</string>
     <string name="menu_item_delete_selected">Delete</string>

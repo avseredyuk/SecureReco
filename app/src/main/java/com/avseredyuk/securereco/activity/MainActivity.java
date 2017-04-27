@@ -68,8 +68,10 @@ public class MainActivity extends AppCompatActivity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem deleteSelectedMenuItem = menu.findItem(R.id.action_delete_selected);
         MenuItem enabledDisabledMenuItem = menu.findItem(R.id.action_on_off);
+        MenuItem authenticateMenuItem = menu.findItem(R.id.action_authenticate);
 
         enabledDisabledMenuItem.setChecked(ConfigUtil.readBoolean(IS_ENABLED));
+
         int selectedCount = callArrayAdapter.getCheckedCount();
         String itemTitle;
         if (selectedCount == 0) {
@@ -79,6 +81,15 @@ public class MainActivity extends AppCompatActivity {
             deleteSelectedMenuItem.setTitle(itemTitle);
             deleteSelectedMenuItem.setVisible(true);
         }
+
+        String authItemTitle;
+        if (((Application) getApplicationContext()).isAuthenticated()) {
+            authItemTitle = getString(R.string.menu_item_deauthenticate);
+        } else {
+            authItemTitle = getString(R.string.menu_item_authenticate);
+        }
+        authenticateMenuItem.setTitle(authItemTitle);
+
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -87,44 +98,58 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_authenticate:
-                LayoutInflater li = LayoutInflater.from(this);
-                View promptsView = li.inflate(R.layout.password_prompt, null);
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-                alertDialogBuilder.setView(promptsView);
-                final EditText userInput = (EditText) promptsView
-                        .findViewById(R.id.editTextDialogUserInput);
-                alertDialogBuilder
-                        .setCancelable(false)
-                        .setPositiveButton("OK",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,int id) {
-                                        String password = userInput.getText().toString();
-                                        try {
-                                            AuthenticationManager authMan = new AuthenticationManager();
-                                            authMan.authenticate(password);
-                                            ((Application) getApplicationContext()).setAuthMan(authMan);
+                if (((Application) getApplicationContext()).isAuthenticated()) {
+                    ((Application) getApplicationContext()).setAuthMan(null);
 
-                                            ActionBar actionBar = getSupportActionBar();
-                                            if (actionBar != null) {
-                                                actionBar.setBackgroundDrawable(
-                                                        new ColorDrawable(
-                                                                getResources().getColor(R.color.colorAuthenticated)));
+                    ActionBar actionBar = getSupportActionBar();
+                    if (actionBar != null) {
+                        actionBar.setBackgroundDrawable(
+                                new ColorDrawable(
+                                        getResources().getColor(R.color.colorPrimary)));
+                    }
+
+                    Toast.makeText(getApplication(), "De-authenticated", Toast.LENGTH_SHORT).show();
+
+                } else {
+                    LayoutInflater li = LayoutInflater.from(this);
+                    View promptsView = li.inflate(R.layout.password_prompt, null);
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+                    alertDialogBuilder.setView(promptsView);
+                    final EditText userInput = (EditText) promptsView
+                            .findViewById(R.id.editTextDialogUserInput);
+                    alertDialogBuilder
+                            .setCancelable(false)
+                            .setPositiveButton("OK",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog,int id) {
+                                            String password = userInput.getText().toString();
+                                            try {
+                                                AuthenticationManager authMan = new AuthenticationManager();
+                                                authMan.authenticate(password);
+                                                ((Application) getApplicationContext()).setAuthMan(authMan);
+
+                                                ActionBar actionBar = getSupportActionBar();
+                                                if (actionBar != null) {
+                                                    actionBar.setBackgroundDrawable(
+                                                            new ColorDrawable(
+                                                                    getResources().getColor(R.color.colorAuthenticated)));
+                                                }
+
+                                                Toast.makeText(getApplication(), "Authenticated", Toast.LENGTH_SHORT).show();
+                                            } catch (AuthenticationException e) {
+                                                Toast.makeText(getApplication(), "Error", Toast.LENGTH_SHORT).show();
                                             }
-
-                                            Toast.makeText(getApplication(), "Authenticated", Toast.LENGTH_SHORT).show();
-                                        } catch (AuthenticationException e) {
-                                            Toast.makeText(getApplication(), "Error", Toast.LENGTH_SHORT).show();
                                         }
-                                    }
-                                })
-                        .setNegativeButton("Cancel",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        dialog.cancel();
-                                    }
-                                });
-                AlertDialog alertDialog = alertDialogBuilder.create();
-                alertDialog.show();
+                                    })
+                            .setNegativeButton("Cancel",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            dialog.cancel();
+                                        }
+                                    });
+                    AlertDialog alertDialog = alertDialogBuilder.create();
+                    alertDialog.show();
+                }
                 return true;
 
             case R.id.action_show_settings:
