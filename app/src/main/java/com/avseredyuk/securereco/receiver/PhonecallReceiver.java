@@ -1,5 +1,7 @@
 package com.avseredyuk.securereco.receiver;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +11,7 @@ import android.os.ParcelFileDescriptor;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import com.avseredyuk.securereco.R;
 import com.avseredyuk.securereco.util.ConfigUtil;
 import com.avseredyuk.securereco.util.StringUtil;
 
@@ -35,7 +38,7 @@ public class PhonecallReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (ConfigUtil.readBoolean(IS_ENABLED)) {
-            if (intent.getAction().equals("android.intent.action.NEW_OUTGOING_CALL")) {
+            if ("android.intent.action.NEW_OUTGOING_CALL".equals(intent.getAction())) {
                 savedNumber = intent.getExtras().getString("android.intent.extra.PHONE_NUMBER");
             } else {
                 String stateStr = intent.getExtras().getString(TelephonyManager.EXTRA_STATE);
@@ -81,6 +84,7 @@ public class PhonecallReceiver extends BroadcastReceiver {
             case TelephonyManager.CALL_STATE_IDLE:
                 if (lastState == TelephonyManager.CALL_STATE_RINGING) {
                     onMissedCall(context, savedNumber, callStartTime);
+                    break;
                 } else if (isIncoming) {
                     stopRecording();
                     onIncomingCallEnded(context, savedNumber, callStartTime, new Date());
@@ -88,6 +92,16 @@ public class PhonecallReceiver extends BroadcastReceiver {
                     stopRecording();
                     onOutgoingCallEnded(context, savedNumber, callStartTime, new Date());
                 }
+
+                Notification notification = new Notification.Builder(context)
+                        .setContentTitle("New call recorded")
+                        .setContentText("Click to open")
+                        .setSmallIcon(R.drawable.button_play)
+                        .build();
+
+                NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+                notificationManager.notify(12345, notification);
+
                 break;
         }
         lastState = state;
