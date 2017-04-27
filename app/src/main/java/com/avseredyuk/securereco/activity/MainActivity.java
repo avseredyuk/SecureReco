@@ -21,8 +21,6 @@ import java.util.List;
 import static com.avseredyuk.securereco.util.Constant.IS_ENABLED;
 
 public class MainActivity extends AppCompatActivity {
-    private MenuItem enabledDisabledMenuItem;
-    private MenuItem deleteSelectedMenuItem;
     private CallArrayAdapter callArrayAdapter;
 
     @Override
@@ -39,13 +37,14 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_activity_menu, menu);
-        enabledDisabledMenuItem = menu.findItem(R.id.action_on_off);
-        deleteSelectedMenuItem = menu.findItem(R.id.action_delete_selected);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem deleteSelectedMenuItem = menu.findItem(R.id.action_delete_selected);
+        MenuItem enabledDisabledMenuItem = menu.findItem(R.id.action_on_off);
+
         enabledDisabledMenuItem.setChecked(ConfigUtil.readBoolean(IS_ENABLED));
         int selectedCount = callArrayAdapter.getCheckedCount();
         String itemTitle;
@@ -69,8 +68,9 @@ public class MainActivity extends AppCompatActivity {
                 return true;
 
             case R.id.action_on_off:
-                Boolean isEnabled = ConfigUtil.readBoolean(IS_ENABLED);
-                ConfigUtil.writeValue(IS_ENABLED, isEnabled.toString().toLowerCase());
+                Boolean isEnabledPrevious = ConfigUtil.readBoolean(IS_ENABLED);
+                Boolean isEnabledNew = !isEnabledPrevious;
+                ConfigUtil.writeValue(IS_ENABLED, isEnabledNew.toString().toLowerCase());
                 return true;
 
             case R.id.action_delete_selected:
