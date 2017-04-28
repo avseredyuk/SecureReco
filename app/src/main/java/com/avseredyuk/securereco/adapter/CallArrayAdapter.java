@@ -1,7 +1,6 @@
 package com.avseredyuk.securereco.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,7 +63,10 @@ public class CallArrayAdapter extends ArrayAdapter<Call> {
         }
 
         viewHolder.firstLine.setText(ContactResolverUtil.getContactName(context, call.getCallNumber()));
-        viewHolder.firstLine.setTextColor(call.isIncoming() ? Color.parseColor("#039F00") : Color.BLUE);
+        viewHolder.firstLine.setTextColor(
+                call.isIncoming()
+                        ? context.getResources().getColor(R.color.colorCallIncoming)
+                        : context.getResources().getColor(R.color.colorCallOutgoing));
         viewHolder.secondLine.setText(call.getCallNumber());
         viewHolder.thirdLine.setText(StringUtil.formatDate(call.getDatetimeStarted()));
         viewHolder.imageView.setImageBitmap(ContactResolverUtil.retrieveContactPhoto(context, call.getCallNumber()));
