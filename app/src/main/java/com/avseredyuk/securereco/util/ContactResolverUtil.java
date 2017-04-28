@@ -20,6 +20,9 @@ import java.util.Map;
  */
 public class ContactResolverUtil {
 
+    private ContactResolverUtil() {
+    }
+
     //todo: refactor this trash
     public static String getContactName(Context context, String number) {
         Application application = (Application) context.getApplicationContext();

@@ -49,14 +49,6 @@ public class AuthenticationManager {
         hmacFromPassword = aes.getHMAC(privateKey);
     }
 
-    private void protectPrivateKey(String password, byte[] localPrivateKey) throws CryptoException {
-        AES aes = new AES();
-        aes.init(password, Cipher.ENCRYPT_MODE);
-        privateKeyEncoded = aes.doFinal(localPrivateKey);
-        hmacFromPassword = aes.getHMAC(localPrivateKey);
-        privateKeyIV = aes.getCipher().getIV();
-    }
-
     public void makeKeys(String password) {
         try {
             keyPair = RSA.generateKeyPair();
@@ -119,6 +111,14 @@ public class AuthenticationManager {
         } catch (CryptoException e) {
             throw new AuthenticationException("Exception during authentication");
         }
+    }
+
+    private void protectPrivateKey(String password, byte[] localPrivateKey) throws CryptoException {
+        AES aes = new AES();
+        aes.init(password, Cipher.ENCRYPT_MODE);
+        privateKeyEncoded = aes.doFinal(localPrivateKey);
+        hmacFromPassword = aes.getHMAC(localPrivateKey);
+        privateKeyIV = aes.getCipher().getIV();
     }
 
     public byte[] getPrivateKey() {

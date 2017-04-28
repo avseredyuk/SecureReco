@@ -69,43 +69,45 @@ public class CallDao {
 
     //TODO player ???
     public boolean play(Call call, AuthenticationManager authMan)  {
-        byte[] content;
+        byte[] fileByteArray;
         byte[] iv = new byte[16];
         byte[] key = new byte[32];
         byte[] headerEncrypted = new byte[128];
         byte[] buf = new byte[BUF_SIZE];
         byte[] privateKey;
 
+        InputStream byteInputStream = null;
+        CipherInputStream cipherInputStream = null;
+        OutputStream fileOutputStream = null;
         try {
             privateKey = authMan.getPrivateKey();
             RSA rsa = new RSA();
             rsa.initPrivateKey(privateKey);
 
-            content = IOUtil.readFile(call.getFilename());
+            fileByteArray = IOUtil.readFile(call.getFilename());
 
             File yourFile = new File("/storage/emulated/0/SecureRecoApp/file.amr");
 
-            InputStream is = new ByteArrayInputStream(content);
-            is.read(headerEncrypted);
-            byte[] fileHeader = rsa.doFinal(headerEncrypted);
-            key = Arrays.copyOfRange(fileHeader, 0, key.length);
-            iv = Arrays.copyOfRange(fileHeader, key.length, key.length + iv.length);
+            byteInputStream = new ByteArrayInputStream(fileByteArray);
+            int readCount = byteInputStream.read(headerEncrypted);
+            if (readCount == headerEncrypted.length) {
+                byte[] fileHeader = rsa.doFinal(headerEncrypted);
+                key = Arrays.copyOfRange(fileHeader, 0, key.length);
+                iv = Arrays.copyOfRange(fileHeader, key.length, key.length + iv.length);
 
-            AES aes = new AES();
-            aes.init(key, iv);
+                AES aes = new AES();
+                aes.init(key, iv);
 
-            OutputStream out = new FileOutputStream(yourFile);
-            CipherInputStream inCipher = new CipherInputStream(is, aes.getCipher());
+                fileOutputStream = new FileOutputStream(yourFile);
+                cipherInputStream = new CipherInputStream(byteInputStream, aes.getCipher());
 
-            int numRead;
-            while ((numRead = inCipher.read(buf)) >= 0) {
-                out.write(buf, 0, numRead);
+                int numRead;
+                while ((numRead = cipherInputStream.read(buf)) >= 0) {
+                    fileOutputStream.write(buf, 0, numRead);
+                }
+
+                return true;
             }
-
-            inCipher.close();
-            out.close();
-
-            return true;
 
         } catch (CryptoException e) {
             Log.e(getClass().getSimpleName(),
@@ -113,6 +115,21 @@ public class CallDao {
         } catch (IOException e) {
             Log.e(getClass().getSimpleName(),
                     "Exception at playing decrypted call file", e);
+        } finally {
+            try {
+                if (fileOutputStream != null) {
+                    fileOutputStream.close();
+                }
+                if (byteInputStream != null) {
+                    byteInputStream.close();
+                }
+                if (cipherInputStream != null) {
+                    cipherInputStream.close();
+                }
+            } catch (IOException e) {
+                Log.e(getClass().getSimpleName(),
+                        "Exception at close stream while plaing call file", e);
+            }
         }
         return false;
     }

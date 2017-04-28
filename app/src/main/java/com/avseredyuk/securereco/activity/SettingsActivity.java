@@ -80,6 +80,10 @@ public class SettingsActivity extends AppCompatActivity {
                                 getString(R.string.toast_wrong_password),
                                 Toast.LENGTH_SHORT).show();
                     }
+                } else {
+                    Toast.makeText(context,
+                            getString(R.string.toast_invalid_input),
+                            Toast.LENGTH_SHORT).show();
                 }
             }
         });

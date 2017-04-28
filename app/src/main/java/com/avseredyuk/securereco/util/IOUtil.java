@@ -13,6 +13,9 @@ import java.io.UnsupportedEncodingException;
  */
 public class IOUtil {
 
+    private IOUtil() {
+    }
+
     public static byte[] readFile(String filename) throws IOException {
         return readFile(new File(filename));
     }

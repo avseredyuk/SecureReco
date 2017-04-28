@@ -34,11 +34,7 @@ public class FirstRunActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 EditText input = (EditText) findViewById(R.id.editText);
-                if (input.getText().length() == 0) {
-                    Toast.makeText(context,
-                            getString(R.string.toast_please_enter_password),
-                            Toast.LENGTH_LONG).show();
-                } else {
+                if (input.getText().length() > 0) {
                     String password = input.getText().toString();
                     AuthenticationManager authMan = new AuthenticationManager();
                     authMan.makeKeys(password);
@@ -48,6 +44,10 @@ public class FirstRunActivity extends AppCompatActivity {
                     ConfigUtil.writeValue(IS_ENABLED, Boolean.toString(true));
 
                     startActivity(new Intent(context, MainActivity.class));
+                } else {
+                    Toast.makeText(context,
+                            getString(R.string.toast_please_enter_password),
+                            Toast.LENGTH_LONG).show();
                 }
             }
         });

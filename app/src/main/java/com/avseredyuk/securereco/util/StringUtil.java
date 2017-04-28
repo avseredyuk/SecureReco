@@ -30,6 +30,9 @@ public class StringUtil {
         }
     };
 
+    private StringUtil() {
+    }
+
     public static String formatFileName(String callNumber, Date datetimeStarted, boolean isIncoming) {
         return String.format("%s_%s_%s%s",
                 simpleDateFormatFileName.get().format(datetimeStarted),

@@ -25,6 +25,9 @@ import static com.avseredyuk.securereco.util.Constant.PUBLIC_KEY;
  */
 public class ConfigUtil {
 
+    private ConfigUtil() {
+    }
+
     public static boolean isConfigValid() {
         File sampleDir = new File(Environment.getExternalStorageDirectory(), "/" + APP_DIRECTORY + "/");
         if (sampleDir.exists()) {
