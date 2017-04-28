@@ -2,6 +2,7 @@ package com.avseredyuk.securereco.receiver;
 
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +13,7 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.avseredyuk.securereco.R;
+import com.avseredyuk.securereco.activity.MainActivity;
 import com.avseredyuk.securereco.util.ConfigUtil;
 import com.avseredyuk.securereco.util.StringUtil;
 
@@ -93,18 +95,31 @@ public class PhonecallReceiver extends BroadcastReceiver {
                     onOutgoingCallEnded(context, savedNumber, callStartTime, new Date());
                 }
 
-                Notification notification = new Notification.Builder(context)
-                        .setContentTitle("New call recorded")
-                        .setContentText("Click to open")
-                        .setSmallIcon(R.drawable.button_play)
-                        .build();
-
-                NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-                notificationManager.notify(12345, notification);
+                doNotificationStuff(context);
 
                 break;
         }
         lastState = state;
+    }
+
+    private void doNotificationStuff(Context context) {
+        PendingIntent myPendingIntent =
+                PendingIntent.getActivity(context,
+                        0,
+                        new Intent(context, MainActivity.class),
+                        0);
+
+        Notification notification = new Notification.Builder(context)
+                .setContentTitle("New call recorded")
+                .setContentText("Click to open")
+                .setSmallIcon(R.drawable.button_play)
+                .setContentIntent(myPendingIntent)
+                .setAutoCancel(true)
+                .build();
+
+        NotificationManager notificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(NOTIFICATION_NEW_RECORD_ID, notification);
     }
 
     private void startRecording() {

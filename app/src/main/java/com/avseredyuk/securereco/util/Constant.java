@@ -13,4 +13,5 @@ public class Constant {
     public static final String PRIVATE_KEY_IV = "privateKeyIV";
     public static final String IS_ENABLED = "isEnabled";
     public static final int BUF_SIZE = 8192;
+    public static final int NOTIFICATION_NEW_RECORD_ID = 61616;
 }
