@@ -40,8 +40,8 @@ public class PhonecallReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (ConfigUtil.readBoolean(IS_ENABLED)) {
-            if (ANDROID_INTENT_ACTION_NEW_OUTGOING_CALL.equals(intent.getAction())) {
-                savedNumber = intent.getExtras().getString(ANDROID_INTENT_EXTRA_PHONE_NUMBER);
+            if (Intent.ACTION_NEW_OUTGOING_CALL.equals(intent.getAction())) {
+                savedNumber = intent.getExtras().getString(Intent.EXTRA_PHONE_NUMBER);
             } else {
                 String stateStr = intent.getExtras().getString(TelephonyManager.EXTRA_STATE);
                 String number = intent.getExtras().getString(TelephonyManager.EXTRA_INCOMING_NUMBER);

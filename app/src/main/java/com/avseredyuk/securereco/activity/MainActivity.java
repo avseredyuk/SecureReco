@@ -97,110 +97,130 @@ public class MainActivity extends AppCompatActivity {
         return super.onPrepareOptionsMenu(menu);
     }
 
-    //todo: refactor this trash
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_authenticate:
-                if (((Application) getApplicationContext()).isAuthenticated()) {
-                    ((Application) getApplicationContext()).setAuthMan(null);
-
-                    ActionBar actionBar = getSupportActionBar();
-                    if (actionBar != null) {
-                        actionBar.setBackgroundDrawable(
-                                new ColorDrawable(
-                                        getResources().getColor(R.color.colorPrimary)));
-                    }
-
-                    Toast.makeText(getApplication(),
-                            getString(R.string.toast_deauthenticated),
-                            Toast.LENGTH_SHORT).show();
-
-                } else {
-                    LayoutInflater li = LayoutInflater.from(this);
-                    View promptsView = li.inflate(R.layout.password_prompt, null);
-                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-                    alertDialogBuilder.setView(promptsView);
-                    final EditText userInput = (EditText) promptsView
-                            .findViewById(R.id.editTextDialogUserInput);
-                    alertDialogBuilder
-                            .setCancelable(false)
-                            .setPositiveButton(getString(R.string.password_dialog_button_ok),
-                                    new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog,int id) {
-                                            String password = userInput.getText().toString();
-                                            try {
-                                                AuthenticationManager authMan = new AuthenticationManager();
-                                                authMan.authenticate(password);
-                                                ((Application) getApplicationContext()).setAuthMan(authMan);
-
-                                                ActionBar actionBar = getSupportActionBar();
-                                                if (actionBar != null) {
-                                                    actionBar.setBackgroundDrawable(
-                                                            new ColorDrawable(
-                                                                    getResources().getColor(R.color.colorAuthenticated)));
-                                                }
-
-                                                Toast.makeText(getApplication(),
-                                                        getString(R.string.toast_authenticated),
-                                                        Toast.LENGTH_SHORT).show();
-                                            } catch (AuthenticationException e) {
-                                                Toast.makeText(getApplication(),
-                                                        getString(R.string.toast_authenticated),
-                                                        Toast.LENGTH_SHORT).show();
-                                            }
-                                        }
-                                    })
-                            .setNegativeButton(getString(R.string.password_dialog_button_cancel),
-                                    new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int id) {
-                                            dialog.cancel();
-                                        }
-                                    });
-                    AlertDialog alertDialog = alertDialogBuilder.create();
-                    alertDialog.show();
-                }
-                return true;
+                menuItemAuthenticate();
+                break;
 
             case R.id.action_show_settings:
-                Intent settingActivityIntent = new Intent(this, SettingsActivity.class);
-                startActivity(settingActivityIntent);
-                return true;
+                menuItemShowSettings();
+                break;
 
             case R.id.action_on_off:
-                Boolean isEnabledPrevious = ConfigUtil.readBoolean(IS_ENABLED);
-                Boolean isEnabledNew = !isEnabledPrevious;
-                ConfigUtil.writeValue(IS_ENABLED, isEnabledNew.toString().toLowerCase());
-                return true;
+                menuItemOnOff();
+                break;
 
             case R.id.action_notification_on_off:
-                Boolean isNotificationPrevious = ConfigUtil.readBoolean(NOTIFICATION_ON);
-                Boolean isNotificationNew = !isNotificationPrevious;
-                ConfigUtil.writeValue(NOTIFICATION_ON, isNotificationNew.toString().toLowerCase());
-                return true;
+                menuItemNotificationOnOff();
+                break;
 
             case R.id.action_delete_selected:
-                String toastText;
-                if (callArrayAdapter.getCheckedCount() > 0) {
-                    List<Integer> checkedIndexes = callArrayAdapter.getCheckedStatuses();
-                    for (Integer i : checkedIndexes) {
-                        Call call = callArrayAdapter.getItem(i);
-                        File file = new File(call.getFilename());
-                        if (file.delete()) {
-                            callArrayAdapter.remove(call);
-                        }
-                    }
-                    callArrayAdapter.resetCheckedItems();
-                    toastText = getString(R.string.toast_records_deleted);
-                } else {
-                    toastText = getString(R.string.toast_nothing_to_delete);
-                }
-                Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_SHORT).show();
-                return true;
+                menuItemDeleteSelected();
+                break;
 
             default:
                 return super.onOptionsItemSelected(item);
         }
+        return true;
+    }
+
+    private void menuItemAuthenticate() {
+        if (((Application) getApplicationContext()).isAuthenticated()) {
+            ((Application) getApplicationContext()).setAuthMan(null);
+
+            ActionBar actionBar = getSupportActionBar();
+            if (actionBar != null) {
+                actionBar.setBackgroundDrawable(
+                        new ColorDrawable(
+                                getResources().getColor(R.color.colorPrimary)));
+            }
+
+            Toast.makeText(getApplication(),
+                    getString(R.string.toast_deauthenticated),
+                    Toast.LENGTH_SHORT).show();
+
+        } else {
+            LayoutInflater li = LayoutInflater.from(this);
+            View promptsView = li.inflate(R.layout.password_prompt, null);
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+            alertDialogBuilder.setView(promptsView);
+            final EditText userInput = (EditText) promptsView
+                    .findViewById(R.id.editTextDialogUserInput);
+            alertDialogBuilder
+                    .setCancelable(false)
+                    .setPositiveButton(getString(R.string.password_dialog_button_ok),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,int id) {
+                                    String password = userInput.getText().toString();
+                                    try {
+                                        AuthenticationManager authMan = new AuthenticationManager();
+                                        authMan.authenticate(password);
+                                        ((Application) getApplicationContext()).setAuthMan(authMan);
+
+                                        ActionBar actionBar = getSupportActionBar();
+                                        if (actionBar != null) {
+                                            actionBar.setBackgroundDrawable(
+                                                    new ColorDrawable(
+                                                            getResources().getColor(R.color.colorAuthenticated)));
+                                        }
+
+                                        Toast.makeText(getApplication(),
+                                                getString(R.string.toast_authenticated),
+                                                Toast.LENGTH_SHORT).show();
+                                    } catch (AuthenticationException e) {
+                                        Toast.makeText(getApplication(),
+                                                getString(R.string.toast_authenticated),
+                                                Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            })
+                    .setNegativeButton(getString(R.string.password_dialog_button_cancel),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                            });
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
+        }
+    }
+
+    private void menuItemShowSettings() {
+        Intent settingActivityIntent = new Intent(this, SettingsActivity.class);
+        startActivity(settingActivityIntent);
+    }
+
+    private void menuItemOnOff() {
+        Boolean isEnabledPrevious = ConfigUtil.readBoolean(IS_ENABLED);
+        Boolean isEnabledNew = !isEnabledPrevious;
+        ConfigUtil.writeValue(IS_ENABLED, isEnabledNew.toString().toLowerCase());
+    }
+
+    private void menuItemNotificationOnOff() {
+        Boolean isNotificationPrevious = ConfigUtil.readBoolean(NOTIFICATION_ON);
+        Boolean isNotificationNew = !isNotificationPrevious;
+        ConfigUtil.writeValue(NOTIFICATION_ON, isNotificationNew.toString().toLowerCase());
+    }
+
+    private void menuItemDeleteSelected() {
+        String toastText;
+        if (callArrayAdapter.getCheckedCount() > 0) {
+            List<Integer> checkedIndexes = callArrayAdapter.getCheckedStatuses();
+            for (Integer i : checkedIndexes) {
+                Call call = callArrayAdapter.getItem(i);
+                File file = new File(call.getFilename());
+                if (file.delete()) {
+                    callArrayAdapter.remove(call);
+                }
+            }
+            callArrayAdapter.resetCheckedItems();
+            toastText = getString(R.string.toast_records_deleted);
+        } else {
+            toastText = getString(R.string.toast_nothing_to_delete);
+        }
+        Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_SHORT).show();
     }
 
     @Override

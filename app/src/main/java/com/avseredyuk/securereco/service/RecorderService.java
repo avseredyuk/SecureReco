@@ -5,12 +5,10 @@ import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.IBinder;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.avseredyuk.securereco.receiver.PhonecallReceiver;
-
-import static com.avseredyuk.securereco.util.Constant.ANDROID_INTENT_ACTION_PHONE_STATE;
-import static com.avseredyuk.securereco.util.Constant.ANDROID_INTENT_ACTION_NEW_OUTGOING_CALL;
 
 /**
  * Created by lenfer on 2/11/17.
@@ -35,8 +33,8 @@ public class RecorderService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d("StartService", "RecorderService");
         final IntentFilter filter = new IntentFilter();
-        filter.addAction(ANDROID_INTENT_ACTION_NEW_OUTGOING_CALL);
-        filter.addAction(ANDROID_INTENT_ACTION_PHONE_STATE);
+        filter.addAction(Intent.ACTION_NEW_OUTGOING_CALL);
+        filter.addAction(TelephonyManager.ACTION_PHONE_STATE_CHANGED);
         phoneCallReceiver = new PhonecallReceiver();
         this.registerReceiver(phoneCallReceiver, filter);
         return super.onStartCommand(intent, flags, startId);

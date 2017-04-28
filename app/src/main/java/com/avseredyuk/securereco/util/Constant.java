@@ -16,7 +16,4 @@ public class Constant {
     public static final int BUF_SIZE = 8192;
     public static final int NOTIFICATION_NEW_RECORD_ID = 61616;
     public static final int SPLASH_SHOW_TIME_IN_SECONDS = 2;
-    public static final String ANDROID_INTENT_ACTION_PHONE_STATE = "android.intent.action.PHONE_STATE";
-    public static final String ANDROID_INTENT_ACTION_NEW_OUTGOING_CALL = "android.intent.action.NEW_OUTGOING_CALL";
-    public static final String ANDROID_INTENT_EXTRA_PHONE_NUMBER = "android.intent.extra.PHONE_NUMBER";
 }
