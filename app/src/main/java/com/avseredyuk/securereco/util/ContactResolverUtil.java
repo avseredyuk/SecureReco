@@ -89,6 +89,7 @@ public class ContactResolverUtil {
                 }
             }
         } catch (IOException e) {
+            //todo
             e.printStackTrace();
         }
         contactPhotoCache.put(number, photo);

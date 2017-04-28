@@ -9,4 +9,21 @@
     <string name="menu_item_settings">Settings</string>
     <string name="menu_item_on_off">Enabled</string>
     <string name="menu_item_delete_selected">Delete</string>
+    <string name="notification_title">New call recorded</string>
+    <string name="notification_text">Click to open</string>
+    <string name="toast_authenticated">Authenticated</string>
+    <string name="toast_deauthenticated">De-authenticated</string>
+    <string name="toast_error">Error</string>
+    <string name="toast_records_deleted">Records deleted</string>
+    <string name="toast_nothing_to_delete">Nothing to delete</string>
+    <string name="toast_wrong_password">Wrong password</string>
+    <string name="toast_keys_regen_started">Keys regeneration started</string>
+    <string name="toast_invalid_input">Invalid input</string>
+    <string name="toast_password_changed">Password changed</string>
+    <string name="toast_wrong_old_password">Wrong old password</string>
+    <string name="toast_please_enter_password">Please enter password</string>
+    <string name="toast_please_authenticate_first">Please authenticate first</string>
+    <string name="password_dialog_button_ok">OK</string>
+    <string name="password_dialog_button_cancel">Cancel</string>
+
 </resources>

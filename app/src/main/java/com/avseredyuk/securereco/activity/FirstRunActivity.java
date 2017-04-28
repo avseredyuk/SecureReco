@@ -35,16 +35,15 @@ public class FirstRunActivity extends AppCompatActivity {
             public void onClick(View v) {
                 EditText input = (EditText) findViewById(R.id.editText);
                 if (input.getText().length() == 0) {
-                    Toast msg = Toast.makeText(getBaseContext(), "Please enter password",
-                            Toast.LENGTH_LONG);
-                    msg.show();
+                    Toast.makeText(context,
+                            getString(R.string.toast_please_enter_password),
+                            Toast.LENGTH_LONG).show();
                 } else {
                     String password = input.getText().toString();
                     AuthenticationManager authMan = new AuthenticationManager();
                     authMan.makeKeys(password);
-                    ConfigUtil.writeValue(IS_ENABLED, "true");
-                    Intent intent = new Intent(context, MainActivity.class);
-                    startActivity(intent);
+                    ConfigUtil.writeValue(IS_ENABLED, Boolean.toString(true));
+                    startActivity(new Intent(context, MainActivity.class));
                 }
             }
         });

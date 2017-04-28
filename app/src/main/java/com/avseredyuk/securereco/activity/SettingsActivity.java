@@ -43,13 +43,19 @@ public class SettingsActivity extends AppCompatActivity {
                         newPassword1.equals(newPassword2)) {
                     AuthenticationManager authMan = new AuthenticationManager();
                     if (authMan.changePassword(oldPassword, newPassword1)) {
-                        Toast.makeText(context, "Password changed", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context,
+                                getString(R.string.toast_password_changed),
+                                Toast.LENGTH_SHORT).show();
                         finish();
                     } else {
-                        Toast.makeText(context, "Wrong old password", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context,
+                                getString(R.string.toast_wrong_old_password),
+                                Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(context, "Error in input", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context,
+                            getString(R.string.toast_invalid_input),
+                            Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -64,11 +70,15 @@ public class SettingsActivity extends AppCompatActivity {
                 if (currentPassword.length() > 0) {
                     AuthenticationManager authMan = new AuthenticationManager();
                     if (authMan.regenerateKeyPair(currentPassword, context)) {
-                        Toast.makeText(context, "Keys regeneration started", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context,
+                                getString(R.string.toast_keys_regen_started),
+                                Toast.LENGTH_SHORT).show();
                         //todo: disable this button
                         //finish();
                     } else {
-                        Toast.makeText(context, "Wrong password", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context,
+                                getString(R.string.toast_wrong_password),
+                                Toast.LENGTH_SHORT).show();
                     }
                 }
             }

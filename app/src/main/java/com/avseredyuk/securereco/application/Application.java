@@ -10,6 +10,8 @@ import java.util.concurrent.TimeUnit;
 import com.avseredyuk.securereco.R;
 import com.avseredyuk.securereco.auth.AuthenticationManager;
 
+import static com.avseredyuk.securereco.util.Constant.SPLASH_SHOW_TIME_IN_SECONDS;
+
 /**
  * Created by lenfer on 3/1/17.
  */
@@ -22,7 +24,7 @@ public class Application extends android.app.Application {
     public void onCreate() {
         super.onCreate();
         contactPhotoCache.put(null, BitmapFactory.decodeResource(getResources(), R.drawable.avatar_unknown));
-        SystemClock.sleep(TimeUnit.SECONDS.toMillis(2));
+        SystemClock.sleep(TimeUnit.SECONDS.toMillis(SPLASH_SHOW_TIME_IN_SECONDS));
     }
 
     public Map<String, Bitmap> getContactPhotoCache() {

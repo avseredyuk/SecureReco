@@ -22,14 +22,15 @@ import static com.avseredyuk.securereco.util.Constant.*;
  * Created by lenfer on 2/16/17.
  */
 public class RSA {
+    private static final String RSA = "RSA";
     private Cipher cipher;
 
     public void initPublicKey() throws CryptoException{
         String keyStringBaseEncoded = ConfigUtil.readValue(PUBLIC_KEY);
         byte[] keyBaseEncoded = Base64.decode(keyStringBaseEncoded, Base64.DEFAULT);
         try {
-            PublicKey publicKey = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(keyBaseEncoded));
-            cipher = Cipher.getInstance("RSA");
+            PublicKey publicKey = KeyFactory.getInstance(RSA).generatePublic(new X509EncodedKeySpec(keyBaseEncoded));
+            cipher = Cipher.getInstance(RSA);
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);
         } catch (Exception e) {
             throw new CryptoException(e);
@@ -38,8 +39,8 @@ public class RSA {
 
     public void initPrivateKey(byte[] key) throws CryptoException{
         try {
-            PrivateKey privateKey = KeyFactory.getInstance("RSA").generatePrivate(new PKCS8EncodedKeySpec(key));
-            cipher = Cipher.getInstance("RSA");
+            PrivateKey privateKey = KeyFactory.getInstance(RSA).generatePrivate(new PKCS8EncodedKeySpec(key));
+            cipher = Cipher.getInstance(RSA);
             cipher.init(Cipher.DECRYPT_MODE, privateKey);
         } catch (Exception e) {
             throw new CryptoException(e);
@@ -48,7 +49,7 @@ public class RSA {
 
     public static KeyPair generateKeyPair() throws CryptoException {
         try {
-            KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
+            KeyPairGenerator kpg = KeyPairGenerator.getInstance(RSA);
             kpg.initialize(1024);
             return kpg.genKeyPair();
         } catch (NoSuchAlgorithmException e) {

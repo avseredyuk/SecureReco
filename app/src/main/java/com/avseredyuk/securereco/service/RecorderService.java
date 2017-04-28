@@ -9,12 +9,13 @@ import android.util.Log;
 
 import com.avseredyuk.securereco.receiver.PhonecallReceiver;
 
+import static com.avseredyuk.securereco.util.Constant.ANDROID_INTENT_ACTION_PHONE_STATE;
+import static com.avseredyuk.securereco.util.Constant.ANDROID_INTENT_ACTION_NEW_OUTGOING_CALL;
+
 /**
  * Created by lenfer on 2/11/17.
  */
 public class RecorderService extends Service {
-    private static final String ACTION_IN = "android.intent.action.PHONE_STATE";
-    private static final String ACTION_OUT = "android.intent.action.NEW_OUTGOING_CALL";
     private BroadcastReceiver phoneCallReceiver;
 
     @Override
@@ -34,8 +35,8 @@ public class RecorderService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d("StartService", "RecorderService");
         final IntentFilter filter = new IntentFilter();
-        filter.addAction(ACTION_OUT);
-        filter.addAction(ACTION_IN);
+        filter.addAction(ANDROID_INTENT_ACTION_NEW_OUTGOING_CALL);
+        filter.addAction(ANDROID_INTENT_ACTION_PHONE_STATE);
         phoneCallReceiver = new PhonecallReceiver();
         this.registerReceiver(phoneCallReceiver, filter);
         return super.onStartCommand(intent, flags, startId);

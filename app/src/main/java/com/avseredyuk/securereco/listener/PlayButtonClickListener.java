@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.View;
 import android.widget.Toast;
 
+import com.avseredyuk.securereco.R;
 import com.avseredyuk.securereco.application.Application;
 import com.avseredyuk.securereco.dao.CallDao;
 import com.avseredyuk.securereco.model.Call;
@@ -26,7 +27,9 @@ public class PlayButtonClickListener implements View.OnClickListener {
             CallDao.getInstance().play(call,
                     ((Application) context.getApplicationContext()).getAuthMan());
         } else {
-            Toast.makeText(context, "Please authenticate first", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context,
+                    context.getString(R.string.toast_please_authenticate_first),
+                    Toast.LENGTH_SHORT).show();
         }
 
     }

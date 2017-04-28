@@ -108,7 +108,9 @@ public class MainActivity extends AppCompatActivity {
                                         getResources().getColor(R.color.colorPrimary)));
                     }
 
-                    Toast.makeText(getApplication(), "De-authenticated", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplication(),
+                            getString(R.string.toast_deauthenticated),
+                            Toast.LENGTH_SHORT).show();
 
                 } else {
                     LayoutInflater li = LayoutInflater.from(this);
@@ -119,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
                             .findViewById(R.id.editTextDialogUserInput);
                     alertDialogBuilder
                             .setCancelable(false)
-                            .setPositiveButton("OK",
+                            .setPositiveButton(getString(R.string.password_dialog_button_ok),
                                     new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog,int id) {
                                             String password = userInput.getText().toString();
@@ -135,13 +137,17 @@ public class MainActivity extends AppCompatActivity {
                                                                     getResources().getColor(R.color.colorAuthenticated)));
                                                 }
 
-                                                Toast.makeText(getApplication(), "Authenticated", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(getApplication(),
+                                                        getString(R.string.toast_authenticated),
+                                                        Toast.LENGTH_SHORT).show();
                                             } catch (AuthenticationException e) {
-                                                Toast.makeText(getApplication(), "Error", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(getApplication(),
+                                                        getString(R.string.toast_authenticated),
+                                                        Toast.LENGTH_SHORT).show();
                                             }
                                         }
                                     })
-                            .setNegativeButton("Cancel",
+                            .setNegativeButton(getString(R.string.password_dialog_button_cancel),
                                     new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int id) {
                                             dialog.cancel();
@@ -154,7 +160,6 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.action_show_settings:
                 Intent settingActivityIntent = new Intent(this, SettingsActivity.class);
-//                settingActivityIntent.putExtra("auth", ((Application) getApplicationContext()).getAuthMan());
                 startActivity(settingActivityIntent);
                 return true;
 
@@ -176,9 +181,9 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                     callArrayAdapter.resetCheckedItems();
-                    toastText = "Records deleted";
+                    toastText = getString(R.string.toast_records_deleted);
                 } else {
-                    toastText = "Nothing to delete";
+                    toastText = getString(R.string.toast_nothing_to_delete);
                 }
                 Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_SHORT).show();
                 return true;
@@ -191,9 +196,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
-
         System.out.println("CREATED");
     }
 

@@ -17,14 +17,12 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         final Class<? extends Activity> activityClass;
-        if (!ConfigUtil.isConfigValid()) {
-            activityClass = FirstRunActivity.class;
-        } else {
+        if (ConfigUtil.isConfigValid()) {
             activityClass = MainActivity.class;
+        } else {
+            activityClass = FirstRunActivity.class;
         }
-
-        Intent newActivity = new Intent(this, activityClass);
-        startActivity(newActivity);
+        startActivity(new Intent(this, activityClass));
 
         startService(new Intent(this, RecorderService.class));
 

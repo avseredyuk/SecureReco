@@ -40,8 +40,8 @@ public class PhonecallReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (ConfigUtil.readBoolean(IS_ENABLED)) {
-            if ("android.intent.action.NEW_OUTGOING_CALL".equals(intent.getAction())) {
-                savedNumber = intent.getExtras().getString("android.intent.extra.PHONE_NUMBER");
+            if (ANDROID_INTENT_ACTION_NEW_OUTGOING_CALL.equals(intent.getAction())) {
+                savedNumber = intent.getExtras().getString(ANDROID_INTENT_EXTRA_PHONE_NUMBER);
             } else {
                 String stateStr = intent.getExtras().getString(TelephonyManager.EXTRA_STATE);
                 String number = intent.getExtras().getString(TelephonyManager.EXTRA_INCOMING_NUMBER);
@@ -110,8 +110,8 @@ public class PhonecallReceiver extends BroadcastReceiver {
                         0);
 
         Notification notification = new Notification.Builder(context)
-                .setContentTitle("New call recorded")
-                .setContentText("Click to open")
+                .setContentTitle(context.getString(R.string.notification_title))
+                .setContentText(context.getString(R.string.notification_text))
                 .setSmallIcon(R.drawable.button_play)
                 .setContentIntent(myPendingIntent)
                 .setAutoCancel(true)
