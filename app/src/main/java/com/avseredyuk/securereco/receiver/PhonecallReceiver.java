@@ -103,23 +103,25 @@ public class PhonecallReceiver extends BroadcastReceiver {
     }
 
     private void doNotificationStuff(Context context) {
-        PendingIntent myPendingIntent =
-                PendingIntent.getActivity(context,
-                        0,
-                        new Intent(context, MainActivity.class),
-                        0);
+        if (ConfigUtil.readBoolean(NOTIFICATION_ON)) {
+            PendingIntent myPendingIntent =
+                    PendingIntent.getActivity(context,
+                            0,
+                            new Intent(context, MainActivity.class),
+                            0);
 
-        Notification notification = new Notification.Builder(context)
-                .setContentTitle(context.getString(R.string.notification_title))
-                .setContentText(context.getString(R.string.notification_text))
-                .setSmallIcon(R.drawable.button_play)
-                .setContentIntent(myPendingIntent)
-                .setAutoCancel(true)
-                .build();
+            Notification notification = new Notification.Builder(context)
+                    .setContentTitle(context.getString(R.string.notification_title))
+                    .setContentText(context.getString(R.string.notification_text))
+                    .setSmallIcon(R.drawable.button_play)
+                    .setContentIntent(myPendingIntent)
+                    .setAutoCancel(true)
+                    .build();
 
-        NotificationManager notificationManager =
-                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(NOTIFICATION_NEW_RECORD_ID, notification);
+            NotificationManager notificationManager =
+                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.notify(NOTIFICATION_NEW_RECORD_ID, notification);
+        }
     }
 
     private void startRecording() {

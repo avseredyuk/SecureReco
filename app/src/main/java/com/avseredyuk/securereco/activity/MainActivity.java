@@ -29,6 +29,7 @@ import java.io.File;
 import java.util.List;
 
 import static com.avseredyuk.securereco.util.Constant.IS_ENABLED;
+import static com.avseredyuk.securereco.util.Constant.NOTIFICATION_ON;
 
 public class MainActivity extends AppCompatActivity {
     private CallArrayAdapter callArrayAdapter;
@@ -69,8 +70,11 @@ public class MainActivity extends AppCompatActivity {
         MenuItem deleteSelectedMenuItem = menu.findItem(R.id.action_delete_selected);
         MenuItem enabledDisabledMenuItem = menu.findItem(R.id.action_on_off);
         MenuItem authenticateMenuItem = menu.findItem(R.id.action_authenticate);
+        MenuItem notificationOn = menu.findItem(R.id.action_notification_on_off);
 
         enabledDisabledMenuItem.setChecked(ConfigUtil.readBoolean(IS_ENABLED));
+
+        notificationOn.setChecked(ConfigUtil.readBoolean(NOTIFICATION_ON));
 
         int selectedCount = callArrayAdapter.getCheckedCount();
         String itemTitle;
@@ -167,6 +171,12 @@ public class MainActivity extends AppCompatActivity {
                 Boolean isEnabledPrevious = ConfigUtil.readBoolean(IS_ENABLED);
                 Boolean isEnabledNew = !isEnabledPrevious;
                 ConfigUtil.writeValue(IS_ENABLED, isEnabledNew.toString().toLowerCase());
+                return true;
+
+            case R.id.action_notification_on_off:
+                Boolean isNotificationPrevious = ConfigUtil.readBoolean(NOTIFICATION_ON);
+                Boolean isNotificationNew = !isNotificationPrevious;
+                ConfigUtil.writeValue(NOTIFICATION_ON, isNotificationNew.toString().toLowerCase());
                 return true;
 
             case R.id.action_delete_selected:

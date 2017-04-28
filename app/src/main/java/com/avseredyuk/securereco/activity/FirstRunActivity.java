@@ -42,7 +42,11 @@ public class FirstRunActivity extends AppCompatActivity {
                     String password = input.getText().toString();
                     AuthenticationManager authMan = new AuthenticationManager();
                     authMan.makeKeys(password);
+
+                    ConfigUtil.writeValue(NOTIFICATION_ON, Boolean.toString(true));
+
                     ConfigUtil.writeValue(IS_ENABLED, Boolean.toString(true));
+
                     startActivity(new Intent(context, MainActivity.class));
                 }
             }
