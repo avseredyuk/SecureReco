@@ -62,6 +62,8 @@
         </receiver>
 
         <service android:name=".service.RecorderService"/>
+
+        <service android:name=".service.RegenerateKeysIntentService"/>
     </application>
 
 </manifest>

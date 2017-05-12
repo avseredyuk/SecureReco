@@ -1,11 +1,13 @@
 package com.avseredyuk.securereco.auth;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Base64;
 import android.util.Log;
 
 import com.avseredyuk.securereco.exception.AuthenticationException;
 import com.avseredyuk.securereco.exception.CryptoException;
+import com.avseredyuk.securereco.service.RegenerateKeysIntentService;
 import com.avseredyuk.securereco.task.ChangeCallKeyTask;
 import com.avseredyuk.securereco.util.ConfigUtil;
 import com.avseredyuk.securereco.util.crypto.AES;
@@ -73,10 +75,12 @@ public class AuthenticationManager {
             //makeKeys or so
             // we should replace keys in config before doing asynctask
 
+//            ChangeCallKeyTask workerTask = new ChangeCallKeyTask(context);
+//            workerTask.execute();
 
-
-            ChangeCallKeyTask workerTask = new ChangeCallKeyTask(context);
-            workerTask.execute();
+            Intent msgIntent = new Intent(context, RegenerateKeysIntentService.class);
+            msgIntent.putExtra("QQQ", "fucking shit");
+            context.startService(msgIntent);
 
             return true;
         } catch (CryptoException e) {

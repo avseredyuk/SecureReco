@@ -12,6 +12,7 @@ import java.util.List;
 /**
  * Created by lenfer on 3/7/17.
  */
+@Deprecated
 public class ChangeCallKeyTask extends AsyncTask<Void, Integer, Void> {
     private final Context context;
 

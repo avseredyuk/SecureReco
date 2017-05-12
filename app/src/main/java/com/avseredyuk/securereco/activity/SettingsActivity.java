@@ -74,7 +74,7 @@ public class SettingsActivity extends AppCompatActivity {
                                 getString(R.string.toast_keys_regen_started),
                                 Toast.LENGTH_SHORT).show();
                         //todo: disable this button
-                        //finish();
+                        finish();
                     } else {
                         Toast.makeText(context,
                                 getString(R.string.toast_wrong_password),
