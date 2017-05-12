@@ -89,7 +89,7 @@ public class ContactResolverUtil {
             }
         } catch (IOException e) {
             Log.e(ContactResolverUtil.class.getSimpleName(),
-                    "Error retreiving cantact photo", e);
+                    "Error retrieving contact photo", e);
         }
         contactPhotoCache.put(number, photo);
         return photo;

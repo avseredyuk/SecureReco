@@ -84,7 +84,8 @@ public class AuthenticationManager {
 
             return true;
         } catch (CryptoException e) {
-            //todo
+            Log.e(getClass().getSimpleName(),
+                    "Exception at regenerateKeyPair", e);
         }
         return false;
     }
@@ -101,7 +102,7 @@ public class AuthenticationManager {
 
             return true;
         } catch (CryptoException e) {
-            Log.e(ConfigUtil.class.getSimpleName(), "Exception changing password", e);
+            Log.e(getClass().getSimpleName(), "Exception changing password", e);
         }
         return false;
     }
@@ -113,6 +114,8 @@ public class AuthenticationManager {
                 throw new AuthenticationException("Exception during authentication");
             }
         } catch (CryptoException e) {
+            Log.e(getClass().getSimpleName(),
+                    "CryptoException during authentication", e);
             throw new AuthenticationException("Exception during authentication");
         }
     }
