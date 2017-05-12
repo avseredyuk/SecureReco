@@ -171,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
                                                 Toast.LENGTH_SHORT).show();
                                     } catch (AuthenticationException e) {
                                         Toast.makeText(getApplication(),
-                                                getString(R.string.toast_authenticated),
+                                                getString(R.string.toast_error),
                                                 Toast.LENGTH_SHORT).show();
                                     }
                                 }
