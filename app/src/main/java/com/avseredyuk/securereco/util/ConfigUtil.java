@@ -1,6 +1,7 @@
 package com.avseredyuk.securereco.util;
 
 import android.os.Environment;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import org.json.JSONException;
@@ -84,13 +85,13 @@ public class ConfigUtil {
                     out.close();
             } catch (IOException e) {
                 Log.e(ConfigUtil.class.getSimpleName(),
-                        "Exception at writing config file");
+                        "Exception at writing config file", e);
             }
         }
         return false;
     }
 
-    private static JSONObject readObject() {
+    private static @Nullable JSONObject readObject() {
         File configFile = new File(Environment.getExternalStorageDirectory(), "/" + APP_DIRECTORY + "/" + CONFIG_FILE);
         if (!configFile.isDirectory()) {
             InputStream in = null;
@@ -109,7 +110,7 @@ public class ConfigUtil {
                         in.close();
                 } catch (IOException e) {
                     Log.e(ConfigUtil.class.getSimpleName(),
-                            "Exception at reading config file");
+                            "Exception at reading config file", e);
                 }
             }
         }

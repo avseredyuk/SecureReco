@@ -1,5 +1,7 @@
 package com.avseredyuk.securereco.util;
 
+import android.util.Log;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,6 +51,8 @@ public class IOUtil {
             in.close();
         }
         catch (UnsupportedEncodingException e) {
+            Log.e(IOUtil.class.getSimpleName(),
+                    "UnsupportedEncodingException stuff", e);
             throw new IOException(e);
         }
         return out.toString();

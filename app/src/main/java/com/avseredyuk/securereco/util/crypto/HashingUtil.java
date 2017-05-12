@@ -1,5 +1,7 @@
 package com.avseredyuk.securereco.util.crypto;
 
+import android.util.Log;
+
 import com.avseredyuk.securereco.exception.CryptoException;
 
 import java.nio.charset.StandardCharsets;
@@ -20,6 +22,8 @@ public class HashingUtil {
             md.update(in.getBytes(StandardCharsets.UTF_8));
             return md.digest();
         } catch (NoSuchAlgorithmException e) {
+            Log.e(HashingUtil.class.getSimpleName(),
+                    "Hash algo not found", e);
             throw new CryptoException(e);
         }
     }

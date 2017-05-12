@@ -1,5 +1,7 @@
 package com.avseredyuk.securereco.util.crypto;
 
+import android.util.Log;
+
 import com.avseredyuk.securereco.exception.CryptoException;
 
 import javax.crypto.BadPaddingException;
@@ -15,9 +17,9 @@ import javax.crypto.spec.SecretKeySpec;
  * Created by lenfer on 2/16/17.
  */
 public class AES {
-    public static final String HMAC_SHA_256 = "HmacSHA256";
-    public static final String AES_CBC_PKCS5_PADDING = "AES/CBC/PKCS5Padding";
-    public static final String algorithmAES = "AES";
+    private static final String HMAC_SHA_256 = "HmacSHA256";
+    private static final String AES_CBC_PKCS5_PADDING = "AES/CBC/PKCS5Padding";
+    private static final String algorithmAES = "AES";
     private SecretKey secretKey;
     private Cipher cipher;
     private Mac HMAC;
@@ -31,6 +33,8 @@ public class AES {
             int opMode = isEncrypting ? Cipher.ENCRYPT_MODE : Cipher.DECRYPT_MODE;
             cipher.init(opMode, secretKey);
         } catch (Exception e) {
+            Log.e(getClass().getSimpleName(),
+                    "Exception at initRandom", e);
             throw new CryptoException(e);
         }
     }
@@ -41,6 +45,8 @@ public class AES {
             cipher = Cipher.getInstance (AES_CBC_PKCS5_PADDING);
             cipher.init(Cipher.DECRYPT_MODE, secretKey, new IvParameterSpec(iv));
         } catch (Exception e) {
+            Log.e(getClass().getSimpleName(),
+                    "Exception at init(byte[], byte[])", e);
             throw new CryptoException(e);
         }
     }
@@ -54,6 +60,8 @@ public class AES {
             cipher = Cipher.getInstance(AES_CBC_PKCS5_PADDING);
             cipher.init(opMode, secretKey);
         } catch (Exception e) {
+            Log.e(getClass().getSimpleName(),
+                    "Exception at init with password", e);
             throw new CryptoException(e);
         }
     }
@@ -67,6 +75,8 @@ public class AES {
             cipher = Cipher.getInstance(AES_CBC_PKCS5_PADDING);
             cipher.init(opMode, secretKey, new IvParameterSpec(iv));
         } catch (Exception e) {
+            Log.e(getClass().getSimpleName(),
+                    "Exception at init with password and IV", e);
             throw new CryptoException(e);
         }
     }
@@ -75,6 +85,8 @@ public class AES {
         try {
             return cipher.doFinal(input);
         } catch (IllegalBlockSizeException | BadPaddingException e) {
+            Log.e(getClass().getSimpleName(),
+                    "Exception at doFinal", e);
             throw new CryptoException(e);
         }
     }

@@ -24,14 +24,12 @@ public class RecorderService extends Service {
 
     @Override
     public void onDestroy() {
-        Log.d("service", "destroy");
         super.onDestroy();
         this.unregisterReceiver(phoneCallReceiver);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d("StartService", "RecorderService");
         final IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_NEW_OUTGOING_CALL);
         filter.addAction(TelephonyManager.ACTION_PHONE_STATE_CHANGED);

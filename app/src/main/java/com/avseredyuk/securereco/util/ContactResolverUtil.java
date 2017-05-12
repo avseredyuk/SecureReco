@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.ContactsContract;
+import android.util.Log;
 
 import com.avseredyuk.securereco.application.Application;
 
@@ -66,12 +67,7 @@ public class ContactResolverUtil {
         String[] projection = new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME, ContactsContract.PhoneLookup._ID};
 
         Cursor cursor =
-                contentResolver.query(
-                        uri,
-                        projection,
-                        null,
-                        null,
-                        null);
+                contentResolver.query(uri, projection, null, null, null);
 
         if (cursor != null) {
             while (cursor.moveToNext()) {
@@ -92,8 +88,8 @@ public class ContactResolverUtil {
                 }
             }
         } catch (IOException e) {
-            //todo
-            e.printStackTrace();
+            Log.e(ContactResolverUtil.class.getSimpleName(),
+                    "Error retreiving cantact photo", e);
         }
         contactPhotoCache.put(number, photo);
         return photo;

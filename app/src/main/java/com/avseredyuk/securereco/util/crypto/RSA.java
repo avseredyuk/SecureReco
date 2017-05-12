@@ -1,6 +1,7 @@
 package com.avseredyuk.securereco.util.crypto;
 
 import android.util.Base64;
+import android.util.Log;
 
 import com.avseredyuk.securereco.exception.CryptoException;
 import com.avseredyuk.securereco.util.ConfigUtil;
@@ -33,6 +34,8 @@ public class RSA {
             cipher = Cipher.getInstance(RSA);
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);
         } catch (Exception e) {
+            Log.e(getClass().getSimpleName(),
+                    "Exception at init public key", e);
             throw new CryptoException(e);
         }
     }
@@ -43,6 +46,8 @@ public class RSA {
             cipher = Cipher.getInstance(RSA);
             cipher.init(Cipher.DECRYPT_MODE, privateKey);
         } catch (Exception e) {
+            Log.e(getClass().getSimpleName(),
+                    "Exception at init private key", e);
             throw new CryptoException(e);
         }
     }
@@ -53,6 +58,8 @@ public class RSA {
             kpg.initialize(1024);
             return kpg.genKeyPair();
         } catch (NoSuchAlgorithmException e) {
+            Log.e(RSA.getClass().getSimpleName(),
+                    "Exception while generating key pair", e);
             throw new CryptoException(e);
         }
     }
@@ -61,6 +68,8 @@ public class RSA {
         try {
             return cipher.doFinal(input);
         } catch (Exception e) {
+            Log.e(getClass().getSimpleName(),
+                    "Exception at doFinal", e);
             throw new CryptoException(e);
         }
     }

@@ -7,6 +7,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -170,6 +171,8 @@ public class MainActivity extends AppCompatActivity {
                                                 getString(R.string.toast_authenticated),
                                                 Toast.LENGTH_SHORT).show();
                                     } catch (AuthenticationException e) {
+                                        Log.e(this.getClass().getSimpleName(),
+                                                "Error during authentication at MainActivity", e);
                                         Toast.makeText(getApplication(),
                                                 getString(R.string.toast_error),
                                                 Toast.LENGTH_SHORT).show();
