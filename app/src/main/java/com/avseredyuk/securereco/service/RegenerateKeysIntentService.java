@@ -30,15 +30,20 @@ public class RegenerateKeysIntentService extends IntentService {
     protected void onHandleIntent(@Nullable Intent intent) {
         isRunning = true;
 
-        List<Call> calls = CallDao.getInstance().findAll();
+        CallDao callDao = CallDao.getInstance();
+        List<Call> calls = callDao.findAll();
+
+        Call call = calls.get(0);
+//        callDao.reEncryptHeader(call, );
+        System.out.println(call.getFilename());
+
+        //TODO work woth ALL CALLS in loop
+        /*
         for (Call call : calls) {
             System.out.println(call.getFilename());
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            callDao.reEncryptHeader(call, );
         }
+        */
 
         String resultTxt = getString(R.string.toast_keys_regen_finished);
         handler.post(new DisplayToast(this, resultTxt));

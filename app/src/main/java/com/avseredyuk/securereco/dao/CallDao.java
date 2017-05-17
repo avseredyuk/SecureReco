@@ -18,6 +18,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -66,6 +67,14 @@ public class CallDao {
         }
         return calls;
     }
+
+//    public boolean reEncryptHeader(Call call, AuthenticationManager authMan) {
+//        RandomAccessFile f = new RandomAccessFile(new File("whereDidIPutTHatFile"), "rw");
+//        long aPositionWhereIWantToGo = 99;
+//        f.seek(aPositionWhereIWantToGo); // this basically reads n bytes in the file
+//        f.write("Im in teh fil, writn bites".getBytes());
+//        f.close();
+//    }
 
     //TODO player ???
     public boolean play(Call call, AuthenticationManager authMan)  {
