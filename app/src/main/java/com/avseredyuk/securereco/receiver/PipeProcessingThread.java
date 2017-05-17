@@ -30,7 +30,7 @@ public class PipeProcessingThread extends Thread {
             RSA rsa = new RSA();
             rsa.initPublicKey();
             AES aes = new AES();
-            aes.initRandom(true);
+            aes.initEncryptWithRandom();
 
             byte[] buf = new byte[BUF_SIZE];
             int len;

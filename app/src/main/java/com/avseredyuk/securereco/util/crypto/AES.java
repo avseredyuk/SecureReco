@@ -24,17 +24,17 @@ public class AES {
     private Cipher cipher;
     private Mac HMAC;
 
-    public void initRandom(boolean isEncrypting) throws CryptoException{
+    public void initEncryptWithRandom() throws CryptoException{
         try {
             KeyGenerator keyGen = KeyGenerator.getInstance(algorithmAES);
             keyGen.init(256);
             secretKey = keyGen.generateKey();
             cipher = Cipher.getInstance(AES_CBC_PKCS5_PADDING);
-            int opMode = isEncrypting ? Cipher.ENCRYPT_MODE : Cipher.DECRYPT_MODE;
+            int opMode = Cipher.ENCRYPT_MODE;
             cipher.init(opMode, secretKey);
         } catch (Exception e) {
             Log.e(getClass().getSimpleName(),
-                    "Exception at initRandom", e);
+                    "Exception at initEncryptWithRandom", e);
             throw new CryptoException(e);
         }
     }
