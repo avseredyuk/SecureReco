@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
                             getResources().getColor(color)));
         }
 
-        System.out.println("RESUMED");
+        System.out.println("MA RESUMED");
     }
 
     @Override
@@ -230,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        System.out.println("CREATED");
+        System.out.println("MA CREATED");
     }
 
     @Override
@@ -238,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
         ((Application) getApplicationContext()).setAuthMan(null);
         //todo clear key from memory
-        System.out.println("PAUSED");
+        System.out.println("MA PAUSED");
     }
 
     @Override
@@ -246,6 +246,13 @@ public class MainActivity extends AppCompatActivity {
         super.onStop();
         ((Application) getApplicationContext()).setAuthMan(null);
         //todo clear key from memory
-        System.out.println("STOPPED");
+        System.out.println("MA STOPPED");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //todo clear key from memory
+        System.out.println("MA DESTROYED");
     }
 }

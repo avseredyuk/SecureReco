@@ -90,7 +90,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        System.out.println("CREATED");
+        System.out.println("SA CREATED");
     }
 
     @Override
@@ -102,18 +102,24 @@ public class SettingsActivity extends AppCompatActivity {
             regenerateRSAKeysButton.setEnabled(false);
         }
 
-        System.out.println("RESUMED");
+        System.out.println("SA RESUMED");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        System.out.println("PAUSED");
+        System.out.println("SA PAUSED");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        System.out.println("SA STOPPED");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        System.out.println("DESTROYED");
+        System.out.println("SA DESTROYED");
     }
 }
