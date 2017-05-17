@@ -10,12 +10,15 @@ import android.widget.Toast;
 
 import com.avseredyuk.securereco.R;
 import com.avseredyuk.securereco.auth.AuthenticationManager;
+import com.avseredyuk.securereco.service.RegenerateKeysIntentService;
 
 /**
  * Created by lenfer on 3/1/17.
  */
 public class SettingsActivity extends AppCompatActivity {
     private Context context;
+    private EditText currentPasswordEdit;
+    private Button regenerateRSAKeysButton;
 
     //todo: refactor this trash
     @Override
@@ -60,9 +63,9 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        final EditText currentPasswordEdit = (EditText) findViewById(R.id.regenCurrentPasswordEdit);
-        //todo: check whether asynctask is already running
-        Button regenerateRSAKeysButton = (Button) findViewById(R.id.regenButton);
+        currentPasswordEdit = (EditText) findViewById(R.id.regenCurrentPasswordEdit);
+        regenerateRSAKeysButton = (Button) findViewById(R.id.regenButton);
+
         regenerateRSAKeysButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,7 +76,6 @@ public class SettingsActivity extends AppCompatActivity {
                         Toast.makeText(context,
                                 getString(R.string.toast_keys_regen_started),
                                 Toast.LENGTH_SHORT).show();
-                        //todo: disable this button
                         finish();
                     } else {
                         Toast.makeText(context,
@@ -94,6 +96,12 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        if (RegenerateKeysIntentService.isRunning) {
+            currentPasswordEdit.setEnabled(false);
+            regenerateRSAKeysButton.setEnabled(false);
+        }
+
         System.out.println("RESUMED");
     }
 

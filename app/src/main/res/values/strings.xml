@@ -19,6 +19,7 @@
     <string name="toast_nothing_to_delete">Nothing to delete</string>
     <string name="toast_wrong_password">Wrong password</string>
     <string name="toast_keys_regen_started">Keys regeneration started</string>
+    <string name="toast_keys_regen_finished">Keys regeneration finished</string>
     <string name="toast_invalid_input">Invalid input</string>
     <string name="toast_password_changed">Password changed</string>
     <string name="toast_wrong_old_password">Wrong old password</string>
@@ -26,5 +27,14 @@
     <string name="toast_please_authenticate_first">Please authenticate first</string>
     <string name="password_dialog_button_ok">OK</string>
     <string name="password_dialog_button_cancel">Cancel</string>
+    <string name="activity_settings_regenerate_button">Re-generate</string>
+    <string name="activity_settings_password_label">Password:</string>
+    <string name="activity_settings_regenerate_header">Regenerate RSA key-pair</string>
+    <string name="activity_settings_change_password_button">Change</string>
+    <string name="activity_settings_change_password_header">Change password</string>
+    <string name="activity_settings_old_password_label">Old password:</string>
+    <string name="activity_settings_new_password_label">New password:</string>
+    <string name="activity_settings_new_password_again_label">New password (again):</string>
+
 
 </resources>
