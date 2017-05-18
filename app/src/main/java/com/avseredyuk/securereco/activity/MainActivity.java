@@ -36,8 +36,20 @@ public class MainActivity extends AppCompatActivity {
     private CallArrayAdapter callArrayAdapter;
 
     @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        System.out.println("MA CREATED");
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
+
+        if (!((Application) getApplicationContext()).authHolder.tryLock()) {
+            Log.e("LOCK","MainActivity.onResume() on resume can't lock");
+        }
+
         ListView callsListView = (ListView) findViewById(R.id.listView);
         List<Call>  calls = CallDao.getInstance().findAll(Call.CallDateComparator);
         callArrayAdapter = new CallArrayAdapter(this, calls);
@@ -57,6 +69,22 @@ public class MainActivity extends AppCompatActivity {
         }
 
         System.out.println("MA RESUMED");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        ((Application) getApplicationContext()).authHolder.unlock();
+        System.out.println("MA PAUSED");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (!((Application) getApplicationContext()).authHolder.isLocked()) {
+            ((Application) getApplicationContext()).setAuthMan(null);
+        }
+        System.out.println("MA STOPPED");
     }
 
     @Override
@@ -226,33 +254,4 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        System.out.println("MA CREATED");
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        ((Application) getApplicationContext()).setAuthMan(null);
-        //todo clear key from memory
-        System.out.println("MA PAUSED");
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        ((Application) getApplicationContext()).setAuthMan(null);
-        //todo clear key from memory
-        System.out.println("MA STOPPED");
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        //todo clear key from memory
-        System.out.println("MA DESTROYED");
-    }
 }

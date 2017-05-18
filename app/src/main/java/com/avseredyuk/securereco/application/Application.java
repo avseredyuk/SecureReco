@@ -7,6 +7,8 @@ import android.os.SystemClock;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
+
 import com.avseredyuk.securereco.R;
 import com.avseredyuk.securereco.auth.AuthenticationManager;
 
@@ -19,6 +21,7 @@ public class Application extends android.app.Application {
     private Map<String, Bitmap> contactPhotoCache = new HashMap<>();
     private Map<String, String> contactNameCache = new HashMap<>();
     private AuthenticationManager authMan = null;
+    public ReentrantLock authHolder = new ReentrantLock();
 
     @Override
     public void onCreate() {

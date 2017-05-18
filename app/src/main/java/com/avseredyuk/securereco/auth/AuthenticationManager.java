@@ -53,9 +53,7 @@ public class AuthenticationManager {
     public void makeKeys(String password) {
         try {
             keyPair = RSA.generateKeyPair();
-
             protectPrivateKey(password, keyPair.getPrivate().getEncoded());
-
             ConfigUtil.writeValue(PRIVATE_KEY_ENCODED, Base64.encodeToString(privateKeyEncoded, Base64.DEFAULT));
             ConfigUtil.writeValue(PRIVATE_KEY_HMAC, Base64.encodeToString(hmacFromPassword, Base64.DEFAULT));
             ConfigUtil.writeValue(PRIVATE_KEY_IV, Base64.encodeToString(privateKeyIV, Base64.DEFAULT));
@@ -65,21 +63,35 @@ public class AuthenticationManager {
         }
     }
 
-    public boolean regenerateKeyPair(String password, Context context) {
+    public boolean regenerateKeyPair(Context context) {
+        // makeKeys(password);
+        // makeKeys or so
+        // we should replace keys in config before doing asynctask
+        Intent msgIntent = new Intent(context, RegenerateKeysIntentService.class);
+        context.startService(msgIntent);
+        return true;
+    }
+
+    public boolean regenerateKeyPairWithPassword(String password, Context context) {
         try {
             initAuth(password);
-
-            // makeKeys(password);
-            // makeKeys or so
-            // we should replace keys in config before doing asynctask
-
-            Intent msgIntent = new Intent(context, RegenerateKeysIntentService.class);
-            context.startService(msgIntent);
-
-            return true;
+            return regenerateKeyPair(context);
         } catch (CryptoException e) {
             Log.e(getClass().getSimpleName(),
-                    "Exception at regenerateKeyPair", e);
+                    "Exception at regenerateKeyPairWithPassword", e);
+        }
+        return false;
+    }
+
+    public boolean changePassword(String newPassword) {
+        try {
+            protectPrivateKey(newPassword, privateKey);
+            ConfigUtil.writeValue(PRIVATE_KEY_ENCODED, Base64.encodeToString(privateKeyEncoded, Base64.DEFAULT));
+            ConfigUtil.writeValue(PRIVATE_KEY_HMAC, Base64.encodeToString(hmacFromPassword, Base64.DEFAULT));
+            ConfigUtil.writeValue(PRIVATE_KEY_IV, Base64.encodeToString(privateKeyIV, Base64.DEFAULT));
+            return true;
+        } catch (CryptoException e) {
+            Log.e(getClass().getSimpleName(), "Exception changing password", e);
         }
         return false;
     }
@@ -87,14 +99,7 @@ public class AuthenticationManager {
     public boolean changePassword(String oldPassword, String newPassword) {
         try {
             initAuth(oldPassword);
-
-            protectPrivateKey(newPassword, privateKey);
-
-            ConfigUtil.writeValue(PRIVATE_KEY_ENCODED, Base64.encodeToString(privateKeyEncoded, Base64.DEFAULT));
-            ConfigUtil.writeValue(PRIVATE_KEY_HMAC, Base64.encodeToString(hmacFromPassword, Base64.DEFAULT));
-            ConfigUtil.writeValue(PRIVATE_KEY_IV, Base64.encodeToString(privateKeyIV, Base64.DEFAULT));
-
-            return true;
+            return changePassword(newPassword);
         } catch (CryptoException e) {
             Log.e(getClass().getSimpleName(), "Exception changing password", e);
         }

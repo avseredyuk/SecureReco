@@ -14,6 +14,7 @@ import com.avseredyuk.securereco.util.crypto.RSA;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -68,13 +69,31 @@ public class CallDao {
         return calls;
     }
 
-//    public boolean reEncryptHeader(Call call, AuthenticationManager authMan) {
-//        RandomAccessFile f = new RandomAccessFile(new File("whereDidIPutTHatFile"), "rw");
-//        long aPositionWhereIWantToGo = 99;
-//        f.seek(aPositionWhereIWantToGo); // this basically reads n bytes in the file
-//        f.write("Im in teh fil, writn bites".getBytes());
-//        f.close();
-//    }
+    public boolean reEncryptHeader(Call call, AuthenticationManager authMan) {
+        RandomAccessFile f = null;
+        try {
+            f = new RandomAccessFile(new File(call.getFilename()), "rw");
+            f.seek(0);
+
+            //todo some file-working crypto-stuff here
+
+            f.close();
+            return true;
+        } catch (IOException e) {
+            Log.e(getClass().getSimpleName(),
+                    "Exception re-encrypting call file", e);
+        } finally {
+            if (f != null) {
+                try {
+                    f.close();
+                } catch (IOException e) {
+                    Log.e(getClass().getSimpleName(),
+                            "Exception closing re-encrypted call file", e);
+                }
+            }
+        }
+        return false;
+    }
 
     //TODO player ???
     public boolean play(Call call, AuthenticationManager authMan)  {
