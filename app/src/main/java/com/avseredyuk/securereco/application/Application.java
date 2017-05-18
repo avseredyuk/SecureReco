@@ -11,6 +11,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import com.avseredyuk.securereco.R;
 import com.avseredyuk.securereco.auth.AuthenticationManager;
+import com.avseredyuk.securereco.util.ArrayUtil;
 
 import static com.avseredyuk.securereco.util.Constant.SPLASH_SHOW_TIME_IN_SECONDS;
 
@@ -39,6 +40,9 @@ public class Application extends android.app.Application {
     }
 
     public void setAuthMan(AuthenticationManager authMan) {
+        if (authMan == null) {
+            ArrayUtil.eraseArray(this.authMan.getPrivateKey());
+        }
         this.authMan = authMan;
     }
 
