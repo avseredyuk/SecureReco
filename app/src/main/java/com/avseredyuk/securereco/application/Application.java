@@ -41,7 +41,9 @@ public class Application extends android.app.Application {
 
     public void setAuthMan(AuthenticationManager authMan) {
         if (authMan == null) {
-            ArrayUtil.eraseArray(this.authMan.getPrivateKey());
+            if (isAuthenticated()) {
+                ArrayUtil.eraseArray(this.authMan.getPrivateKey());
+            }
         }
         this.authMan = authMan;
     }
