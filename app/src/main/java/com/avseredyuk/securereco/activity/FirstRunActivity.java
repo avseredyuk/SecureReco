@@ -4,13 +4,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.avseredyuk.securereco.R;
+import com.avseredyuk.securereco.application.Application;
 import com.avseredyuk.securereco.auth.AuthenticationManager;
+import com.avseredyuk.securereco.exception.AuthenticationException;
 import com.avseredyuk.securereco.util.ConfigUtil;
 
 import static com.avseredyuk.securereco.util.Constant.*;
@@ -37,6 +40,17 @@ public class FirstRunActivity extends AppCompatActivity {
                     String password = input.getText().toString();
                     AuthenticationManager authMan = new AuthenticationManager();
                     authMan.makeKeys(password);
+
+                    try {
+                        authMan.authenticate(password);
+                        ((Application) getApplicationContext()).setAuthMan(authMan);
+                    } catch (AuthenticationException e) {
+                        Log.e(this.getClass().getSimpleName(),
+                                "Error during authentication at FirstRunActivity", e);
+                        Toast.makeText(getApplication(),
+                                getString(R.string.toast_error),
+                                Toast.LENGTH_SHORT).show();
+                    }
 
                     ConfigUtil.writeValue(NOTIFICATION_ON, Boolean.toString(true));
 
