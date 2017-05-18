@@ -3,6 +3,7 @@ package com.avseredyuk.securereco.activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -34,6 +35,11 @@ import static com.avseredyuk.securereco.util.Constant.NOTIFICATION_ON;
 
 public class MainActivity extends AppCompatActivity {
     private CallArrayAdapter callArrayAdapter;
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

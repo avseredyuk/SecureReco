@@ -1,6 +1,7 @@
 package com.avseredyuk.securereco.activity;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -28,6 +29,11 @@ public class SettingsActivity extends AppCompatActivity {
     private EditText newPasswordEdit1;
     private EditText newPasswordEdit2;
     private Button changePasswordButton;
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

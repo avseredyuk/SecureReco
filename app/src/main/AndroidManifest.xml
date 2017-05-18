@@ -34,13 +34,13 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
 
         <activity
             android:name=".activity.MainActivity"
             android:label="@string/app_name"
-            android:launchMode="singleTop">
+            android:launchMode="singleTop"
+            android:configChanges="orientation|keyboardHidden|screenSize">
         </activity>
 
         <activity
@@ -51,7 +51,8 @@
         <activity
             android:name=".activity.SettingsActivity"
             android:label="@string/app_name"
-            android:parentActivityName=".activity.MainActivity" >
+            android:parentActivityName=".activity.MainActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize">
         </activity>
 
         <receiver
