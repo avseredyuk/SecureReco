@@ -17,4 +17,5 @@ public class Constant {
     public static final int NOTIFICATION_NEW_RECORD_ID = 61616;
     public static final int SPLASH_SHOW_TIME_IN_SECONDS = 2;
     public static final String PASSWORD_FILLER = "*****************";
+    public static final String OLD_PRIVATE_KEY_INTENT_EXTRA_NAME = "oldPrivateKey";
 }

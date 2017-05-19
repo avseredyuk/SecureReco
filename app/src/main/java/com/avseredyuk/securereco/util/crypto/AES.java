@@ -8,7 +8,6 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyGenerator;
-import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
@@ -20,48 +19,48 @@ public class AES {
     private static final String HMAC_SHA_256 = "HmacSHA256";
     private static final String AES_CBC_PKCS5_PADDING = "AES/CBC/PKCS5Padding";
     private static final String algorithmAES = "AES";
-    private SecretKey secretKey;
-    private Cipher cipher;
-    private Mac HMAC;
+    private KeyCipherTuple keyCipherTuple;
 
-    public void initEncryptWithRandom() throws CryptoException{
+    public static class KeyCipherTuple {
+        public final SecretKey secretKey;
+        public final Cipher cipher;
+        public KeyCipherTuple(SecretKey secretKey, Cipher cipher) {
+            this.secretKey = secretKey;
+            this.cipher = cipher;
+        }
+        public SecretKey getKey() {
+            return secretKey;
+        }
+        public Cipher getCipher() {
+            return cipher;
+        }
+    }
+
+    public static KeyCipherTuple initEncryptWithRandom() throws CryptoException{
         try {
             KeyGenerator keyGen = KeyGenerator.getInstance(algorithmAES);
             keyGen.init(256);
-            secretKey = keyGen.generateKey();
-            cipher = Cipher.getInstance(AES_CBC_PKCS5_PADDING);
+            SecretKey secretKey = keyGen.generateKey();
+            Cipher cipher = Cipher.getInstance(AES_CBC_PKCS5_PADDING);
             int opMode = Cipher.ENCRYPT_MODE;
             cipher.init(opMode, secretKey);
+            return new KeyCipherTuple(secretKey, cipher);
         } catch (Exception e) {
-            Log.e(getClass().getSimpleName(),
-                    "Exception at initEncryptWithRandom", e);
+            Log.e(AES.class.getSimpleName(),
+                    "Exception at AES.initEncryptWithRandom", e);
             throw new CryptoException(e);
         }
     }
 
-    public void init(byte[] key, byte[] iv) throws CryptoException{
+    public static Cipher initDecrypt(byte[] key, byte[] iv) throws CryptoException{
         try {
-            secretKey = new SecretKeySpec(key, 0, key.length, algorithmAES);
-            cipher = Cipher.getInstance (AES_CBC_PKCS5_PADDING);
-            cipher.init(Cipher.DECRYPT_MODE, secretKey, new IvParameterSpec(iv));
+            SecretKey localSecretKey = new SecretKeySpec(key, 0, key.length, algorithmAES);
+            Cipher localCipher = Cipher.getInstance(AES_CBC_PKCS5_PADDING);
+            localCipher.init(Cipher.DECRYPT_MODE, localSecretKey, new IvParameterSpec(iv));
+            return localCipher;
         } catch (Exception e) {
-            Log.e(getClass().getSimpleName(),
-                    "Exception at init(byte[], byte[])", e);
-            throw new CryptoException(e);
-        }
-    }
-
-    public void init(String password, int opMode) throws CryptoException{
-        try {
-            byte[] key = HashingUtil.hashPassword(password);
-            HMAC = Mac.getInstance(HMAC_SHA_256);
-            secretKey = new SecretKeySpec(key, HMAC_SHA_256);
-            HMAC.init(secretKey);
-            cipher = Cipher.getInstance(AES_CBC_PKCS5_PADDING);
-            cipher.init(opMode, secretKey);
-        } catch (Exception e) {
-            Log.e(getClass().getSimpleName(),
-                    "Exception at init with password", e);
+            Log.e(AES.class.getSimpleName(),
+                    "Exception at AES.initDecrypt(byte[], byte[])", e);
             throw new CryptoException(e);
         }
     }
@@ -69,21 +68,25 @@ public class AES {
     public void init(String password, int opMode, byte[] iv) throws CryptoException{
         try {
             byte[] key = HashingUtil.hashPassword(password);
-            HMAC = Mac.getInstance(HMAC_SHA_256);
-            secretKey = new SecretKeySpec(key, HMAC_SHA_256);
-            HMAC.init(secretKey);
-            cipher = Cipher.getInstance(AES_CBC_PKCS5_PADDING);
-            cipher.init(opMode, secretKey, new IvParameterSpec(iv));
+            SecretKey localSecretKey = new SecretKeySpec(key, HMAC_SHA_256);
+            Cipher localCipher = Cipher.getInstance(AES_CBC_PKCS5_PADDING);
+            if (iv != null) {
+                localCipher.init(opMode, localSecretKey, new IvParameterSpec(iv));
+            } else {
+                localCipher.init(opMode, localSecretKey);
+            }
+            keyCipherTuple = new KeyCipherTuple(localSecretKey, localCipher);
+
         } catch (Exception e) {
             Log.e(getClass().getSimpleName(),
-                    "Exception at init with password and IV", e);
+                    "Exception at AES.init()", e);
             throw new CryptoException(e);
         }
     }
 
     public byte[] doFinal(byte[] input) throws CryptoException{
         try {
-            return cipher.doFinal(input);
+            return getKeyCipherTuple().getCipher().doFinal(input);
         } catch (IllegalBlockSizeException | BadPaddingException e) {
             Log.e(getClass().getSimpleName(),
                     "Exception at doFinal", e);
@@ -91,19 +94,7 @@ public class AES {
         }
     }
 
-    public byte[] getHMAC(byte[] input) throws CryptoException{
-        if (HMAC != null) {
-            return HMAC.doFinal(input);
-        } else {
-            throw new CryptoException("Exception getting HMAC");
-        }
-    }
-
-    public byte[] getKey() {
-        return secretKey.getEncoded();
-    }
-
-    public Cipher getCipher() {
-        return cipher;
+    public KeyCipherTuple getKeyCipherTuple() {
+        return keyCipherTuple;
     }
 }

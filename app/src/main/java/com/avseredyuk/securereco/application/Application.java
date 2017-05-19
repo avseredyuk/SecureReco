@@ -39,13 +39,15 @@ public class Application extends android.app.Application {
         return contactNameCache;
     }
 
-    public void setAuthMan(AuthenticationManager authMan) {
-        if (authMan == null) {
-            if (isAuthenticated()) {
-                ArrayUtil.eraseArray(this.authMan.getPrivateKey());
-            }
+    public void setAuthMan(AuthenticationManager paramAuthMan) {
+        this.authMan = paramAuthMan;
+    }
+
+    public void eraseAuthMan() {
+        if ((isAuthenticated())) {
+            ArrayUtil.eraseArray(this.authMan.getPrivateKey());
         }
-        this.authMan = authMan;
+        this.authMan = null;
     }
 
     public AuthenticationManager getAuthMan() {

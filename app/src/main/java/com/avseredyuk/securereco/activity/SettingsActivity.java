@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.avseredyuk.securereco.R;
 import com.avseredyuk.securereco.application.Application;
 import com.avseredyuk.securereco.auth.AuthenticationManager;
+import com.avseredyuk.securereco.exception.AuthenticationException;
 import com.avseredyuk.securereco.service.RegenerateKeysIntentService;
 import com.avseredyuk.securereco.util.Constant;
 
@@ -74,14 +75,10 @@ public class SettingsActivity extends AppCompatActivity {
 
         if (((Application) getApplicationContext()).isAuthenticated()) {
             oldPasswordEdit.setText(Constant.PASSWORD_FILLER);
-            currentPasswordEdit.setText(Constant.PASSWORD_FILLER);
             oldPasswordEdit.setEnabled(false);
-            currentPasswordEdit.setEnabled(false);
         } else {
             oldPasswordEdit.setText("");
-            currentPasswordEdit.setText("");
             oldPasswordEdit.setEnabled(true);
-            currentPasswordEdit.setEnabled(true);
         }
 
         ActionBar actionBar = getSupportActionBar();
@@ -120,41 +117,49 @@ public class SettingsActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             AuthenticationManager authMan;
-            boolean authResult;
+
             String newPassword1 = newPasswordEdit1.getText().toString();
             String newPassword2 = newPasswordEdit2.getText().toString();
-
-            if (newPassword1.length() > 0 &&
-                    newPassword2.length() > 0 &&
-                    newPassword1.equals(newPassword2)) {
-                if (((Application) getApplicationContext()).isAuthenticated()) {
-                    authMan = ((Application) getApplicationContext()).getAuthMan();
-                    authResult = authMan.changePassword(newPassword1);
-                } else {
-                    String oldPassword = oldPasswordEdit.getText().toString();
-                    if (oldPassword.length() > 0) {
-                        authMan = new AuthenticationManager();
-                        authResult = authMan.changePassword(oldPassword, newPassword1);
-                    } else {
-                        Toast.makeText(context,
-                                getString(R.string.toast_invalid_input),
+            if (newPassword1.length() == 0 ||
+                    newPassword2.length() == 0 ||
+                    !newPassword1.equals(newPassword2)) {
+                Toast.makeText(context,
+                        getString(R.string.toast_invalid_input),
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (((Application) getApplicationContext()).isAuthenticated()) {
+                authMan = ((Application) getApplicationContext()).getAuthMan();
+            } else {
+                String oldPassword = oldPasswordEdit.getText().toString();
+                if (oldPassword.length() > 0) {
+                    try {
+                        authMan = AuthenticationManager
+                                .newAuthManWithAuthentication(oldPassword)
+                                .setAsApplicationAuthenticationManager(getApplicationContext());
+                    } catch (AuthenticationException e) {
+                        Log.e(this.getClass().getSimpleName(),
+                                "Error during authentication at ChangePasswordButtonClickListener", e);
+                        Toast.makeText(getApplication(),
+                                getString(R.string.toast_error),
                                 Toast.LENGTH_SHORT).show();
                         return;
                     }
-                }
-                if (authResult) {
-                    Toast.makeText(context,
-                            getString(R.string.toast_password_changed),
-                            Toast.LENGTH_SHORT).show();
-                    finish();
                 } else {
                     Toast.makeText(context,
-                            getString(R.string.toast_wrong_old_password),
+                            getString(R.string.toast_invalid_input),
                             Toast.LENGTH_SHORT).show();
+                    return;
                 }
+            }
+            if (authMan.changePassword(newPassword1)) {
+                Toast.makeText(context,
+                        getString(R.string.toast_password_changed),
+                        Toast.LENGTH_SHORT).show();
+                finish();
             } else {
                 Toast.makeText(context,
-                        getString(R.string.toast_invalid_input),
+                        getString(R.string.toast_wrong_password),
                         Toast.LENGTH_SHORT).show();
             }
         }
@@ -164,30 +169,38 @@ public class SettingsActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             AuthenticationManager authMan;
-            boolean authResult;
-            if (((Application) getApplicationContext()).isAuthenticated()) {
-                authMan = ((Application) getApplicationContext()).getAuthMan();
-                authResult = authMan.regenerateKeyPair(context);
-            } else {
-                String currentPassword = currentPasswordEdit.getText().toString();
-                if (currentPassword.length() > 0) {
-                    authMan = new AuthenticationManager();
-                    authResult = authMan.regenerateKeyPairWithPassword(currentPassword, context);
+
+            String currentPassword = currentPasswordEdit.getText().toString();
+            if (currentPassword.length() > 0) {
+                if (((Application) getApplicationContext()).isAuthenticated()) {
+                    authMan = ((Application) getApplicationContext()).getAuthMan();
+                } else {
+                    try {
+                        authMan = AuthenticationManager
+                                .newAuthManWithAuthentication(currentPassword)
+                                .setAsApplicationAuthenticationManager(context);
+                    } catch (AuthenticationException e) {
+                        Log.e(this.getClass().getSimpleName(),
+                                "Error during authentication at RegenerateRSAKeysButtonClickListener", e);
+                        Toast.makeText(getApplication(),
+                                getString(R.string.toast_error),
+                                Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                }
+                if (authMan.regenerateKeyPair(context, currentPassword)) {
+                    Toast.makeText(context,
+                            getString(R.string.toast_keys_regen_started),
+                            Toast.LENGTH_SHORT).show();
+                    finish();
                 } else {
                     Toast.makeText(context,
-                            getString(R.string.toast_invalid_input),
+                            getString(R.string.toast_wrong_password),
                             Toast.LENGTH_SHORT).show();
-                    return;
                 }
-            }
-            if (authResult) {
-                Toast.makeText(context,
-                        getString(R.string.toast_keys_regen_started),
-                        Toast.LENGTH_SHORT).show();
-                finish();
             } else {
                 Toast.makeText(context,
-                        getString(R.string.toast_wrong_password),
+                        getString(R.string.toast_invalid_input),
                         Toast.LENGTH_SHORT).show();
             }
         }

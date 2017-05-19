@@ -5,16 +5,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.avseredyuk.securereco.R;
-import com.avseredyuk.securereco.application.Application;
-import com.avseredyuk.securereco.auth.AuthenticationManager;
 import com.avseredyuk.securereco.dao.CallDao;
 import com.avseredyuk.securereco.model.Call;
 
 import java.util.List;
+
+import static com.avseredyuk.securereco.util.Constant.OLD_PRIVATE_KEY_INTENT_EXTRA_NAME;
 
 /**
  * Created by Anton_Serediuk on 5/12/2017.
@@ -32,33 +31,13 @@ public class RegenerateKeysIntentService extends IntentService {
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         isRunning = true;
-
-        if (((Application) getApplicationContext()).isAuthenticated()) {
-            AuthenticationManager authMan = ((Application) getApplicationContext()).getAuthMan();
-
-            CallDao callDao = CallDao.getInstance();
-            List<Call> calls = callDao.findAll();
-            
-            Call call = calls.get(0);
-            callDao.reEncryptHeader(call, authMan);
-            System.out.println(call.getFilename());
-
-            //TODO work with ALL CALLS in loop
-        /*
+        byte[] oldPrivateKey = intent.getByteArrayExtra(OLD_PRIVATE_KEY_INTENT_EXTRA_NAME);
+        CallDao callDao = CallDao.getInstance();
+        List<Call> calls = callDao.findAll();
         for (Call call : calls) {
-            System.out.println(call.getFilename());
-            callDao.reEncryptHeader(call, );
+            callDao.reEncryptHeader(call, oldPrivateKey);
         }
-        */
-
-            handler.post(new DisplayToast(this, getString(R.string.toast_keys_regen_finished)));
-        } else {
-            Log.e(this.getClass().getSimpleName(),
-                    "Non-authenticated at RegenerateKeysIntentService.onHandleIntent()");
-            handler.post(new DisplayToast(this, getString(R.string.toast_please_authenticate_first)));
-        }
-
-
+        handler.post(new DisplayToast(this, getString(R.string.toast_keys_regen_finished)));
         isRunning = false;
     }
 

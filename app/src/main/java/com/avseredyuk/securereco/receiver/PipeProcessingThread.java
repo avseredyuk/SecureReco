@@ -8,6 +8,9 @@ import com.avseredyuk.securereco.util.crypto.*;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.GeneralSecurityException;
+
+import javax.crypto.Cipher;
 import javax.crypto.CipherOutputStream;
 
 import static com.avseredyuk.securereco.util.Constant.*;
@@ -27,23 +30,24 @@ public class PipeProcessingThread extends Thread {
     @Override
     public void run() {
         try {
-            RSA rsa = new RSA();
-            rsa.initPublicKey();
-            AES aes = new AES();
-            aes.initEncryptWithRandom();
+            Cipher rsaCipher = RSA.getPublicKeyCipher();
 
+            AES.KeyCipherTuple keyCipherTuple = AES.initEncryptWithRandom();
             byte[] buf = new byte[BUF_SIZE];
             int len;
 
-            out.write(rsa.doFinal(ArrayUtil.combineArrays(aes.getKey(), aes.getCipher().getIV())));
+            out.write(rsaCipher.doFinal(ArrayUtil.combineArrays(keyCipherTuple.getKey().getEncoded(),
+                    keyCipherTuple.getCipher().getIV())));
 
-            CipherOutputStream outCipher = new CipherOutputStream(out, aes.getCipher());
+            CipherOutputStream outCipher = new CipherOutputStream(out, keyCipherTuple.getCipher());
             while ((len = in.read(buf)) > 0) {
                 outCipher.write(buf, 0, len);
             }
             outCipher.close();
             in.close();
-
+        } catch (GeneralSecurityException e) {
+            Log.e(getClass().getSimpleName(),
+                    "Exception at PipeProcessingThread.run() stuff", e);
         } catch (CryptoException e) {
             Log.e(getClass().getSimpleName(),
                     "Exception at crypto stuff", e);

@@ -5,11 +5,13 @@ import android.content.Intent;
 import android.util.Base64;
 import android.util.Log;
 
+import com.avseredyuk.securereco.application.Application;
 import com.avseredyuk.securereco.exception.AuthenticationException;
 import com.avseredyuk.securereco.exception.CryptoException;
 import com.avseredyuk.securereco.service.RegenerateKeysIntentService;
 import com.avseredyuk.securereco.util.ConfigUtil;
 import com.avseredyuk.securereco.util.crypto.AES;
+import com.avseredyuk.securereco.util.crypto.HMAC;
 import com.avseredyuk.securereco.util.crypto.RSA;
 
 import java.security.KeyPair;
@@ -17,6 +19,7 @@ import java.util.Arrays;
 
 import javax.crypto.Cipher;
 
+import static com.avseredyuk.securereco.util.Constant.OLD_PRIVATE_KEY_INTENT_EXTRA_NAME;
 import static com.avseredyuk.securereco.util.Constant.PRIVATE_KEY_ENCODED;
 import static com.avseredyuk.securereco.util.Constant.PRIVATE_KEY_HMAC;
 import static com.avseredyuk.securereco.util.Constant.PRIVATE_KEY_IV;
@@ -26,89 +29,35 @@ import static com.avseredyuk.securereco.util.Constant.PUBLIC_KEY;
  * Created by lenfer on 2/27/17.
  */
 public class AuthenticationManager {
-    private byte[] hmacFromConfig;
-    private byte[] privateKeyEncoded;
-    private byte[] privateKeyIV;
     private byte[] privateKey;
-    private byte[] hmacFromPassword;
-    private KeyPair keyPair;
 
-    private void initAuth(String password) throws CryptoException {
-        String hmacFromConfigString = ConfigUtil.readValue(PRIVATE_KEY_HMAC);
-        hmacFromConfig = Base64.decode(hmacFromConfigString, Base64.DEFAULT);
-
-        String privateKeyEncodedString = ConfigUtil.readValue(PRIVATE_KEY_ENCODED);
-        privateKeyEncoded = Base64.decode(privateKeyEncodedString, Base64.DEFAULT);
-
-        String privateKeyIVString = ConfigUtil.readValue(PRIVATE_KEY_IV);
-        privateKeyIV = Base64.decode(privateKeyIVString, Base64.DEFAULT);
-
-        AES aes = new AES();
-        aes.init(password, Cipher.DECRYPT_MODE, privateKeyIV);
-
-        privateKey = aes.doFinal(privateKeyEncoded);
-        hmacFromPassword = aes.getHMAC(privateKey);
+    private AuthenticationManager() {
     }
 
-    public void makeKeys(String password) {
+    public static AuthenticationManager newAuthManInitialKeyGenWithAuthentication(String password) throws AuthenticationException {
+        return new AuthenticationManager().createKeys(password).authenticate(password);
+    }
+
+    public static AuthenticationManager newAuthManWithAuthentication(String password) throws AuthenticationException {
+        return new AuthenticationManager().authenticate(password);
+    }
+
+    public AuthenticationManager setAsApplicationAuthenticationManager(Context context) {
+        ((Application) context).setAuthMan(this);
+        return this;
+    }
+
+    private AuthenticationManager authenticate(String password) throws AuthenticationException {
         try {
-            keyPair = RSA.generateKeyPair();
-            protectPrivateKey(password, keyPair.getPrivate().getEncoded());
-            ConfigUtil.writeValue(PRIVATE_KEY_ENCODED, Base64.encodeToString(privateKeyEncoded, Base64.DEFAULT));
-            ConfigUtil.writeValue(PRIVATE_KEY_HMAC, Base64.encodeToString(hmacFromPassword, Base64.DEFAULT));
-            ConfigUtil.writeValue(PRIVATE_KEY_IV, Base64.encodeToString(privateKeyIV, Base64.DEFAULT));
-            ConfigUtil.writeValue(PUBLIC_KEY, Base64.encodeToString(keyPair.getPublic().getEncoded(), Base64.DEFAULT));
-        } catch (CryptoException e) {
-            Log.e(ConfigUtil.class.getSimpleName(), "Exception at crypto stuff", e);
-        }
-    }
+            byte[] hmacFromConfig = Base64.decode(ConfigUtil.readValue(PRIVATE_KEY_HMAC), Base64.DEFAULT);
 
-    public boolean regenerateKeyPair(Context context) {
-        // makeKeys(password);
-        // makeKeys or so
-        // we should replace keys in config before doing asynctask
-        Intent msgIntent = new Intent(context, RegenerateKeysIntentService.class);
-        context.startService(msgIntent);
-        return true;
-    }
+            byte[] privateKeyIV = Base64.decode(ConfigUtil.readValue(PRIVATE_KEY_IV), Base64.DEFAULT);
+            AES aes = new AES();
+            aes.init(password, Cipher.DECRYPT_MODE, privateKeyIV);
+            byte[] privateKeyEncoded = Base64.decode(ConfigUtil.readValue(PRIVATE_KEY_ENCODED), Base64.DEFAULT);
+            privateKey = aes.doFinal(privateKeyEncoded);
+            byte[] hmacFromPassword = HMAC.makeHMAC(aes.getKeyCipherTuple().getKey(), privateKey);
 
-    public boolean regenerateKeyPairWithPassword(String password, Context context) {
-        try {
-            initAuth(password);
-            return regenerateKeyPair(context);
-        } catch (CryptoException e) {
-            Log.e(getClass().getSimpleName(),
-                    "Exception at regenerateKeyPairWithPassword", e);
-        }
-        return false;
-    }
-
-    public boolean changePassword(String newPassword) {
-        try {
-            protectPrivateKey(newPassword, privateKey);
-            ConfigUtil.writeValue(PRIVATE_KEY_ENCODED, Base64.encodeToString(privateKeyEncoded, Base64.DEFAULT));
-            ConfigUtil.writeValue(PRIVATE_KEY_HMAC, Base64.encodeToString(hmacFromPassword, Base64.DEFAULT));
-            ConfigUtil.writeValue(PRIVATE_KEY_IV, Base64.encodeToString(privateKeyIV, Base64.DEFAULT));
-            return true;
-        } catch (CryptoException e) {
-            Log.e(getClass().getSimpleName(), "Exception changing password", e);
-        }
-        return false;
-    }
-
-    public boolean changePassword(String oldPassword, String newPassword) {
-        try {
-            initAuth(oldPassword);
-            return changePassword(newPassword);
-        } catch (CryptoException e) {
-            Log.e(getClass().getSimpleName(), "Exception changing password", e);
-        }
-        return false;
-    }
-
-    public void authenticate(String password) throws AuthenticationException {
-        try {
-            initAuth(password);
             if (!Arrays.equals(hmacFromConfig, hmacFromPassword)) {
                 throw new AuthenticationException("Exception during authentication");
             }
@@ -117,14 +66,56 @@ public class AuthenticationManager {
                     "CryptoException during authentication", e);
             throw new AuthenticationException("Exception during authentication");
         }
+        return this;
     }
 
-    private void protectPrivateKey(String password, byte[] localPrivateKey) throws CryptoException {
-        AES aes = new AES();
-        aes.init(password, Cipher.ENCRYPT_MODE);
-        privateKeyEncoded = aes.doFinal(localPrivateKey);
-        hmacFromPassword = aes.getHMAC(localPrivateKey);
-        privateKeyIV = aes.getCipher().getIV();
+    private AuthenticationManager createKeys(String password) {
+        try {
+            KeyPair keyPair = RSA.generateKeyPair();
+
+            privateKey = keyPair.getPrivate().getEncoded();
+            AES aes = new AES();
+            aes.init(password, Cipher.ENCRYPT_MODE, null);
+            byte[] privateKeyEncoded = aes.doFinal(privateKey);
+            byte[] hmacFromPassword = HMAC.makeHMAC(aes.getKeyCipherTuple().getKey(), privateKey);
+            byte[] privateKeyIV = aes.getKeyCipherTuple().getCipher().getIV();
+
+            ConfigUtil.writeValue(PRIVATE_KEY_ENCODED, Base64.encodeToString(privateKeyEncoded, Base64.DEFAULT));
+            ConfigUtil.writeValue(PRIVATE_KEY_HMAC, Base64.encodeToString(hmacFromPassword, Base64.DEFAULT));
+            ConfigUtil.writeValue(PRIVATE_KEY_IV, Base64.encodeToString(privateKeyIV, Base64.DEFAULT));
+
+            ConfigUtil.writeValue(PUBLIC_KEY, Base64.encodeToString(keyPair.getPublic().getEncoded(), Base64.DEFAULT));
+        } catch (CryptoException e) {
+            Log.e(getClass().getSimpleName(), "Exception at crypto stuff", e);
+        }
+        return this;
+    }
+
+    public boolean regenerateKeyPair(Context context, String password) {
+        byte[] oldPrivateKey = this.privateKey;
+        createKeys(password);
+        Intent msgIntent = new Intent(context, RegenerateKeysIntentService.class);
+        msgIntent.putExtra(OLD_PRIVATE_KEY_INTENT_EXTRA_NAME, oldPrivateKey);
+        context.startService(msgIntent);
+        return true;
+    }
+
+    public boolean changePassword(String newPassword) {
+        try {
+            AES aes = new AES();
+            aes.init(newPassword, Cipher.ENCRYPT_MODE, null);
+            byte[] privateKeyEncoded = aes.doFinal(privateKey);
+            byte[] hmacFromPassword = HMAC.makeHMAC(aes.getKeyCipherTuple().getKey(), privateKey);
+            byte[] privateKeyIV = aes.getKeyCipherTuple().getCipher().getIV();
+
+            ConfigUtil.writeValue(PRIVATE_KEY_ENCODED, Base64.encodeToString(privateKeyEncoded, Base64.DEFAULT));
+            ConfigUtil.writeValue(PRIVATE_KEY_HMAC, Base64.encodeToString(hmacFromPassword, Base64.DEFAULT));
+            ConfigUtil.writeValue(PRIVATE_KEY_IV, Base64.encodeToString(privateKeyIV, Base64.DEFAULT));
+            return true;
+        } catch (CryptoException e) {
+            Log.e(getClass().getSimpleName(), "Exception changing password", e);
+        }
+        return false;
     }
 
     public byte[] getPrivateKey() {

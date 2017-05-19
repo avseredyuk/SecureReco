@@ -11,7 +11,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.avseredyuk.securereco.R;
-import com.avseredyuk.securereco.application.Application;
 import com.avseredyuk.securereco.auth.AuthenticationManager;
 import com.avseredyuk.securereco.exception.AuthenticationException;
 import com.avseredyuk.securereco.util.ConfigUtil;
@@ -38,12 +37,11 @@ public class FirstRunActivity extends AppCompatActivity {
                 EditText input = (EditText) findViewById(R.id.editText);
                 if (input.getText().length() > 0) {
                     String password = input.getText().toString();
-                    AuthenticationManager authMan = new AuthenticationManager();
-                    authMan.makeKeys(password);
 
                     try {
-                        authMan.authenticate(password);
-                        ((Application) getApplicationContext()).setAuthMan(authMan);
+                        AuthenticationManager
+                                .newAuthManInitialKeyGenWithAuthentication(password)
+                                .setAsApplicationAuthenticationManager(getApplicationContext());
                     } catch (AuthenticationException e) {
                         Log.e(this.getClass().getSimpleName(),
                                 "Error during authentication at FirstRunActivity", e);

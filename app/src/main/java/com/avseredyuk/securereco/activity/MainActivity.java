@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         if (!((Application) getApplicationContext()).authHolder.isLocked()) {
-            ((Application) getApplicationContext()).setAuthMan(null);
+            ((Application) getApplicationContext()).eraseAuthMan();
         }
         System.out.println("MA STOPPED");
     }
@@ -163,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void menuItemAuthenticate() {
         if (((Application) getApplicationContext()).isAuthenticated()) {
-            ((Application) getApplicationContext()).setAuthMan(null);
+            ((Application) getApplicationContext()).eraseAuthMan();
 
             ActionBar actionBar = getSupportActionBar();
             if (actionBar != null) {
@@ -190,9 +190,9 @@ public class MainActivity extends AppCompatActivity {
                                 public void onClick(DialogInterface dialog,int id) {
                                     String password = userInput.getText().toString();
                                     try {
-                                        AuthenticationManager authMan = new AuthenticationManager();
-                                        authMan.authenticate(password);
-                                        ((Application) getApplicationContext()).setAuthMan(authMan);
+                                        AuthenticationManager
+                                                .newAuthManWithAuthentication(password)
+                                                .setAsApplicationAuthenticationManager(getApplicationContext());
 
                                         ActionBar actionBar = getSupportActionBar();
                                         if (actionBar != null) {

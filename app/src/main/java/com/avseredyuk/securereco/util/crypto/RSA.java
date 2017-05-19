@@ -24,33 +24,6 @@ import static com.avseredyuk.securereco.util.Constant.*;
  */
 public class RSA {
     private static final String RSA = "RSA";
-    private Cipher cipher;
-
-    public void initPublicKey() throws CryptoException{
-        String keyStringBaseEncoded = ConfigUtil.readValue(PUBLIC_KEY);
-        byte[] keyBaseEncoded = Base64.decode(keyStringBaseEncoded, Base64.DEFAULT);
-        try {
-            PublicKey publicKey = KeyFactory.getInstance(RSA).generatePublic(new X509EncodedKeySpec(keyBaseEncoded));
-            cipher = Cipher.getInstance(RSA);
-            cipher.init(Cipher.ENCRYPT_MODE, publicKey);
-        } catch (Exception e) {
-            Log.e(getClass().getSimpleName(),
-                    "Exception at init public key", e);
-            throw new CryptoException(e);
-        }
-    }
-
-    public void initPrivateKey(byte[] key) throws CryptoException{
-        try {
-            PrivateKey privateKey = KeyFactory.getInstance(RSA).generatePrivate(new PKCS8EncodedKeySpec(key));
-            cipher = Cipher.getInstance(RSA);
-            cipher.init(Cipher.DECRYPT_MODE, privateKey);
-        } catch (Exception e) {
-            Log.e(getClass().getSimpleName(),
-                    "Exception at init private key", e);
-            throw new CryptoException(e);
-        }
-    }
 
     public static KeyPair generateKeyPair() throws CryptoException {
         try {
@@ -64,14 +37,31 @@ public class RSA {
         }
     }
 
-    public byte[] doFinal(byte[] input) throws CryptoException{
+    public static Cipher getPublicKeyCipher() throws CryptoException{
+        String keyStringBaseEncoded = ConfigUtil.readValue(PUBLIC_KEY);
+        byte[] keyBaseEncoded = Base64.decode(keyStringBaseEncoded, Base64.DEFAULT);
         try {
-            return cipher.doFinal(input);
+            PublicKey publicKey = KeyFactory.getInstance(RSA).generatePublic(new X509EncodedKeySpec(keyBaseEncoded));
+            Cipher localCipher = Cipher.getInstance(RSA);
+            localCipher.init(Cipher.ENCRYPT_MODE, publicKey);
+            return localCipher;
         } catch (Exception e) {
-            Log.e(getClass().getSimpleName(),
-                    "Exception at doFinal", e);
+            Log.e(RSA.getClass().getSimpleName(),
+                    "Exception at getPublicKeyCipher", e);
             throw new CryptoException(e);
         }
     }
 
+    public static Cipher getPrivateKeyCipher(byte[] key) throws CryptoException{
+        try {
+            PrivateKey privateKey = KeyFactory.getInstance(RSA).generatePrivate(new PKCS8EncodedKeySpec(key));
+            Cipher localCipher = Cipher.getInstance(RSA);
+            localCipher.init(Cipher.DECRYPT_MODE, privateKey);
+            return localCipher;
+        } catch (Exception e) {
+            Log.e(RSA.getClass().getSimpleName(),
+                    "Exception at getPrivateKeyCipher", e);
+            throw new CryptoException(e);
+        }
+    }
 }
