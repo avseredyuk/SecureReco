@@ -7,7 +7,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaRecorder;
-import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -163,7 +162,7 @@ public class PhonecallReceiver extends BroadcastReceiver {
     }
 
     private File getOutputFile() {
-        File sampleDir = new File(Environment.getExternalStorageDirectory(), "/" + CALL_LOGS_DIRECTORY);
+        File sampleDir = new File(StringUtil.getCallLogsDir());
         sampleDir.mkdirs();
         return new File(sampleDir, StringUtil.formatFileName(savedNumber, callStartTime, isIncoming));
     }

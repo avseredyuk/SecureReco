@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.IBinder;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 
 import com.avseredyuk.securereco.receiver.PhonecallReceiver;
 
@@ -36,7 +35,4 @@ public class RecorderService extends Service {
         this.registerReceiver(phoneCallReceiver, filter);
         return super.onStartCommand(intent, flags, startId);
     }
-
-
-
 }

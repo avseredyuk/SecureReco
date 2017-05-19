@@ -30,7 +30,6 @@ import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
 
 import static com.avseredyuk.securereco.util.Constant.BUF_SIZE;
-import static com.avseredyuk.securereco.util.Constant.CALL_LOGS_DIRECTORY;
 
 /**
  * Created by lenfer on 2/16/17.
@@ -54,7 +53,7 @@ public class CallDao {
 
     public List<Call> findAll() {
         List<Call> calls = new ArrayList<>();
-        File callFolder = new File(Environment.getExternalStorageDirectory(), "/" + CALL_LOGS_DIRECTORY + "/");
+        File callFolder = new File(StringUtil.getCallLogsDir());
         if (callFolder.listFiles() != null) {
             for (final File fileEntry : callFolder.listFiles()) {
                 if (!fileEntry.isDirectory()) {

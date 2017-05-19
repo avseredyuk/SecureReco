@@ -33,6 +33,10 @@ public class StringUtil {
     private StringUtil() {
     }
 
+    public static String getCallLogsDir() {
+        return Environment.getExternalStorageState() + "/" + CALL_LOGS_DIRECTORY;
+    }
+
     public static String formatFileName(String callNumber, Date datetimeStarted, boolean isIncoming) {
         return String.format("%s_%s_%s%s",
                 simpleDateFormatFileName.get().format(datetimeStarted),
@@ -47,7 +51,7 @@ public class StringUtil {
 
     public static Call getCallFromFilename(String filename) throws ParserException{
         Call call = new Call();
-        call.setFilename(Environment.getExternalStorageDirectory() + "/" + CALL_LOGS_DIRECTORY + "/" + filename);
+        call.setFilename(StringUtil.getCallLogsDir() + "/" + filename);
         Pattern p = Pattern.compile("^(\\d{2})_(\\d{2})_(\\d{4})_(\\d{2})_(\\d{2})_(\\d{2})_(.+)_([IO])\\.bin$");
         Matcher m = p.matcher(filename);
 
