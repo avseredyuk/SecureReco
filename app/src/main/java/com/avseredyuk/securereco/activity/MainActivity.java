@@ -28,6 +28,7 @@ import com.avseredyuk.securereco.model.Call;
 import com.avseredyuk.securereco.util.ConfigUtil;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.avseredyuk.securereco.util.Constant.IS_ENABLED;
@@ -35,6 +36,7 @@ import static com.avseredyuk.securereco.util.Constant.NOTIFICATION_ON;
 
 public class MainActivity extends AppCompatActivity {
     private CallArrayAdapter callArrayAdapter;
+    List<Call> calls = new ArrayList<>();
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -45,6 +47,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ListView callsListView = (ListView) findViewById(R.id.listView);
+        callArrayAdapter = new CallArrayAdapter(this, calls);
+        callsListView.setAdapter(callArrayAdapter);
         System.out.println("MA CREATED");
     }
 
@@ -56,10 +61,9 @@ public class MainActivity extends AppCompatActivity {
             Log.e("LOCK","MainActivity.onResume() on resume can't lock");
         }
 
-        ListView callsListView = (ListView) findViewById(R.id.listView);
-        List<Call> calls = CallDao.getInstance().findAll(Call.CallDateComparator);
-        callArrayAdapter = new CallArrayAdapter(this, calls);
-        callsListView.setAdapter(callArrayAdapter);
+        calls.clear();
+        calls.addAll(CallDao.getInstance().findAll(Call.CallDateComparator));
+        callArrayAdapter.notifyDataSetChanged();
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
