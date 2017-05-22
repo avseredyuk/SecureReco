@@ -123,6 +123,10 @@ public class PhonecallReceiver extends BroadcastReceiver {
     }
 
     private void startRecording() {
+        System.out.println(">>>>>>>>>>>>>>>>>>> REC START");
+        if (recordStarted) {
+            stopRecording();
+        }
         recorder = new MediaRecorder();
         recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
         recorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
@@ -142,6 +146,7 @@ public class PhonecallReceiver extends BroadcastReceiver {
     }
 
     private void stopRecording() {
+        System.out.println(">>>>>>>>>>>>>>>>>>> REC END");
         if (recordStarted) {
             recorder.stop();
             recordStarted = false;
