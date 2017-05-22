@@ -6,14 +6,11 @@ import android.os.SystemClock;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
 import com.avseredyuk.securereco.R;
 import com.avseredyuk.securereco.auth.AuthenticationManager;
 import com.avseredyuk.securereco.util.ArrayUtil;
-
-import static com.avseredyuk.securereco.util.Constant.SPLASH_SHOW_TIME_IN_SECONDS;
 
 /**
  * Created by lenfer on 3/1/17.
@@ -30,7 +27,6 @@ public class Application extends android.app.Application {
         super.onCreate();
         instance = this;
         contactPhotoCache.put(null, BitmapFactory.decodeResource(getResources(), R.drawable.avatar_unknown));
-        SystemClock.sleep(TimeUnit.SECONDS.toMillis(SPLASH_SHOW_TIME_IN_SECONDS));
     }
 
     public Map<String, Bitmap> getContactPhotoCache() {
