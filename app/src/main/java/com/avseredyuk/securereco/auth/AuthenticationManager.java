@@ -42,8 +42,8 @@ public class AuthenticationManager {
         return new AuthenticationManager().authenticate(password);
     }
 
-    public AuthenticationManager setAsApplicationAuthenticationManager(Context context) {
-        ((Application) context).setAuthMan(this);
+    public AuthenticationManager setAsApplicationAuthenticationManager() {
+        Application.getInstance().setAuthMan(this);
         return this;
     }
 

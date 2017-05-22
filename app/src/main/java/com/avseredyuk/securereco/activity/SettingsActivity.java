@@ -61,7 +61,7 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        if (!((Application) getApplicationContext()).authHolder.tryLock()) {
+        if (!Application.getInstance().authHolder.tryLock()) {
             Log.e("LOCK","SettingsActivity.onResume() on resume can't lock");
         }
 
@@ -73,7 +73,7 @@ public class SettingsActivity extends AppCompatActivity {
             regenerateRSAKeysButton.setEnabled(true);
         }
 
-        if (((Application) getApplicationContext()).isAuthenticated()) {
+        if (Application.getInstance().isAuthenticated()) {
             oldPasswordEdit.setText(Constant.PASSWORD_FILLER);
             oldPasswordEdit.setEnabled(false);
         } else {
@@ -84,7 +84,7 @@ public class SettingsActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             int color;
-            if (((Application) getApplicationContext()).isAuthenticated()) {
+            if (Application.getInstance().isAuthenticated()) {
                 color = R.color.colorAuthenticated;
             } else {
                 color = R.color.colorPrimary;
@@ -100,15 +100,15 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        ((Application) getApplicationContext()).authHolder.unlock();
+        Application.getInstance().authHolder.unlock();
         System.out.println("SA PAUSED");
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        if (!((Application) getApplicationContext()).authHolder.isLocked()) {
-            ((Application) getApplicationContext()).setAuthMan(null);
+        if (!Application.getInstance().authHolder.isLocked()) {
+            Application.getInstance().setAuthMan(null);
         }
         System.out.println("SA STOPPED");
     }
@@ -128,15 +128,15 @@ public class SettingsActivity extends AppCompatActivity {
                         Toast.LENGTH_SHORT).show();
                 return;
             }
-            if (((Application) getApplicationContext()).isAuthenticated()) {
-                authMan = ((Application) getApplicationContext()).getAuthMan();
+            if (Application.getInstance().isAuthenticated()) {
+                authMan = Application.getInstance().getAuthMan();
             } else {
                 String oldPassword = oldPasswordEdit.getText().toString();
                 if (oldPassword.length() > 0) {
                     try {
                         authMan = AuthenticationManager
                                 .newAuthManWithAuthentication(oldPassword)
-                                .setAsApplicationAuthenticationManager(getApplicationContext());
+                                .setAsApplicationAuthenticationManager();
                     } catch (AuthenticationException e) {
                         Log.e(this.getClass().getSimpleName(),
                                 "Error during authentication at ChangePasswordButtonClickListener", e);
@@ -172,13 +172,13 @@ public class SettingsActivity extends AppCompatActivity {
 
             String currentPassword = currentPasswordEdit.getText().toString();
             if (currentPassword.length() > 0) {
-                if (((Application) getApplicationContext()).isAuthenticated()) {
-                    authMan = ((Application) getApplicationContext()).getAuthMan();
+                if (Application.getInstance().isAuthenticated()) {
+                    authMan = Application.getInstance().getAuthMan();
                 } else {
                     try {
                         authMan = AuthenticationManager
                                 .newAuthManWithAuthentication(currentPassword)
-                                .setAsApplicationAuthenticationManager(context);
+                                .setAsApplicationAuthenticationManager();
                     } catch (AuthenticationException e) {
                         Log.e(this.getClass().getSimpleName(),
                                 "Error during authentication at RegenerateRSAKeysButtonClickListener", e);

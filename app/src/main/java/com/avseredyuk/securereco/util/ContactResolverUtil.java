@@ -26,8 +26,7 @@ public class ContactResolverUtil {
 
     //todo: refactor this trash
     public static String getContactName(Context context, String number) {
-        Application application = (Application) context.getApplicationContext();
-        Map<String, String> contactNameCache = application.getContactNameCache();
+        Map<String, String> contactNameCache = Application.getInstance().getContactNameCache();
         String contactName = contactNameCache.get(number);
         if (contactName != null) {
             return contactName;
@@ -52,8 +51,7 @@ public class ContactResolverUtil {
 
     //todo: refactor this trash
     public static Bitmap retrieveContactPhoto(Context context, String number) {
-        Application application = (Application) context.getApplicationContext();
-        Map<String, Bitmap> contactPhotoCache = application.getContactPhotoCache();
+        Map<String, Bitmap> contactPhotoCache = Application.getInstance().getContactPhotoCache();
         Bitmap photo = contactPhotoCache.get(number);
         if (photo != null) {
             return photo;

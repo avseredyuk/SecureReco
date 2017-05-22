@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        if (!((Application) getApplicationContext()).authHolder.tryLock()) {
+        if (!Application.getInstance().authHolder.tryLock()) {
             Log.e("LOCK","MainActivity.onResume() on resume can't lock");
         }
 
@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             int color;
-            if (((Application) getApplicationContext()).isAuthenticated()) {
+            if (Application.getInstance().isAuthenticated()) {
                 color = R.color.colorAuthenticated;
             } else {
                 color = R.color.colorPrimary;
@@ -80,15 +80,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        ((Application) getApplicationContext()).authHolder.unlock();
+        Application.getInstance().authHolder.unlock();
         System.out.println("MA PAUSED");
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        if (!((Application) getApplicationContext()).authHolder.isLocked()) {
-            ((Application) getApplicationContext()).eraseAuthMan();
+        if (!Application.getInstance().authHolder.isLocked()) {
+            Application.getInstance().eraseAuthMan();
         }
         System.out.println("MA STOPPED");
     }
@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         String authItemTitle;
-        if (((Application) getApplicationContext()).isAuthenticated()) {
+        if (Application.getInstance().isAuthenticated()) {
             authItemTitle = getString(R.string.menu_item_deauthenticate);
         } else {
             authItemTitle = getString(R.string.menu_item_authenticate);
@@ -162,8 +162,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void menuItemAuthenticate() {
-        if (((Application) getApplicationContext()).isAuthenticated()) {
-            ((Application) getApplicationContext()).eraseAuthMan();
+        if (Application.getInstance().isAuthenticated()) {
+            Application.getInstance().eraseAuthMan();
 
             ActionBar actionBar = getSupportActionBar();
             if (actionBar != null) {
@@ -192,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
                                     try {
                                         AuthenticationManager
                                                 .newAuthManWithAuthentication(password)
-                                                .setAsApplicationAuthenticationManager(getApplicationContext());
+                                                .setAsApplicationAuthenticationManager();
 
                                         ActionBar actionBar = getSupportActionBar();
                                         if (actionBar != null) {

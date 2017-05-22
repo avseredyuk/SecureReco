@@ -41,7 +41,7 @@ public class FirstRunActivity extends AppCompatActivity {
                     try {
                         AuthenticationManager
                                 .newAuthManInitialKeyGenWithAuthentication(password)
-                                .setAsApplicationAuthenticationManager(getApplicationContext());
+                                .setAsApplicationAuthenticationManager();
                     } catch (AuthenticationException e) {
                         Log.e(this.getClass().getSimpleName(),
                                 "Error during authentication at FirstRunActivity", e);

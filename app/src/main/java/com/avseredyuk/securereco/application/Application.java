@@ -23,10 +23,12 @@ public class Application extends android.app.Application {
     private Map<String, String> contactNameCache = new HashMap<>();
     private AuthenticationManager authMan = null;
     public ReentrantLock authHolder = new ReentrantLock();
+    private static Application instance;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        instance = this;
         contactPhotoCache.put(null, BitmapFactory.decodeResource(getResources(), R.drawable.avatar_unknown));
         SystemClock.sleep(TimeUnit.SECONDS.toMillis(SPLASH_SHOW_TIME_IN_SECONDS));
     }
@@ -56,5 +58,9 @@ public class Application extends android.app.Application {
 
     public boolean isAuthenticated() {
         return authMan != null;
+    }
+
+    public static Application getInstance() {
+        return instance;
     }
 }

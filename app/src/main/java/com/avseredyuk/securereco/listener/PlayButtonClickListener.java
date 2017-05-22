@@ -23,9 +23,9 @@ public class PlayButtonClickListener implements View.OnClickListener {
     public void onClick(View v) {
         final Call call = (Call) v.getTag();
 
-        if (((Application) context.getApplicationContext()).isAuthenticated()) {
+        if (Application.getInstance().isAuthenticated()) {
             CallDao.getInstance().play(call,
-                    ((Application) context.getApplicationContext()).getAuthMan());
+                    Application.getInstance().getAuthMan());
         } else {
             Toast.makeText(context,
                     context.getString(R.string.toast_please_authenticate_first),
