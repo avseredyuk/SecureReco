@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         ListView callsListView = (ListView) findViewById(R.id.listView);
-        List<Call>  calls = CallDao.getInstance().findAll(Call.CallDateComparator);
+        List<Call> calls = CallDao.getInstance().findAll(Call.CallDateComparator);
         callArrayAdapter = new CallArrayAdapter(this, calls);
         callsListView.setAdapter(callArrayAdapter);
 
