@@ -34,7 +34,7 @@ public class StringUtil {
     }
 
     public static String getCallLogsDir() {
-        return Environment.getExternalStorageState() + "/" + CALL_LOGS_DIRECTORY;
+        return Environment.getExternalStorageDirectory() + "/" + CALL_LOGS_DIRECTORY;
     }
 
     public static String formatFileName(String callNumber, Date datetimeStarted, boolean isIncoming) {
