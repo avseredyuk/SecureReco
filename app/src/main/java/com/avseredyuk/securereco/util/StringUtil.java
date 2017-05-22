@@ -29,6 +29,9 @@ public class StringUtil {
             return new SimpleDateFormat("dd/MM/yyyy HH:mm");
         }
     };
+    private static final Pattern callFromFilenamePattern =
+            Pattern.compile("^(\\d{2})_(\\d{2})_(\\d{4})_(\\d{2})_(\\d{2})_(\\d{2})_(.+)_([IO])\\.bin$");
+
 
     private StringUtil() {
     }
@@ -52,8 +55,7 @@ public class StringUtil {
     public static Call getCallFromFilename(String filename) throws ParserException{
         Call call = new Call();
         call.setFilename(StringUtil.getCallLogsDir() + "/" + filename);
-        Pattern p = Pattern.compile("^(\\d{2})_(\\d{2})_(\\d{4})_(\\d{2})_(\\d{2})_(\\d{2})_(.+)_([IO])\\.bin$");
-        Matcher m = p.matcher(filename);
+        Matcher m = callFromFilenamePattern.matcher(filename);
 
         if (m.matches() && (m.groupCount() == 8)) {
 
