@@ -29,9 +29,6 @@ public class StringUtil {
             return new SimpleDateFormat("dd/MM/yyyy HH:mm");
         }
     };
-    private static final Pattern callFromFilenamePattern =
-            Pattern.compile("^(\\d{2})_(\\d{2})_(\\d{4})_(\\d{2})_(\\d{2})_(\\d{2})_(.+)_([IO])\\.bin$");
-
 
     private StringUtil() {
     }
@@ -55,18 +52,16 @@ public class StringUtil {
     public static Call getCallFromFilename(String filename) throws ParserException{
         Call call = new Call();
         call.setFilename(StringUtil.getCallLogsDir() + "/" + filename);
-        Matcher m = callFromFilenamePattern.matcher(filename);
 
-        if (m.matches() && (m.groupCount() == 8)) {
-
-            int day = Integer.parseInt(m.group(1));
-            int month = Integer.parseInt(m.group(2));
-            int year = Integer.parseInt(m.group(3));
-            int hour = Integer.parseInt(m.group(4));
-            int minute = Integer.parseInt(m.group(5));
-            int second = Integer.parseInt(m.group(6));
-            String number = m.group(7);
-            String isIncoming = m.group(8);
+        try {
+            int day = Integer.parseInt(filename.substring(0, 2));
+            int month = Integer.parseInt(filename.substring(3, 5));
+            int year = Integer.parseInt(filename.substring(6, 10));
+            int hour = Integer.parseInt(filename.substring(11, 13));
+            int minute = Integer.parseInt(filename.substring(14, 16));
+            int second = Integer.parseInt(filename.substring(17, 19));
+            String number = filename.substring(20, filename.length() - 6);
+            boolean isIncoming = "I".equals(filename.substring(filename.length()-5, filename.length()-4));
 
             Calendar c = Calendar.getInstance();
             c.set(year, month - 1, day, hour, minute, second);
@@ -74,11 +69,12 @@ public class StringUtil {
 
             call.setDatetimeStarted(datetimeStarted);
             call.setCallNumber(number);
-            call.setIsIncoming("I".equals(isIncoming));
+            call.setIsIncoming(isIncoming);
 
             return call;
-        } else {
-            throw new ParserException("Exception at parsing encrypted call filename");
+
+        } catch (StringIndexOutOfBoundsException | NumberFormatException e) {
+            throw new ParserException("Exception at parsing encrypted call filename", e);
         }
     }
 
