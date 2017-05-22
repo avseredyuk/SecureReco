@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import com.avseredyuk.securereco.application.Application;
 import com.avseredyuk.securereco.service.RecorderService;
 import com.avseredyuk.securereco.util.ConfigUtil;
 
@@ -22,9 +23,9 @@ public class SplashActivity extends AppCompatActivity {
         } else {
             activityClass = FirstRunActivity.class;
         }
-        startActivity(new Intent(this, activityClass));
+        startActivity(new Intent(Application.getInstance(), activityClass));
 
-        startService(new Intent(this, RecorderService.class));
+        startService(new Intent(Application.getInstance(), RecorderService.class));
 
         finish();
     }

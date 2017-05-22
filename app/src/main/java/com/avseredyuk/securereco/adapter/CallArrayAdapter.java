@@ -10,9 +10,11 @@ import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.avseredyuk.securereco.R;
-import com.avseredyuk.securereco.listener.PlayButtonClickListener;
+import com.avseredyuk.securereco.application.Application;
+import com.avseredyuk.securereco.dao.CallDao;
 import com.avseredyuk.securereco.model.Call;
 import com.avseredyuk.securereco.util.ContactResolverUtil;
 import com.avseredyuk.securereco.util.StringUtil;
@@ -23,8 +25,8 @@ import java.util.List;
 /**
  * Created by lenfer on 2/15/17.
  */
-public class CallArrayAdapter extends ArrayAdapter<Call> {
-    private final Context context;
+public class CallArrayAdapter extends ArrayAdapter<Call>
+        implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
     private final List<Integer> checkedItemsIndexes = new ArrayList<>();
 
     private static class ViewHolder {
@@ -38,7 +40,6 @@ public class CallArrayAdapter extends ArrayAdapter<Call> {
 
     public CallArrayAdapter(Context context, List<Call> calls) {
         super(context, R.layout.list_item, calls);
-        this.context = context;
     }
 
     @Override
@@ -47,7 +48,7 @@ public class CallArrayAdapter extends ArrayAdapter<Call> {
         ViewHolder viewHolder;
         if (convertView == null) {
             viewHolder = new ViewHolder();
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.list_item, parent, false);
 
             viewHolder.firstLine = (TextView) convertView.findViewById(R.id.contactName);
@@ -62,27 +63,18 @@ public class CallArrayAdapter extends ArrayAdapter<Call> {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        viewHolder.firstLine.setText(ContactResolverUtil.getContactName(context, call.getCallNumber()));
+        viewHolder.firstLine.setText(ContactResolverUtil.getContactName(getContext(), call.getCallNumber()));
         viewHolder.firstLine.setTextColor(
                 call.isIncoming()
-                        ? context.getResources().getColor(R.color.colorCallIncoming)
-                        : context.getResources().getColor(R.color.colorCallOutgoing));
+                        ? getContext().getResources().getColor(R.color.colorCallIncoming)
+                        : getContext().getResources().getColor(R.color.colorCallOutgoing));
         viewHolder.secondLine.setText(call.getCallNumber());
         viewHolder.thirdLine.setText(StringUtil.formatDate(call.getDatetimeStarted()));
-        viewHolder.imageView.setImageBitmap(ContactResolverUtil.retrieveContactPhoto(context, call.getCallNumber()));
+        viewHolder.imageView.setImageBitmap(ContactResolverUtil.retrieveContactPhoto(getContext(), call.getCallNumber()));
         viewHolder.playBtn.setTag(call);
-        viewHolder.playBtn.setOnClickListener(new PlayButtonClickListener(context));
-
-        viewHolder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    checkedItemsIndexes.add(position);
-                } else {
-                    checkedItemsIndexes.remove(Integer.valueOf(position));
-                }
-            }
-        });
+        viewHolder.playBtn.setOnClickListener(this);
+        viewHolder.checkBox.setTag(position);
+        viewHolder.checkBox.setOnCheckedChangeListener(this);
         boolean isItemChecked = checkedItemsIndexes.contains(position);
         viewHolder.checkBox.setChecked(isItemChecked);
 
@@ -101,4 +93,27 @@ public class CallArrayAdapter extends ArrayAdapter<Call> {
         checkedItemsIndexes.clear();
     }
 
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        Integer position = (Integer) buttonView.getTag();
+        if (isChecked) {
+            checkedItemsIndexes.add(position);
+        } else {
+            checkedItemsIndexes.remove(position);
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        Call call = (Call) v.getTag();
+
+        if (Application.getInstance().isAuthenticated()) {
+            CallDao.getInstance().play(call,
+                    Application.getInstance().getAuthMan());
+        } else {
+            Toast.makeText(getContext(),
+                    getContext().getString(R.string.toast_please_authenticate_first),
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
 }
