@@ -249,10 +249,9 @@ public class MainActivity extends AppCompatActivity {
         String toastText;
         if (callArrayAdapter.getCheckedCount() > 0) {
             List<Integer> checkedIndexes = callArrayAdapter.getCheckedStatuses();
-            for (Integer i : checkedIndexes) {
+            for (int i : checkedIndexes) {
                 Call call = callArrayAdapter.getItem(i);
-                File file = new File(call.getFilename());
-                if (file.delete()) {
+                if (CallDao.getInstance().delete(call)) {
                     callArrayAdapter.remove(call);
                 }
             }

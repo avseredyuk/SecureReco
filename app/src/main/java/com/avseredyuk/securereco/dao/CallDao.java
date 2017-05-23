@@ -1,6 +1,5 @@
 package com.avseredyuk.securereco.dao;
 
-import android.os.Environment;
 import android.util.Log;
 
 import com.avseredyuk.securereco.auth.AuthenticationManager;
@@ -68,6 +67,11 @@ public class CallDao {
             }
         }
         return calls;
+    }
+
+    public boolean delete(Call call) {
+        File file = new File(call.getFilename());
+        return file.delete();
     }
 
     public boolean reEncryptHeader(Call call, byte[] oldPrivateKey) {
