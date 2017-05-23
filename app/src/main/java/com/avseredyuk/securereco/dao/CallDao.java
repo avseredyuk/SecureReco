@@ -74,6 +74,14 @@ public class CallDao {
         return file.delete();
     }
 
+    public File createFile(Call call) {
+        File sampleDir = new File(StringUtil.getCallLogsDir());
+        sampleDir.mkdirs();
+        return new File(sampleDir, StringUtil.formatFileName(call.getCallNumber(),
+                call.getDatetimeStarted(),
+                call.isIncoming()));
+    }
+
     public boolean reEncryptHeader(Call call, byte[] oldPrivateKey) {
         byte[] fileHeaderEncrypted = new byte[ENCRYPTED_HEADER_SIZE];
         RandomAccessFile f = null;

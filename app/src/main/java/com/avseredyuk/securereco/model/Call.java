@@ -15,6 +15,12 @@ public class Call {
     public Call() {
     }
 
+    public Call(String callNumber, Date datetimeStarted, boolean isIncoming) {
+        this.callNumber = callNumber;
+        this.datetimeStarted = datetimeStarted;
+        this.isIncoming = isIncoming;
+    }
+
     public static final Comparator<Call> CallDateComparator = new Comparator<Call>() {
 
         public int compare(Call call1, Call call2) {
