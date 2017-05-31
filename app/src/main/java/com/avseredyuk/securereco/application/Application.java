@@ -2,7 +2,6 @@ package com.avseredyuk.securereco.application;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.SystemClock;
 
 import java.util.HashMap;
 import java.util.Map;

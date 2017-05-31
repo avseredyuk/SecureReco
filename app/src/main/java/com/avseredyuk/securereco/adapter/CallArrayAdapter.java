@@ -1,6 +1,7 @@
 package com.avseredyuk.securereco.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.avseredyuk.securereco.R;
+import com.avseredyuk.securereco.activity.PlayerActivity;
 import com.avseredyuk.securereco.application.Application;
 import com.avseredyuk.securereco.dao.CallDao;
 import com.avseredyuk.securereco.model.Call;
@@ -21,6 +23,8 @@ import com.avseredyuk.securereco.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.avseredyuk.securereco.util.Constant.CALL_DECRYPTED_INTENT_DATA_NAME;
 
 /**
  * Created by lenfer on 2/15/17.
@@ -108,8 +112,10 @@ public class CallArrayAdapter extends ArrayAdapter<Call>
         Call call = (Call) v.getTag();
 
         if (Application.getInstance().isAuthenticated()) {
-            CallDao.getInstance().play(call,
-                    Application.getInstance().getAuthMan());
+            byte[] callData = CallDao.getInstance().play(call, Application.getInstance().getAuthMan());
+            Intent playIntent = new Intent(Application.getInstance(), PlayerActivity.class);
+            playIntent.putExtra(CALL_DECRYPTED_INTENT_DATA_NAME, callData);
+            getContext().startActivity(playIntent);
         } else {
             Toast.makeText(getContext(),
                     getContext().getString(R.string.toast_please_authenticate_first),

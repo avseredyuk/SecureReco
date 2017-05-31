@@ -13,10 +13,10 @@ import android.util.Log;
 
 import com.avseredyuk.securereco.R;
 import com.avseredyuk.securereco.activity.MainActivity;
+import com.avseredyuk.securereco.dao.CallDao;
+import com.avseredyuk.securereco.model.Call;
 import com.avseredyuk.securereco.util.ConfigUtil;
-import com.avseredyuk.securereco.util.StringUtil;
 
-import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -162,14 +162,12 @@ public class PhonecallReceiver extends BroadcastReceiver {
     private FileDescriptor getStreamFd() throws IOException{
         pipe = ParcelFileDescriptor.createPipe();
         new PipeProcessingThread(new ParcelFileDescriptor.AutoCloseInputStream(pipe[0]),
-                new FileOutputStream(getOutputFile())).start();
+                new FileOutputStream(
+                        CallDao.getInstance().createFile(
+                                new Call(savedNumber, callStartTime, isIncoming)
+                        )
+                )).start();
         return pipe[1].getFileDescriptor();
-    }
-
-    private File getOutputFile() {
-        File sampleDir = new File(StringUtil.getCallLogsDir());
-        sampleDir.mkdirs();
-        return new File(sampleDir, StringUtil.formatFileName(savedNumber, callStartTime, isIncoming));
     }
 
     private void onIncomingCallReceived(Context ctx, String number, Date start) {

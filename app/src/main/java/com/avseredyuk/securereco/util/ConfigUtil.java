@@ -65,7 +65,8 @@ public class ConfigUtil {
             json = new JSONObject();
         }
 
-        File configFile = new File(Environment.getExternalStorageDirectory(), "/" + APP_DIRECTORY + "/" + CONFIG_FILE);
+        File configFile = new File(Environment.getExternalStorageDirectory(), APP_DIRECTORY + "/" + CONFIG_FILE);
+        configFile.getParentFile().mkdirs();
         OutputStream out = null;
         try {
             out = new FileOutputStream(configFile);

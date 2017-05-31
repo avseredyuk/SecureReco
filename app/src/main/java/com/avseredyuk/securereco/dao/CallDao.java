@@ -1,6 +1,5 @@
 package com.avseredyuk.securereco.dao;
 
-import android.os.Environment;
 import android.util.Log;
 
 import com.avseredyuk.securereco.auth.AuthenticationManager;
@@ -70,6 +69,19 @@ public class CallDao {
         return calls;
     }
 
+    public boolean delete(Call call) {
+        File file = new File(call.getFilename());
+        return file.delete();
+    }
+
+    public File createFile(Call call) {
+        File sampleDir = new File(StringUtil.getCallLogsDir());
+        sampleDir.mkdirs();
+        return new File(sampleDir, StringUtil.formatFileName(call.getCallNumber(),
+                call.getDatetimeStarted(),
+                call.isIncoming()));
+    }
+
     public boolean reEncryptHeader(Call call, byte[] oldPrivateKey) {
         byte[] fileHeaderEncrypted = new byte[ENCRYPTED_HEADER_SIZE];
         RandomAccessFile f = null;
@@ -111,22 +123,22 @@ public class CallDao {
     }
 
     //TODO player ???
-    public boolean play(Call call, AuthenticationManager authMan)  {
+    public byte[] play(Call call, AuthenticationManager authMan)  {
         byte[] fileByteArray;
         byte[] iv = new byte[16];
         byte[] key = new byte[32];
         byte[] headerEncrypted = new byte[ENCRYPTED_HEADER_SIZE];
-        byte[] buf = new byte[BUF_SIZE];
+//        byte[] buf = new byte[BUF_SIZE];
 
         InputStream byteInputStream = null;
         CipherInputStream cipherInputStream = null;
-        OutputStream fileOutputStream = null;
+//        OutputStream fileOutputStream = null;
         try {
             Cipher rsaCipher = RSA.getPrivateKeyCipher(authMan.getPrivateKey());
 
             fileByteArray = IOUtil.readFile(call.getFilename());
 
-            File yourFile = new File("/storage/emulated/0/SecureRecoApp/file.amr");
+//            File yourFile = new File("/storage/emulated/0/SecureRecoApp/file.amr");
 
             byteInputStream = new ByteArrayInputStream(fileByteArray);
             if (byteInputStream.read(headerEncrypted) == headerEncrypted.length) {
@@ -134,15 +146,16 @@ public class CallDao {
                 key = Arrays.copyOfRange(fileHeader, 0, key.length);
                 iv = Arrays.copyOfRange(fileHeader, key.length, key.length + iv.length);
 
-                fileOutputStream = new FileOutputStream(yourFile);
+//                fileOutputStream = new FileOutputStream(yourFile);
                 cipherInputStream = new CipherInputStream(byteInputStream, AES.initDecrypt(key, iv));
 
-                int numRead;
-                while ((numRead = cipherInputStream.read(buf)) >= 0) {
-                    fileOutputStream.write(buf, 0, numRead);
-                }
-
-                return true;
+                return IOUtil.inputStreamToByteArray(cipherInputStream);
+//                int numRead;
+//                while ((numRead = cipherInputStream.read(buf)) >= 0) {
+//                    fileOutputStream.write(buf, 0, numRead);
+//                }
+//
+//                return true;
             }
         } catch (GeneralSecurityException e) {
             Log.e(getClass().getSimpleName(),
@@ -155,9 +168,9 @@ public class CallDao {
                     "Exception at playing decrypted call file", e);
         } finally {
             try {
-                if (fileOutputStream != null) {
-                    fileOutputStream.close();
-                }
+//                if (fileOutputStream != null) {
+//                    fileOutputStream.close();
+//                }
                 if (byteInputStream != null) {
                     byteInputStream.close();
                 }
@@ -169,6 +182,7 @@ public class CallDao {
                         "Exception at close stream while plaing call file", e);
             }
         }
-        return false;
+        return new byte[0];
+//        return false;
     }
 }

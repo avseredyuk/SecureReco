@@ -2,6 +2,7 @@ package com.avseredyuk.securereco.util;
 
 import android.util.Log;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,11 +10,13 @@ import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 
 /**
  * Created by lenfer on 2/20/17.
  */
 public class IOUtil {
+    private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
 
     private IOUtil() {
     }
@@ -56,5 +59,24 @@ public class IOUtil {
             throw new IOException(e);
         }
         return out.toString();
+    }
+
+    public static byte[] inputStreamToByteArray(InputStream is) throws IOException {
+        ByteArrayOutputStream os = null;
+        try {
+            os = new ByteArrayOutputStream();
+            byte[] buffer = new byte[0xFFFF];
+
+            for (int len; (len = is.read(buffer)) != -1;)
+                os.write(buffer, 0, len);
+
+            os.flush();
+
+            return os.toByteArray();
+        } finally {
+            if (os != null) {
+                os.close();
+            }
+        }
     }
 }
