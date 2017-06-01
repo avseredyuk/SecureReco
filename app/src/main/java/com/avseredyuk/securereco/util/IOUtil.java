@@ -41,7 +41,7 @@ public class IOUtil {
     }
 
     public static String readText(final InputStream is, final String charsetName) throws IOException{
-        final char[] buffer = new char[1024];
+        final char[] buffer = new char[DEFAULT_BUFFER_SIZE];
         final StringBuilder out = new StringBuilder();
         try {
             Reader in = new InputStreamReader(is, charsetName);
@@ -65,7 +65,7 @@ public class IOUtil {
         ByteArrayOutputStream os = null;
         try {
             os = new ByteArrayOutputStream();
-            byte[] buffer = new byte[0xFFFF];
+            byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
 
             for (int len; (len = is.read(buffer)) != -1;)
                 os.write(buffer, 0, len);

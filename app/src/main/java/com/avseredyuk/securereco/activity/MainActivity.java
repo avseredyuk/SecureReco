@@ -41,7 +41,6 @@ import com.avseredyuk.securereco.util.ConfigUtil;
 import com.avseredyuk.securereco.util.ContactResolverUtil;
 import com.avseredyuk.securereco.util.StringUtil;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -375,7 +374,7 @@ public class MainActivity extends AppCompatActivity
             Call call = (Call) v.getTag();
 
             if (Application.getInstance().isAuthenticated()) {
-                byte[] callData = CallDao.getInstance().play(call, Application.getInstance().getAuthMan());
+                byte[] callData = CallDao.getInstance().getDecryptedCall(call, Application.getInstance().getAuthMan());
 
                 String base64EncodedString = Base64.encodeToString(callData, Base64.DEFAULT);
                 mediaController = new MediaController(MainActivity.this);
@@ -386,13 +385,9 @@ public class MainActivity extends AppCompatActivity
                     mediaPlayer.setOnPreparedListener(MainActivity.this);
                     mediaPlayer.prepare();
                     mediaPlayer.start();
-                } catch(Exception ex){
-                    System.out.print(ex.getMessage());
+                } catch(Exception e){
+                    System.out.print(e.getMessage());
                 }
-
-//            Intent playIntent = new Intent(Application.getInstance(), PlayerActivity.class);
-//            playIntent.putExtra(CALL_DECRYPTED_INTENT_DATA_NAME, callData);
-//            getContext().startActivity(playIntent);
             } else {
                 Toast.makeText(getContext(),
                         getContext().getString(R.string.toast_please_authenticate_first),
@@ -412,7 +407,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onPrepared(MediaPlayer mp) {
-        Log.d("tag", "onPrepared");
         System.out.println("__________________________________________ PREPARED");
         mediaController.setMediaPlayer(this);
         mediaController.setAnchorView(findViewById(R.id.main_activity));
