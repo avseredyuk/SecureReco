@@ -111,16 +111,18 @@ public class MainActivity extends AppCompatActivity
         if (!Application.getInstance().authHolder.isLocked()) {
             Application.getInstance().eraseAuthMan();
         }
+        destroyMedia();
 
+        System.out.println("MA STOPPED");
+    }
+
+    private void destroyMedia() {
         if (mediaController != null) {
             mediaController.hide();
         }
         if (mediaPlayer != null) {
-            mediaPlayer.stop();
             mediaPlayer.release();
         }
-
-        System.out.println("MA STOPPED");
     }
 
     @Override
@@ -302,8 +304,6 @@ public class MainActivity extends AppCompatActivity
             implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
         private final List<Integer> checkedItemsIndexes = new ArrayList<>();
 
-
-
         public CallArrayAdapter(Context context, List<Call> calls) {
             super(context, R.layout.list_item, calls);
         }
@@ -374,10 +374,17 @@ public class MainActivity extends AppCompatActivity
             Call call = (Call) v.getTag();
 
             if (Application.getInstance().isAuthenticated()) {
+                destroyMedia();
+
                 byte[] callData = CallDao.getInstance().getDecryptedCall(call, Application.getInstance().getAuthMan());
 
                 String base64EncodedString = Base64.encodeToString(callData, Base64.DEFAULT);
-                mediaController = new MediaController(MainActivity.this);
+                mediaController = new MediaController(MainActivity.this) {
+                    @Override
+                    public void show(int timeout) {
+                        super.show(0);
+                    }
+                };
                 try {
                     String url = "data:audio/amr;base64,"+base64EncodedString;
                     mediaPlayer = new MediaPlayer();
@@ -394,15 +401,6 @@ public class MainActivity extends AppCompatActivity
                         Toast.LENGTH_SHORT).show();
             }
         }
-    }
-
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>> ON TOUCH EVENT");
-        //the MediaController will hide after 3 seconds - tap the screen to make it appear again
-        mediaController.show();
-        return false;
     }
 
     @Override
