@@ -53,8 +53,6 @@ public class SettingsActivity extends AppCompatActivity {
 
         changePasswordButton.setOnClickListener(new ChangePasswordButtonClickListener());
         regenerateRSAKeysButton.setOnClickListener(new RegenerateRSAKeysButtonClickListener());
-
-        System.out.println("SA CREATED");
     }
 
     @Override
@@ -93,15 +91,12 @@ public class SettingsActivity extends AppCompatActivity {
                     new ColorDrawable(
                             getResources().getColor(color)));
         }
-
-        System.out.println("SA RESUMED");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         Application.getInstance().authHolder.unlock();
-        System.out.println("SA PAUSED");
     }
 
     @Override
@@ -110,7 +105,6 @@ public class SettingsActivity extends AppCompatActivity {
         if (!Application.getInstance().authHolder.isLocked()) {
             Application.getInstance().setAuthMan(null);
         }
-        System.out.println("SA STOPPED");
     }
 
     private class ChangePasswordButtonClickListener implements View.OnClickListener {

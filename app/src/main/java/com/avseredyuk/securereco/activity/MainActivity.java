@@ -68,7 +68,6 @@ public class MainActivity extends AppCompatActivity
         ListView callsListView = (ListView) findViewById(R.id.listView);
         callArrayAdapter = new CallArrayAdapter(this, calls);
         callsListView.setAdapter(callArrayAdapter);
-        System.out.println("MA CREATED");
     }
 
     @Override
@@ -95,15 +94,12 @@ public class MainActivity extends AppCompatActivity
                     new ColorDrawable(
                             getResources().getColor(color)));
         }
-
-        System.out.println("MA RESUMED");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         Application.getInstance().authHolder.unlock();
-        System.out.println("MA PAUSED");
     }
 
     @Override
@@ -113,8 +109,6 @@ public class MainActivity extends AppCompatActivity
             Application.getInstance().eraseAuthMan();
         }
         destroyMedia();
-
-        System.out.println("MA STOPPED");
     }
 
     private void destroyMedia() {
@@ -421,10 +415,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onPrepared(MediaPlayer mp) {
-        System.out.println("__________________________________________ PREPARED");
         mediaController.setMediaPlayer(this);
         mediaController.setAnchorView(findViewById(R.id.main_activity));
-
         handler.post(new Runnable() {
             public void run() {
                 mediaPlayer.start();
