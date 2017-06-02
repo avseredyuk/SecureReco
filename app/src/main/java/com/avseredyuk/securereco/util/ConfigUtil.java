@@ -68,6 +68,10 @@ public class ConfigUtil {
         return Boolean.valueOf(readValue(key));
     }
 
+    public static boolean writeBoolean(String name, Boolean value) {
+        return writeValue(name, value.toString());
+    }
+
     public static boolean writeValue(String name, String value) {
         JSONObject json = readObject();
         if (json == null) {
