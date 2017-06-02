@@ -25,6 +25,7 @@
     <string name="toast_wrong_old_password">Wrong old password</string>
     <string name="toast_please_enter_password">Please enter password</string>
     <string name="toast_please_authenticate_first">Please authenticate first</string>
+    <string name="toast_media_player_failed_init">Failed to initialize MediaPlayer</string>
     <string name="password_dialog_button_ok">OK</string>
     <string name="password_dialog_button_cancel">Cancel</string>
     <string name="activity_settings_regenerate_button">Re-generate</string>

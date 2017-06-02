@@ -395,7 +395,6 @@ public class MainActivity extends AppCompatActivity
                     public boolean dispatchKeyEvent(KeyEvent event) {
                         if (event.getKeyCode() == KeyEvent.KEYCODE_BACK)
                             destroyMedia();
-
                         return super.dispatchKeyEvent(event);
                     }
                 };
@@ -406,8 +405,11 @@ public class MainActivity extends AppCompatActivity
                     mediaPlayer.setOnPreparedListener(MainActivity.this);
                     mediaPlayer.prepareAsync();
                 } catch(Exception e){
-                    e.printStackTrace();
-                    System.out.print(e.getMessage());
+                    Log.e(this.getClass().getSimpleName(),
+                            "Error during playing preparing MediaPlayer at MainActivity", e);
+                    Toast.makeText(getContext(),
+                            getContext().getString(R.string.toast_media_player_failed_init),
+                            Toast.LENGTH_SHORT).show();
                 }
             } else {
                 Toast.makeText(getContext(),
