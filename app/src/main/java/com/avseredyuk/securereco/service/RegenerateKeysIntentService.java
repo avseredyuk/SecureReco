@@ -44,13 +44,11 @@ public class RegenerateKeysIntentService extends IntentService {
     @Override
     public void onCreate() {
         super.onCreate();
-        System.out.println("IS CREATED");
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        System.out.println("IS DESTROYED");
     }
 
     public class DisplayToast implements Runnable {
