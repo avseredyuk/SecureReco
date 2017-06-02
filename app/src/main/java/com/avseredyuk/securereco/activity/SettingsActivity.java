@@ -9,6 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -17,13 +19,17 @@ import com.avseredyuk.securereco.application.Application;
 import com.avseredyuk.securereco.auth.AuthenticationManager;
 import com.avseredyuk.securereco.exception.AuthenticationException;
 import com.avseredyuk.securereco.service.RegenerateKeysIntentService;
+import com.avseredyuk.securereco.util.ConfigUtil;
 import com.avseredyuk.securereco.util.Constant;
+
+import static com.avseredyuk.securereco.util.Constant.DEAUTH_ON_BACKGROUND;
 
 /**
  * Created by lenfer on 3/1/17.
  */
 public class SettingsActivity extends AppCompatActivity {
     private Context context;
+    private CheckBox resetOnBackgroundCheckBox;
     private EditText currentPasswordEdit;
     private Button regenerateRSAKeysButton;
     private EditText oldPasswordEdit;
@@ -44,13 +50,15 @@ public class SettingsActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_settings);
 
+        resetOnBackgroundCheckBox = (CheckBox) findViewById(R.id.deauthOnBackgroundCheckBox);
         oldPasswordEdit = (EditText) findViewById(R.id.oldPasswordEdit);
         newPasswordEdit1 = (EditText) findViewById(R.id.newPasswordEdit1);
         newPasswordEdit2 = (EditText) findViewById(R.id.newPasswordEdit2);
         currentPasswordEdit = (EditText) findViewById(R.id.regenCurrentPasswordEdit);
-        regenerateRSAKeysButton = (Button) findViewById(R.id.regenButton);
         changePasswordButton = (Button) findViewById(R.id.changePasswordButton);
+        regenerateRSAKeysButton = (Button) findViewById(R.id.regenButton);
 
+        resetOnBackgroundCheckBox.setOnCheckedChangeListener(new DeauthOnBackgroundChangeListener());
         changePasswordButton.setOnClickListener(new ChangePasswordButtonClickListener());
         regenerateRSAKeysButton.setOnClickListener(new RegenerateRSAKeysButtonClickListener());
     }
@@ -62,6 +70,8 @@ public class SettingsActivity extends AppCompatActivity {
         if (!Application.getInstance().authHolder.tryLock()) {
             Log.e("LOCK","SettingsActivity.onResume() on resume can't lock");
         }
+
+        resetOnBackgroundCheckBox.setChecked(ConfigUtil.readBoolean(DEAUTH_ON_BACKGROUND));
 
         if (RegenerateKeysIntentService.isRunning) {
             currentPasswordEdit.setEnabled(false);
@@ -104,6 +114,13 @@ public class SettingsActivity extends AppCompatActivity {
         super.onStop();
         if (!Application.getInstance().authHolder.isLocked()) {
             Application.getInstance().eraseAuthMan();
+        }
+    }
+
+    private class DeauthOnBackgroundChangeListener implements CompoundButton.OnCheckedChangeListener {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            ConfigUtil.writeBoolean(DEAUTH_ON_BACKGROUND, isChecked);
         }
     }
 
