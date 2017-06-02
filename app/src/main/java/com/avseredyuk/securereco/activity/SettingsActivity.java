@@ -103,7 +103,7 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         if (!Application.getInstance().authHolder.isLocked()) {
-            Application.getInstance().setAuthMan(null);
+            Application.getInstance().eraseAuthMan();
         }
     }
 
