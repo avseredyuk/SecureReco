@@ -104,8 +104,10 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onStop() {
         super.onStop();
-        if (!Application.getInstance().authHolder.isLocked()) {
-            Application.getInstance().eraseAuthMan();
+        if (Application.getInstance().isDeauthOnBackground()) {
+            if (!Application.getInstance().authHolder.isLocked()) {
+                Application.getInstance().eraseAuthMan();
+            }
         }
         destroyMedia();
     }

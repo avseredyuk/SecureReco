@@ -112,8 +112,10 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        if (!Application.getInstance().authHolder.isLocked()) {
-            Application.getInstance().eraseAuthMan();
+        if (Application.getInstance().isDeauthOnBackground()) {
+            if (!Application.getInstance().authHolder.isLocked()) {
+                Application.getInstance().eraseAuthMan();
+            }
         }
     }
 
@@ -121,6 +123,7 @@ public class SettingsActivity extends AppCompatActivity {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             ConfigUtil.writeBoolean(DEAUTH_ON_BACKGROUND, isChecked);
+            Application.getInstance().setDeauthOnBackground(isChecked);
         }
     }
 

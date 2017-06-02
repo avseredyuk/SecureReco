@@ -10,6 +10,9 @@ import java.util.concurrent.locks.ReentrantLock;
 import com.avseredyuk.securereco.R;
 import com.avseredyuk.securereco.auth.AuthenticationManager;
 import com.avseredyuk.securereco.util.ArrayUtil;
+import com.avseredyuk.securereco.util.ConfigUtil;
+
+import static com.avseredyuk.securereco.util.Constant.DEAUTH_ON_BACKGROUND;
 
 /**
  * Created by lenfer on 3/1/17.
@@ -19,6 +22,7 @@ public class Application extends android.app.Application {
     private Map<String, String> contactNameCache = new HashMap<>();
     private AuthenticationManager authMan = null;
     public ReentrantLock authHolder = new ReentrantLock();
+    private boolean deauthOnBackground = ConfigUtil.readBoolean(DEAUTH_ON_BACKGROUND);
     private static Application instance;
 
     @Override
@@ -57,5 +61,13 @@ public class Application extends android.app.Application {
 
     public static Application getInstance() {
         return instance;
+    }
+
+    public boolean isDeauthOnBackground() {
+        return deauthOnBackground;
+    }
+
+    public void setDeauthOnBackground(boolean deauthOnBackground) {
+        this.deauthOnBackground = deauthOnBackground;
     }
 }
