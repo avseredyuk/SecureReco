@@ -36,6 +36,6 @@
     <string name="activity_settings_old_password_label">Old password:</string>
     <string name="activity_settings_new_password_label">New password:</string>
     <string name="activity_settings_new_password_again_label">New password (again):</string>
-
-
+    <string name="activity_settings_reset_deauth_header">Reset auth when app is in background</string>
+    <string name="activity_settings_deauth_on_background_checkbox">Enabled</string>
 </resources>
