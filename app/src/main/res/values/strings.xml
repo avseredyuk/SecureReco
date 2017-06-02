@@ -14,7 +14,7 @@
     <string name="notification_text">Click to open</string>
     <string name="toast_authenticated">Authenticated</string>
     <string name="toast_deauthenticated">De-authenticated</string>
-    <string name="toast_error">Error</string>
+    <string name="toast_auth_error">Authentication error</string>
     <string name="toast_records_deleted">Records deleted</string>
     <string name="toast_nothing_to_delete">Nothing to delete</string>
     <string name="toast_wrong_password">Wrong password</string>

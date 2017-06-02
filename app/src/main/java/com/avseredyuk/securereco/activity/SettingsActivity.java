@@ -135,7 +135,7 @@ public class SettingsActivity extends AppCompatActivity {
                         Log.e(this.getClass().getSimpleName(),
                                 "Error during authentication at ChangePasswordButtonClickListener", e);
                         Toast.makeText(getApplication(),
-                                getString(R.string.toast_error),
+                                getString(R.string.toast_auth_error),
                                 Toast.LENGTH_SHORT).show();
                         return;
                     }
@@ -177,7 +177,7 @@ public class SettingsActivity extends AppCompatActivity {
                         Log.e(this.getClass().getSimpleName(),
                                 "Error during authentication at RegenerateRSAKeysButtonClickListener", e);
                         Toast.makeText(getApplication(),
-                                getString(R.string.toast_error),
+                                getString(R.string.toast_auth_error),
                                 Toast.LENGTH_SHORT).show();
                         return;
                     }

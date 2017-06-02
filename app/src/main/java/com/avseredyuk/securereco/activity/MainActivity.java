@@ -18,7 +18,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -119,7 +118,8 @@ public class MainActivity extends AppCompatActivity
             try {
                 mediaPlayer.stop();
             } catch (IllegalStateException e) {
-                //todo
+                Log.e(this.getClass().getSimpleName(),
+                        "Error destroying media at MainActivity", e);
             }
             mediaPlayer.release();
         }
@@ -240,7 +240,7 @@ public class MainActivity extends AppCompatActivity
                                         Log.e(this.getClass().getSimpleName(),
                                                 "Error during authentication at MainActivity", e);
                                         Toast.makeText(getApplication(),
-                                                getString(R.string.toast_error),
+                                                getString(R.string.toast_auth_error),
                                                 Toast.LENGTH_SHORT).show();
                                     }
                                 }

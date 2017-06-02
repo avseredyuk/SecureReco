@@ -46,7 +46,7 @@ public class FirstRunActivity extends AppCompatActivity {
                         Log.e(this.getClass().getSimpleName(),
                                 "Error during authentication at FirstRunActivity", e);
                         Toast.makeText(getApplication(),
-                                getString(R.string.toast_error),
+                                getString(R.string.toast_auth_error),
                                 Toast.LENGTH_SHORT).show();
                     }
 
