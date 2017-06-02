@@ -300,11 +300,11 @@ public class MainActivity extends AppCompatActivity
         CheckBox checkBox;
     }
 
-    class CallArrayAdapter extends ArrayAdapter<Call>
+    private class CallArrayAdapter extends ArrayAdapter<Call>
             implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
         private final List<Integer> checkedItemsIndexes = new ArrayList<>();
 
-        public CallArrayAdapter(Context context, List<Call> calls) {
+        CallArrayAdapter(Context context, List<Call> calls) {
             super(context, R.layout.list_item, calls);
         }
 
@@ -347,15 +347,15 @@ public class MainActivity extends AppCompatActivity
             return convertView;
         }
 
-        public List<Integer> getCheckedStatuses() {
+        List<Integer> getCheckedStatuses() {
             return new ArrayList<>(checkedItemsIndexes);
         }
 
-        public int getCheckedCount() {
+        int getCheckedCount() {
             return checkedItemsIndexes.size();
         }
 
-        public void resetCheckedItems() {
+        void resetCheckedItems() {
             checkedItemsIndexes.clear();
         }
 
