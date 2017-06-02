@@ -50,9 +50,7 @@ public class FirstRunActivity extends AppCompatActivity {
                                 Toast.LENGTH_SHORT).show();
                     }
 
-                    ConfigUtil.writeValue(NOTIFICATION_ON, Boolean.toString(true));
-
-                    ConfigUtil.writeValue(IS_ENABLED, Boolean.toString(true));
+                    ConfigUtil.initDefaultConfiguration();
 
                     startActivity(new Intent(context, MainActivity.class));
                 } else {
