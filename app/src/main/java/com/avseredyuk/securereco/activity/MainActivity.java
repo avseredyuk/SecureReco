@@ -13,6 +13,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -121,6 +122,11 @@ public class MainActivity extends AppCompatActivity
             mediaController.hide();
         }
         if (mediaPlayer != null) {
+            try {
+                mediaPlayer.stop();
+            } catch (IllegalStateException e) {
+                //todo
+            }
             mediaPlayer.release();
         }
     }
@@ -291,6 +297,16 @@ public class MainActivity extends AppCompatActivity
         Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            System.out.println(event.getAction());
+            destroyMedia();
+            return true;
+        }
+        return false;
+    }
+
     private static class ViewHolder {
         TextView firstLine;
         TextView secondLine;
@@ -390,9 +406,9 @@ public class MainActivity extends AppCompatActivity
                     mediaPlayer = new MediaPlayer();
                     mediaPlayer.setDataSource(url);
                     mediaPlayer.setOnPreparedListener(MainActivity.this);
-                    mediaPlayer.prepare();
-                    mediaPlayer.start();
+                    mediaPlayer.prepareAsync();
                 } catch(Exception e){
+                    e.printStackTrace();
                     System.out.print(e.getMessage());
                 }
             } else {
@@ -411,6 +427,7 @@ public class MainActivity extends AppCompatActivity
 
         handler.post(new Runnable() {
             public void run() {
+                mediaPlayer.start();
                 mediaController.setEnabled(true);
                 mediaController.show();
             }
