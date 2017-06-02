@@ -23,8 +23,7 @@ public class ContactResolverUtil {
 
     private ContactResolverUtil() {
     }
-
-    //todo: refactor this trash
+    
     public static String getContactName(Context context, String number) {
         Map<String, String> contactNameCache = Application.getInstance().getContactNameCache();
         String contactName = contactNameCache.get(number);
@@ -49,7 +48,6 @@ public class ContactResolverUtil {
         return contactName;
     }
 
-    //todo: refactor this trash
     public static Bitmap retrieveContactPhoto(Context context, String number) {
         Map<String, Bitmap> contactPhotoCache = Application.getInstance().getContactPhotoCache();
         Bitmap photo = contactPhotoCache.get(number);
