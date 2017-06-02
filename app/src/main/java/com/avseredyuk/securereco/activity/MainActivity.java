@@ -297,16 +297,6 @@ public class MainActivity extends AppCompatActivity
         Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-        if (event.getAction() == KeyEvent.ACTION_DOWN) {
-            System.out.println(event.getAction());
-            destroyMedia();
-            return true;
-        }
-        return false;
-    }
-
     private static class ViewHolder {
         TextView firstLine;
         TextView secondLine;
@@ -399,6 +389,14 @@ public class MainActivity extends AppCompatActivity
                     @Override
                     public void show(int timeout) {
                         super.show(0);
+                    }
+
+                    @Override
+                    public boolean dispatchKeyEvent(KeyEvent event) {
+                        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK)
+                            destroyMedia();
+
+                        return super.dispatchKeyEvent(event);
                     }
                 };
                 try {
