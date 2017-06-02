@@ -17,6 +17,7 @@ import java.nio.charset.Charset;
 
 import static com.avseredyuk.securereco.util.Constant.APP_DIRECTORY;
 import static com.avseredyuk.securereco.util.Constant.CONFIG_FILE;
+import static com.avseredyuk.securereco.util.Constant.DEAUTH_ON_BACKGROUND;
 import static com.avseredyuk.securereco.util.Constant.IS_ENABLED;
 import static com.avseredyuk.securereco.util.Constant.NOTIFICATION_ON;
 import static com.avseredyuk.securereco.util.Constant.PRIVATE_KEY_ENCODED;
@@ -47,6 +48,7 @@ public class ConfigUtil {
     public static void initDefaultConfiguration() {
         ConfigUtil.writeValue(NOTIFICATION_ON, Boolean.toString(true));
         ConfigUtil.writeValue(IS_ENABLED, Boolean.toString(true));
+        ConfigUtil.writeValue(DEAUTH_ON_BACKGROUND, Boolean.toString(true));
     }
 
     public static String readValue(String key)  {
