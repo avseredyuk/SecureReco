@@ -160,7 +160,7 @@ public class CallDao {
                 }
             } catch (IOException e) {
                 Log.e(getClass().getSimpleName(),
-                        "Exception at close stream while plaing call file", e);
+                        "Exception at close stream while playing call file", e);
             }
         }
         return new byte[0];
