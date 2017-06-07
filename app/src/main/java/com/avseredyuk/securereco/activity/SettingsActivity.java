@@ -8,28 +8,29 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.avseredyuk.securereco.R;
 import com.avseredyuk.securereco.application.Application;
 import com.avseredyuk.securereco.auth.AuthenticationManager;
 import com.avseredyuk.securereco.exception.AuthenticationException;
+import com.avseredyuk.securereco.model.ResetAuthenticationStrategy;
 import com.avseredyuk.securereco.service.RegenerateKeysIntentService;
 import com.avseredyuk.securereco.util.ConfigUtil;
 import com.avseredyuk.securereco.util.Constant;
 
-import static com.avseredyuk.securereco.util.Constant.DEAUTH_ON_BACKGROUND;
+import static com.avseredyuk.securereco.util.Constant.RESET_AUTH_STRATEGY;
 
 /**
  * Created by lenfer on 3/1/17.
  */
-public class SettingsActivity extends AppCompatActivity {
+public class SettingsActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     private Context context;
-    private CheckBox resetOnBackgroundCheckBox;
+    private Spinner resetAuthStrategySpinner;
     private EditText currentPasswordEdit;
     private Button regenerateRSAKeysButton;
     private EditText oldPasswordEdit;
@@ -50,7 +51,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_settings);
 
-        resetOnBackgroundCheckBox = (CheckBox) findViewById(R.id.deauthOnBackgroundCheckBox);
+        resetAuthStrategySpinner = (Spinner) findViewById(R.id.resetAuthStrategySpinner);
         oldPasswordEdit = (EditText) findViewById(R.id.oldPasswordEdit);
         newPasswordEdit1 = (EditText) findViewById(R.id.newPasswordEdit1);
         newPasswordEdit2 = (EditText) findViewById(R.id.newPasswordEdit2);
@@ -58,7 +59,7 @@ public class SettingsActivity extends AppCompatActivity {
         changePasswordButton = (Button) findViewById(R.id.changePasswordButton);
         regenerateRSAKeysButton = (Button) findViewById(R.id.regenButton);
 
-        resetOnBackgroundCheckBox.setOnCheckedChangeListener(new DeauthOnBackgroundChangeListener());
+        resetAuthStrategySpinner.setOnItemSelectedListener(this);
         changePasswordButton.setOnClickListener(new ChangePasswordButtonClickListener());
         regenerateRSAKeysButton.setOnClickListener(new RegenerateRSAKeysButtonClickListener());
     }
@@ -71,7 +72,7 @@ public class SettingsActivity extends AppCompatActivity {
             Log.e("LOCK","SettingsActivity.onResume() on resume can't lock");
         }
 
-        resetOnBackgroundCheckBox.setChecked(ConfigUtil.readBoolean(DEAUTH_ON_BACKGROUND));
+        resetAuthStrategySpinner.setSelection(ConfigUtil.readInt(RESET_AUTH_STRATEGY));
 
         if (RegenerateKeysIntentService.isRunning) {
             currentPasswordEdit.setEnabled(false);
@@ -112,19 +113,25 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        if (Application.getInstance().isDeauthOnBackground()) {
+        if (Application.getInstance().getResetAuthStrategy()
+                .equals(ResetAuthenticationStrategy.WHEN_APP_GOES_TO_BACKGROUND)) {
             if (!Application.getInstance().authHolder.isLocked()) {
                 Application.getInstance().eraseAuthMan();
             }
         }
     }
 
-    private class DeauthOnBackgroundChangeListener implements CompoundButton.OnCheckedChangeListener {
-        @Override
-        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            ConfigUtil.writeBoolean(DEAUTH_ON_BACKGROUND, isChecked);
-            Application.getInstance().setDeauthOnBackground(isChecked);
-        }
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        ConfigUtil.writeValue(RESET_AUTH_STRATEGY, String.valueOf(position));
+        Application.getInstance().setResetAuthStrategy(
+                ResetAuthenticationStrategy.valueOf(position)
+        );
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+        // auto-generated method stub
     }
 
     private class ChangePasswordButtonClickListener implements View.OnClickListener {

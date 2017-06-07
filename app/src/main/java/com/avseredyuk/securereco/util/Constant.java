@@ -13,11 +13,10 @@ public class Constant {
     public static final String PRIVATE_KEY_IV = "privateKeyIV";
     public static final String IS_ENABLED = "isEnabled";
     public static final String NOTIFICATION_ON = "notificationOn";
-    public static final String DEAUTH_ON_BACKGROUND = "deauthOnBackground";
+    public static final String RESET_AUTH_STRATEGY = "resetAuthStrategy";
     public static final int BUF_SIZE = 8192;
     public static final int NOTIFICATION_NEW_RECORD_ID = 61616;
     public static final int SPLASH_SHOW_TIME_IN_SECONDS = 2;
     public static final String PASSWORD_FILLER = "*****************";
     public static final String OLD_PRIVATE_KEY_INTENT_EXTRA_NAME = "oldPrivateKey";
-    public static final String CALL_DECRYPTED_INTENT_DATA_NAME = "data";
 }

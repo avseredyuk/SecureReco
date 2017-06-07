@@ -4,6 +4,8 @@ import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.avseredyuk.securereco.model.ResetAuthenticationStrategy;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -17,12 +19,12 @@ import java.nio.charset.Charset;
 
 import static com.avseredyuk.securereco.util.Constant.APP_DIRECTORY;
 import static com.avseredyuk.securereco.util.Constant.CONFIG_FILE;
-import static com.avseredyuk.securereco.util.Constant.DEAUTH_ON_BACKGROUND;
 import static com.avseredyuk.securereco.util.Constant.IS_ENABLED;
 import static com.avseredyuk.securereco.util.Constant.NOTIFICATION_ON;
 import static com.avseredyuk.securereco.util.Constant.PRIVATE_KEY_ENCODED;
 import static com.avseredyuk.securereco.util.Constant.PRIVATE_KEY_HMAC;
 import static com.avseredyuk.securereco.util.Constant.PUBLIC_KEY;
+import static com.avseredyuk.securereco.util.Constant.RESET_AUTH_STRATEGY;
 
 /**
  * Created by lenfer on 2/15/17.
@@ -48,7 +50,8 @@ public class ConfigUtil {
     public static void initDefaultConfiguration() {
         ConfigUtil.writeValue(NOTIFICATION_ON, Boolean.toString(true));
         ConfigUtil.writeValue(IS_ENABLED, Boolean.toString(true));
-        ConfigUtil.writeValue(DEAUTH_ON_BACKGROUND, Boolean.toString(true));
+        ConfigUtil.writeValue(RESET_AUTH_STRATEGY,
+                String.valueOf(ResetAuthenticationStrategy.WHEN_APP_GOES_TO_BACKGROUND.getValue()));
     }
 
     public static String readValue(String key)  {
@@ -70,6 +73,10 @@ public class ConfigUtil {
 
     public static boolean writeBoolean(String name, Boolean value) {
         return writeValue(name, value.toString());
+    }
+
+    public static int readInt(String key) {
+        return Integer.valueOf(readValue(key));
     }
 
     public static boolean writeValue(String name, String value) {

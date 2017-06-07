@@ -37,6 +37,7 @@ import com.avseredyuk.securereco.auth.AuthenticationManager;
 import com.avseredyuk.securereco.dao.CallDao;
 import com.avseredyuk.securereco.exception.AuthenticationException;
 import com.avseredyuk.securereco.model.Call;
+import com.avseredyuk.securereco.model.ResetAuthenticationStrategy;
 import com.avseredyuk.securereco.util.ConfigUtil;
 import com.avseredyuk.securereco.util.ContactResolverUtil;
 import com.avseredyuk.securereco.util.StringUtil;
@@ -104,7 +105,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onStop() {
         super.onStop();
-        if (Application.getInstance().isDeauthOnBackground()) {
+        if (Application.getInstance().getResetAuthStrategy()
+                .equals(ResetAuthenticationStrategy.WHEN_APP_GOES_TO_BACKGROUND)) {
             if (!Application.getInstance().authHolder.isLocked()) {
                 Application.getInstance().eraseAuthMan();
             }
