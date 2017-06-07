@@ -9,7 +9,7 @@ import com.avseredyuk.securereco.service.RecorderService;
 /**
  * Created by lenfer on 2/13/17.
  */
-public class StartupReceiver extends BroadcastReceiver{
+public class StartupReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) {

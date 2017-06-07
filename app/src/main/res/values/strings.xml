@@ -40,6 +40,6 @@
     <string-array name="reset_auth_strategy_array">
         <item>No / Keep authenticated</item>
         <item>When app goes to background</item>
-        <item>On timeout of inactivity / 5 min</item>
+        <item>On timeout of inactivity / 60 sec</item>
     </string-array>
 </resources>

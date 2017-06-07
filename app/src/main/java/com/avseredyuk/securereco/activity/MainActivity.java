@@ -5,12 +5,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -37,7 +34,6 @@ import com.avseredyuk.securereco.auth.AuthenticationManager;
 import com.avseredyuk.securereco.dao.CallDao;
 import com.avseredyuk.securereco.exception.AuthenticationException;
 import com.avseredyuk.securereco.model.Call;
-import com.avseredyuk.securereco.model.ResetAuthenticationStrategy;
 import com.avseredyuk.securereco.util.ConfigUtil;
 import com.avseredyuk.securereco.util.ContactResolverUtil;
 import com.avseredyuk.securereco.util.StringUtil;
@@ -48,13 +44,14 @@ import java.util.List;
 import static com.avseredyuk.securereco.util.Constant.IS_ENABLED;
 import static com.avseredyuk.securereco.util.Constant.NOTIFICATION_ON;
 
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends SecuredActivity
         implements MediaPlayer.OnPreparedListener, MediaController.MediaPlayerControl {
     private CallArrayAdapter callArrayAdapter;
     private List<Call> calls = new ArrayList<>();
     private MediaPlayer mediaPlayer;
     private MediaController mediaController;
     private Handler handler = new Handler();
+    private Menu menu;
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -74,43 +71,26 @@ public class MainActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
 
-        if (!Application.getInstance().authHolder.tryLock()) {
-            Log.e("LOCK","MainActivity.onResume() on resume can't lock");
-        }
-
         calls.clear();
         calls.addAll(CallDao.getInstance().findAll(Call.CallDateComparator));
         callArrayAdapter.notifyDataSetChanged();
-
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            int color;
-            if (Application.getInstance().isAuthenticated()) {
-                color = R.color.colorAuthenticated;
-            } else {
-                color = R.color.colorPrimary;
-            }
-            actionBar.setBackgroundDrawable(
-                    new ColorDrawable(
-                            getResources().getColor(color)));
-        }
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        Application.getInstance().authHolder.unlock();
+    public void updateOnAuthenticationStatusChange() {
+        setAuthMenuItemText(menu.findItem(R.id.action_authenticate));
+
+        if (Application.getInstance().isAuthenticated()) {
+
+        } else {
+            destroyMedia();
+        }
+        updateActionBarColors();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        if (Application.getInstance().getResetAuthStrategy()
-                .equals(ResetAuthenticationStrategy.WHEN_APP_GOES_TO_BACKGROUND)) {
-            if (!Application.getInstance().authHolder.isLocked()) {
-                Application.getInstance().eraseAuthMan();
-            }
-        }
         destroyMedia();
     }
 
@@ -131,6 +111,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        this.menu = menu;
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_activity_menu, menu);
         return super.onCreateOptionsMenu(menu);
@@ -157,6 +138,12 @@ public class MainActivity extends AppCompatActivity
             deleteSelectedMenuItem.setVisible(true);
         }
 
+        setAuthMenuItemText(authenticateMenuItem);
+
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    private void setAuthMenuItemText(MenuItem authenticateMenuItem) {
         String authItemTitle;
         if (Application.getInstance().isAuthenticated()) {
             authItemTitle = getString(R.string.menu_item_deauthenticate);
@@ -164,8 +151,6 @@ public class MainActivity extends AppCompatActivity
             authItemTitle = getString(R.string.menu_item_authenticate);
         }
         authenticateMenuItem.setTitle(authItemTitle);
-
-        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -201,12 +186,7 @@ public class MainActivity extends AppCompatActivity
         if (Application.getInstance().isAuthenticated()) {
             Application.getInstance().eraseAuthMan();
 
-            ActionBar actionBar = getSupportActionBar();
-            if (actionBar != null) {
-                actionBar.setBackgroundDrawable(
-                        new ColorDrawable(
-                                getResources().getColor(R.color.colorPrimary)));
-            }
+            updateActionBarColors();
 
             Toast.makeText(getApplication(),
                     getString(R.string.toast_deauthenticated),
@@ -230,12 +210,7 @@ public class MainActivity extends AppCompatActivity
                                                 .newAuthManWithAuthentication(password)
                                                 .setAsApplicationAuthenticationManager();
 
-                                        ActionBar actionBar = getSupportActionBar();
-                                        if (actionBar != null) {
-                                            actionBar.setBackgroundDrawable(
-                                                    new ColorDrawable(
-                                                            getResources().getColor(R.color.colorAuthenticated)));
-                                        }
+                                        updateActionBarColors();
 
                                         Toast.makeText(getApplication(),
                                                 getString(R.string.toast_authenticated),

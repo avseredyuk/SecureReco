@@ -55,6 +55,13 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".activity.SecuredActivity$ResetAuthenticationOnTimeoutBroadcastReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.avseredyuk.securereco.RESET_AUTH"/>
+            </intent-filter>
+        </receiver>
+        
         <service android:name=".service.RecorderService"/>
 
         <service android:name=".service.RegenerateKeysIntentService"/>

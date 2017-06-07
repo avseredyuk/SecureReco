@@ -2,10 +2,7 @@ package com.avseredyuk.securereco.activity;
 
 import android.content.Context;
 import android.content.res.Configuration;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -28,7 +25,7 @@ import static com.avseredyuk.securereco.util.Constant.RESET_AUTH_STRATEGY;
 /**
  * Created by lenfer on 3/1/17.
  */
-public class SettingsActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class SettingsActivity extends SecuredActivity implements AdapterView.OnItemSelectedListener {
     private Context context;
     private Spinner resetAuthStrategySpinner;
     private EditText currentPasswordEdit;
@@ -68,10 +65,6 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
     protected void onResume() {
         super.onResume();
 
-        if (!Application.getInstance().authHolder.tryLock()) {
-            Log.e("LOCK","SettingsActivity.onResume() on resume can't lock");
-        }
-
         resetAuthStrategySpinner.setSelection(ConfigUtil.readInt(RESET_AUTH_STRATEGY));
 
         if (RegenerateKeysIntentService.isRunning) {
@@ -82,6 +75,11 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
             regenerateRSAKeysButton.setEnabled(true);
         }
 
+        updateOnAuthenticationStatusChange();
+    }
+
+    @Override
+    public void updateOnAuthenticationStatusChange() {
         if (Application.getInstance().isAuthenticated()) {
             oldPasswordEdit.setText(Constant.PASSWORD_FILLER);
             oldPasswordEdit.setEnabled(false);
@@ -89,36 +87,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
             oldPasswordEdit.setText("");
             oldPasswordEdit.setEnabled(true);
         }
-
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            int color;
-            if (Application.getInstance().isAuthenticated()) {
-                color = R.color.colorAuthenticated;
-            } else {
-                color = R.color.colorPrimary;
-            }
-            actionBar.setBackgroundDrawable(
-                    new ColorDrawable(
-                            getResources().getColor(color)));
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Application.getInstance().authHolder.unlock();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if (Application.getInstance().getResetAuthStrategy()
-                .equals(ResetAuthenticationStrategy.WHEN_APP_GOES_TO_BACKGROUND)) {
-            if (!Application.getInstance().authHolder.isLocked()) {
-                Application.getInstance().eraseAuthMan();
-            }
-        }
+        updateActionBarColors();
     }
 
     @Override

@@ -1,11 +1,10 @@
 package com.avseredyuk.securereco.application;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.locks.ReentrantLock;
+import android.os.Handler;
+import android.os.Message;
 
 import com.avseredyuk.securereco.R;
 import com.avseredyuk.securereco.auth.AuthenticationManager;
@@ -13,6 +12,12 @@ import com.avseredyuk.securereco.model.ResetAuthenticationStrategy;
 import com.avseredyuk.securereco.util.ArrayUtil;
 import com.avseredyuk.securereco.util.ConfigUtil;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.locks.ReentrantLock;
+
+import static com.avseredyuk.securereco.util.Constant.INTENT_BROADCAST_RESET_AUTH;
+import static com.avseredyuk.securereco.util.Constant.RESET_AUTH_DELAY;
 import static com.avseredyuk.securereco.util.Constant.RESET_AUTH_STRATEGY;
 
 /**
@@ -26,12 +31,33 @@ public class Application extends android.app.Application {
     private ResetAuthenticationStrategy resetAuthStrategy =
             ResetAuthenticationStrategy.valueOf(ConfigUtil.readInt(RESET_AUTH_STRATEGY));
     private static Application instance;
+    private static Handler disconnectHandler = new Handler () {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+        }
+    };
+    private static Runnable disconnectCallback = new Runnable() {
+        @Override
+        public void run() {
+            if (Application.getInstance().getResetAuthStrategy()
+                    .equals(ResetAuthenticationStrategy.ON_TIMEOUT_OF_INACTIVITY)) {
+                Application.getInstance().eraseAuthMan();
+                Application.getInstance().sendBroadcast(new Intent(INTENT_BROADCAST_RESET_AUTH));
+            }
+        }
+    };
 
     @Override
     public void onCreate() {
         super.onCreate();
         instance = this;
         contactPhotoCache.put(null, BitmapFactory.decodeResource(getResources(), R.drawable.avatar_unknown));
+    }
+
+    public void resetDisconnectTimer(){
+        disconnectHandler.removeCallbacks(disconnectCallback);
+        disconnectHandler.postDelayed(disconnectCallback, RESET_AUTH_DELAY);
     }
 
     public Map<String, Bitmap> getContactPhotoCache() {
