@@ -62,10 +62,6 @@ public class AuthenticationManager {
                 throw new AuthenticationException("Exception during authentication");
             }
 
-            //// TODO: 6/2/2017
-            // start Timeout AsyncTask here
-            // but only if it's not running
-
         } catch (CryptoException e) {
             Log.e(getClass().getSimpleName(),
                     "CryptoException during authentication", e);
