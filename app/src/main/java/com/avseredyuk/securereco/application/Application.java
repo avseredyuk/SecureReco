@@ -28,8 +28,7 @@ public class Application extends android.app.Application {
     private Map<String, String> contactNameCache = new HashMap<>();
     private AuthenticationManager authMan = null;
     public ReentrantLock authHolder = new ReentrantLock();
-    private ResetAuthenticationStrategy resetAuthStrategy =
-            ResetAuthenticationStrategy.valueOf(ConfigUtil.readInt(RESET_AUTH_STRATEGY));
+    private ResetAuthenticationStrategy resetAuthStrategy;
     private static Application instance;
     private static Handler disconnectHandler = new Handler () {
         @Override
@@ -92,6 +91,10 @@ public class Application extends android.app.Application {
     }
 
     public ResetAuthenticationStrategy getResetAuthStrategy() {
+        if (resetAuthStrategy == null) {
+            resetAuthStrategy =
+                    ResetAuthenticationStrategy.valueOf(ConfigUtil.readInt(RESET_AUTH_STRATEGY));
+        }
         return resetAuthStrategy;
     }
 
