@@ -39,7 +39,9 @@ import com.avseredyuk.securereco.util.ContactResolverUtil;
 import com.avseredyuk.securereco.util.StringUtil;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static com.avseredyuk.securereco.util.Constant.IS_ENABLED;
 import static com.avseredyuk.securereco.util.Constant.NOTIFICATION_ON;
@@ -70,7 +72,6 @@ public class MainActivity extends SecuredActivity
     @Override
     protected void onResume() {
         super.onResume();
-
         calls.clear();
         calls.addAll(CallDao.getInstance().findAll(Call.CallDateComparator));
         callArrayAdapter.notifyDataSetChanged();
@@ -281,7 +282,7 @@ public class MainActivity extends SecuredActivity
 
     private class CallArrayAdapter extends ArrayAdapter<Call>
             implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
-        private final List<Integer> checkedItemsIndexes = new ArrayList<>();
+        private final Set<Integer> checkedItemsIndexes = new HashSet<>();
 
         CallArrayAdapter(Context context, List<Call> calls) {
             super(context, R.layout.list_item, calls);
