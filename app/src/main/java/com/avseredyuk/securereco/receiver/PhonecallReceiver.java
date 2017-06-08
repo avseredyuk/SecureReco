@@ -149,6 +149,8 @@ public class PhonecallReceiver extends BroadcastReceiver {
         System.out.println(">>>>>>>>>>>>>>>>>>> REC END");
         if (recordStarted) {
             recorder.stop();
+            recorder.reset();
+            recorder.release();
             recordStarted = false;
             try {
                 pipe[1].close();
