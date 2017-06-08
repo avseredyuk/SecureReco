@@ -1,7 +1,9 @@
 package com.avseredyuk.securereco.activity;
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.drawable.ColorDrawable;
@@ -10,9 +12,15 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.avseredyuk.securereco.R;
 import com.avseredyuk.securereco.application.Application;
+import com.avseredyuk.securereco.auth.AuthenticationManager;
+import com.avseredyuk.securereco.exception.AuthenticationException;
 import com.avseredyuk.securereco.model.ResetAuthenticationStrategy;
 import com.avseredyuk.securereco.util.Constant;
 
@@ -21,14 +29,58 @@ import com.avseredyuk.securereco.util.Constant;
  */
 
 public abstract class SecuredActivity extends AppCompatActivity {
-    private IntentFilter filter;
-    private BroadcastReceiver receiver;
+    private IntentFilter resetAuthOnTimeoutFilter;
+    private BroadcastReceiver resetAuthOnTimeoutReceiver;
+
+    public abstract void updateOnAuthenticationStatusChange();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        receiver = new ResetAuthenticationOnTimeoutBroadcastReceiver();
-        filter = new IntentFilter(Constant.INTENT_BROADCAST_RESET_AUTH);
+        resetAuthOnTimeoutReceiver = new ResetAuthenticationOnTimeoutBroadcastReceiver();
+        resetAuthOnTimeoutFilter = new IntentFilter(Constant.INTENT_BROADCAST_RESET_AUTH);
+    }
+
+    protected void makeAlertDialog() {
+        LayoutInflater li = LayoutInflater.from(this);
+        View promptsView = li.inflate(R.layout.password_prompt, null);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setView(promptsView);
+        final EditText userInput = (EditText) promptsView
+                .findViewById(R.id.editTextDialogUserInput);
+        alertDialogBuilder
+                .setCancelable(false)
+                .setPositiveButton(getString(R.string.password_dialog_button_ok),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,int id) {
+                                String password = userInput.getText().toString();
+                                try {
+                                    AuthenticationManager
+                                            .newAuthManWithAuthentication(password)
+                                            .setAsApplicationAuthenticationManager();
+
+                                    updateActionBarColors();
+
+                                    Toast.makeText(getApplication(),
+                                            getString(R.string.toast_authenticated),
+                                            Toast.LENGTH_SHORT).show();
+                                } catch (AuthenticationException e) {
+                                    Log.e(this.getClass().getSimpleName(),
+                                            "Error during authentication at SecuredActivity", e);
+                                    Toast.makeText(getApplication(),
+                                            getString(R.string.toast_auth_error),
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        })
+                .setNegativeButton(getString(R.string.password_dialog_button_cancel),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
     }
 
     public void updateActionBarColors() {
@@ -49,7 +101,7 @@ public abstract class SecuredActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        super.registerReceiver(receiver, filter);
+        super.registerReceiver(resetAuthOnTimeoutReceiver, resetAuthOnTimeoutFilter);
 
         if (!Application.getInstance().authHolder.tryLock()) {
             Log.e("LOCK","SecuredActivity.onResume() on resume can't lock");
@@ -61,7 +113,7 @@ public abstract class SecuredActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(receiver);
+        unregisterReceiver(resetAuthOnTimeoutReceiver);
         Application.getInstance().authHolder.unlock();
     }
 
@@ -95,7 +147,5 @@ public abstract class SecuredActivity extends AppCompatActivity {
             }
         }
     }
-
-    public abstract void updateOnAuthenticationStatusChange();
 
 }

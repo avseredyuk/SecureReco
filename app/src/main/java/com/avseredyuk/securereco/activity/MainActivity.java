@@ -1,8 +1,6 @@
 package com.avseredyuk.securereco.activity;
-
-import android.app.AlertDialog;
+;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.media.MediaPlayer;
@@ -20,7 +18,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -30,9 +27,7 @@ import android.widget.Toast;
 
 import com.avseredyuk.securereco.R;
 import com.avseredyuk.securereco.application.Application;
-import com.avseredyuk.securereco.auth.AuthenticationManager;
 import com.avseredyuk.securereco.dao.CallDao;
-import com.avseredyuk.securereco.exception.AuthenticationException;
 import com.avseredyuk.securereco.model.Call;
 import com.avseredyuk.securereco.util.ConfigUtil;
 import com.avseredyuk.securereco.util.ContactResolverUtil;
@@ -194,45 +189,7 @@ public class MainActivity extends SecuredActivity
                     Toast.LENGTH_SHORT).show();
 
         } else {
-            LayoutInflater li = LayoutInflater.from(this);
-            View promptsView = li.inflate(R.layout.password_prompt, null);
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-            alertDialogBuilder.setView(promptsView);
-            final EditText userInput = (EditText) promptsView
-                    .findViewById(R.id.editTextDialogUserInput);
-            alertDialogBuilder
-                    .setCancelable(false)
-                    .setPositiveButton(getString(R.string.password_dialog_button_ok),
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog,int id) {
-                                    String password = userInput.getText().toString();
-                                    try {
-                                        AuthenticationManager
-                                                .newAuthManWithAuthentication(password)
-                                                .setAsApplicationAuthenticationManager();
-
-                                        updateActionBarColors();
-
-                                        Toast.makeText(getApplication(),
-                                                getString(R.string.toast_authenticated),
-                                                Toast.LENGTH_SHORT).show();
-                                    } catch (AuthenticationException e) {
-                                        Log.e(this.getClass().getSimpleName(),
-                                                "Error during authentication at MainActivity", e);
-                                        Toast.makeText(getApplication(),
-                                                getString(R.string.toast_auth_error),
-                                                Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            })
-                    .setNegativeButton(getString(R.string.password_dialog_button_cancel),
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.cancel();
-                                }
-                            });
-            AlertDialog alertDialog = alertDialogBuilder.create();
-            alertDialog.show();
+            makeAlertDialog();
         }
     }
 
