@@ -1,0 +1,45 @@
+<resources>
+    <string name="app_name">SecureReco</string>
+    <string name="enter_password">Введите пароль:</string>
+    <string name="hint_password">пароль</string>
+    <string name="start_button">Начать!</string>
+    <string name="text_greeting">Здравствуйте! Добро пожаловать!</string>
+    <string name="menu_item_authenticate">Войти</string>
+    <string name="menu_item_deauthenticate">Выйти</string>
+    <string name="menu_item_settings">Настройки</string>
+    <string name="menu_item_on_off">Включено</string>
+    <string name="menu_item_delete_selected">Удалить</string>
+    <string name="menu_item_notification">Уведомления</string>
+    <string name="notification_title">Новый звонок записан</string>
+    <string name="notification_text">Нажмите для открытия</string>
+    <string name="toast_authenticated">Вход успешен</string>
+    <string name="toast_deauthenticated">Выход успешен</string>
+    <string name="toast_auth_error">Ошибка авторизации</string>
+    <string name="toast_records_deleted">Записи удалены</string>
+    <string name="toast_nothing_to_delete">Нечего удалять</string>
+    <string name="toast_wrong_password">Неправильный пароль</string>
+    <string name="toast_keys_regen_started">Регенерация ключей началась</string>
+    <string name="toast_keys_regen_finished">Регенерация ключей закончилась</string>
+    <string name="toast_invalid_input">Неверные данные</string>
+    <string name="toast_password_changed">Пароль изменен</string>
+    <string name="toast_wrong_old_password">Неправильный старый пароль</string>
+    <string name="toast_please_enter_password">Пожалуйста введите пароль</string>
+    <string name="toast_please_authenticate_first">Сначала выполните вход</string>
+    <string name="toast_media_player_failed_init">Не получилось инициилизировать MediaPlayer</string>
+    <string name="password_dialog_button_ok">OK</string>
+    <string name="password_dialog_button_cancel">Отмена</string>
+    <string name="activity_settings_regenerate_button">Регенерировать</string>
+    <string name="activity_settings_password_label">Пароль:</string>
+    <string name="activity_settings_regenerate_header">Регенерировать ключевую пару RSA</string>
+    <string name="activity_settings_change_password_button">Сменить</string>
+    <string name="activity_settings_change_password_header">Сменить пароль</string>
+    <string name="activity_settings_old_password_label">Старый пароль:</string>
+    <string name="activity_settings_new_password_label">Новый пароль:</string>
+    <string name="activity_settings_new_password_again_label">Новый пароль повторно:</string>
+    <string name="activity_settings_reset_auth_header">Тактика сброса авторизации</string>
+    <string-array name="reset_auth_strategy_array">
+        <item>Не сбрасывать</item>
+        <item>При уходе программы в фон</item>
+        <item>По таймауту неактивности / 60 с</item>
+    </string-array>
+</resources>
