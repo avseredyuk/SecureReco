@@ -22,9 +22,7 @@
     <string name="toast_keys_regen_finished">Регенерация ключей закончилась</string>
     <string name="toast_invalid_input">Неверные данные</string>
     <string name="toast_password_changed">Пароль изменен</string>
-    <string name="toast_wrong_old_password">Неправильный старый пароль</string>
     <string name="toast_please_enter_password">Пожалуйста введите пароль</string>
-    <string name="toast_please_authenticate_first">Сначала выполните вход</string>
     <string name="toast_media_player_failed_init">Не получилось инициилизировать MediaPlayer</string>
     <string name="password_dialog_button_ok">OK</string>
     <string name="password_dialog_button_cancel">Отмена</string>
@@ -33,7 +31,6 @@
     <string name="activity_settings_regenerate_header">Регенерировать ключевую пару RSA</string>
     <string name="activity_settings_change_password_button">Сменить</string>
     <string name="activity_settings_change_password_header">Сменить пароль</string>
-    <string name="activity_settings_old_password_label">Старый пароль:</string>
     <string name="activity_settings_new_password_label">Новый пароль:</string>
     <string name="activity_settings_new_password_again_label">Новый пароль повторно:</string>
     <string name="activity_settings_reset_auth_header">Тактика сброса авторизации</string>

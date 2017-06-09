@@ -1,5 +1,5 @@
 package com.avseredyuk.securereco.activity;
-;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.avseredyuk.securereco.R;
 import com.avseredyuk.securereco.application.Application;
+import com.avseredyuk.securereco.callback.Callback;
 import com.avseredyuk.securereco.dao.CallDao;
 import com.avseredyuk.securereco.model.Call;
 import com.avseredyuk.securereco.util.ConfigUtil;
@@ -73,15 +74,10 @@ public class MainActivity extends SecuredActivity
     }
 
     @Override
-    public void updateOnAuthenticationStatusChange() {
+    public void updateUIOnAuthenticationReset() {
+        super.updateUIOnAuthenticationReset();
         setAuthMenuItemText(menu.findItem(R.id.action_authenticate));
-
-        if (Application.getInstance().isAuthenticated()) {
-
-        } else {
-            destroyMedia();
-        }
-        updateActionBarColors();
+        destroyMedia();
     }
 
     @Override
@@ -178,21 +174,6 @@ public class MainActivity extends SecuredActivity
         return true;
     }
 
-    private void menuItemAuthenticate() {
-        if (Application.getInstance().isAuthenticated()) {
-            Application.getInstance().eraseAuthMan();
-
-            updateActionBarColors();
-
-            Toast.makeText(getApplication(),
-                    getString(R.string.toast_deauthenticated),
-                    Toast.LENGTH_SHORT).show();
-
-        } else {
-            makeAlertDialog();
-        }
-    }
-
     private void menuItemShowSettings() {
         Intent settingActivityIntent = new Intent(this, SettingsActivity.class);
         startActivity(settingActivityIntent);
@@ -228,6 +209,20 @@ public class MainActivity extends SecuredActivity
         Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_SHORT).show();
     }
 
+    private void menuItemAuthenticate() {
+        if (Application.getInstance().isAuthenticated()) {
+            Application.getInstance().eraseAuthMan();
+
+            updateActionBarColors();
+            Toast.makeText(getApplication(),
+                    getString(R.string.toast_deauthenticated),
+                    Toast.LENGTH_SHORT).show();
+
+        } else {
+            makeAlertDialog(null);
+        }
+    }
+
     private static class ViewHolder {
         TextView firstLine;
         TextView secondLine;
@@ -235,6 +230,22 @@ public class MainActivity extends SecuredActivity
         ImageView imageView;
         ImageButton playBtn;
         CheckBox checkBox;
+    }
+
+    private class MyMediaController extends MediaController {
+        public MyMediaController(Context context) {
+            super(context);
+        }
+        @Override
+        public void show(int timeout) {
+            super.show(0);
+        }
+        @Override
+        public boolean dispatchKeyEvent(KeyEvent event) {
+            if (event.getKeyCode() == KeyEvent.KEYCODE_BACK)
+                destroyMedia();
+            return super.dispatchKeyEvent(event);
+        }
     }
 
     private class CallArrayAdapter extends ArrayAdapter<Call>
@@ -308,44 +319,37 @@ public class MainActivity extends SecuredActivity
 
         @Override
         public void onClick(View v) {
-            Call call = (Call) v.getTag();
+            final Call call = (Call) v.getTag();
+
+            Callback playCallCallback = new Callback() {
+                @Override
+                public void execute(String password) {
+                    destroyMedia();
+
+                    byte[] callData = CallDao.getInstance().getDecryptedCall(call, Application.getInstance().getAuthMan());
+
+                    String base64EncodedString = Base64.encodeToString(callData, Base64.DEFAULT);
+                    mediaController = new MyMediaController(MainActivity.this);
+                    try {
+                        String url = "data:audio/amr;base64,"+base64EncodedString;
+                        mediaPlayer = new MediaPlayer();
+                        mediaPlayer.setDataSource(url);
+                        mediaPlayer.setOnPreparedListener(MainActivity.this);
+                        mediaPlayer.prepareAsync();
+                    } catch(Exception e){
+                        Log.e(this.getClass().getSimpleName(),
+                                "Error during playing preparing MediaPlayer at MainActivity", e);
+                        Toast.makeText(getContext(),
+                                getContext().getString(R.string.toast_media_player_failed_init),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+            };
 
             if (Application.getInstance().isAuthenticated()) {
-                destroyMedia();
-
-                byte[] callData = CallDao.getInstance().getDecryptedCall(call, Application.getInstance().getAuthMan());
-
-                String base64EncodedString = Base64.encodeToString(callData, Base64.DEFAULT);
-                mediaController = new MediaController(MainActivity.this) {
-                    @Override
-                    public void show(int timeout) {
-                        super.show(0);
-                    }
-
-                    @Override
-                    public boolean dispatchKeyEvent(KeyEvent event) {
-                        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK)
-                            destroyMedia();
-                        return super.dispatchKeyEvent(event);
-                    }
-                };
-                try {
-                    String url = "data:audio/amr;base64,"+base64EncodedString;
-                    mediaPlayer = new MediaPlayer();
-                    mediaPlayer.setDataSource(url);
-                    mediaPlayer.setOnPreparedListener(MainActivity.this);
-                    mediaPlayer.prepareAsync();
-                } catch(Exception e){
-                    Log.e(this.getClass().getSimpleName(),
-                            "Error during playing preparing MediaPlayer at MainActivity", e);
-                    Toast.makeText(getContext(),
-                            getContext().getString(R.string.toast_media_player_failed_init),
-                            Toast.LENGTH_SHORT).show();
-                }
+                playCallCallback.execute(null);
             } else {
-                Toast.makeText(getContext(),
-                        getContext().getString(R.string.toast_please_authenticate_first),
-                        Toast.LENGTH_SHORT).show();
+                makeAlertDialog(playCallCallback);
             }
         }
     }

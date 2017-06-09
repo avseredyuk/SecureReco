@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.avseredyuk.securereco.R;
 import com.avseredyuk.securereco.application.Application;
 import com.avseredyuk.securereco.auth.AuthenticationManager;
+import com.avseredyuk.securereco.callback.Callback;
 import com.avseredyuk.securereco.exception.AuthenticationException;
 import com.avseredyuk.securereco.model.ResetAuthenticationStrategy;
 import com.avseredyuk.securereco.util.Constant;
@@ -32,7 +33,9 @@ public abstract class SecuredActivity extends AppCompatActivity {
     private IntentFilter resetAuthOnTimeoutFilter;
     private BroadcastReceiver resetAuthOnTimeoutReceiver;
 
-    public abstract void updateOnAuthenticationStatusChange();
+    public void updateUIOnAuthenticationReset() {
+        updateActionBarColors();
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -41,7 +44,7 @@ public abstract class SecuredActivity extends AppCompatActivity {
         resetAuthOnTimeoutFilter = new IntentFilter(Constant.INTENT_BROADCAST_RESET_AUTH);
     }
 
-    protected void makeAlertDialog() {
+    protected void makeAlertDialog(final Callback callback) {
         LayoutInflater li = LayoutInflater.from(this);
         View promptsView = li.inflate(R.layout.password_prompt, null);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
@@ -60,6 +63,10 @@ public abstract class SecuredActivity extends AppCompatActivity {
                                             .setAsApplicationAuthenticationManager();
 
                                     updateActionBarColors();
+
+                                    if (callback != null) {
+                                        callback.execute(password);
+                                    }
 
                                     Toast.makeText(getApplication(),
                                             getString(R.string.toast_authenticated),
@@ -138,12 +145,10 @@ public abstract class SecuredActivity extends AppCompatActivity {
     }
 
     public static class ResetAuthenticationOnTimeoutBroadcastReceiver extends BroadcastReceiver {
-        public ResetAuthenticationOnTimeoutBroadcastReceiver() {
-        }
         @Override
         public void onReceive(Context context, Intent intent) {
             if (context instanceof SecuredActivity) {
-                ((SecuredActivity) context).updateOnAuthenticationStatusChange();
+                ((SecuredActivity) context).updateUIOnAuthenticationReset();
             }
         }
     }

@@ -8,8 +8,6 @@ import com.avseredyuk.securereco.model.Call;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static com.avseredyuk.securereco.util.Constant.CALL_LOGS_DIRECTORY;
 

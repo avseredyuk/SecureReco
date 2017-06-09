@@ -22,9 +22,7 @@
     <string name="toast_keys_regen_finished">Регенерація ключів закінчилась</string>
     <string name="toast_invalid_input">Невірні дані</string>
     <string name="toast_password_changed">Пароль змінений</string>
-    <string name="toast_wrong_old_password">невірний старий пароль</string>
     <string name="toast_please_enter_password">Будь ласка введіть пароль</string>
-    <string name="toast_please_authenticate_first">Спочатку здійсніть вхід</string>
     <string name="toast_media_player_failed_init">Не вдалось ініціалізувати MediaPlayer</string>
     <string name="password_dialog_button_ok">OK</string>
     <string name="password_dialog_button_cancel">Відміна</string>
@@ -33,7 +31,6 @@
     <string name="activity_settings_regenerate_header">Регенерувати ключову пару RSA</string>
     <string name="activity_settings_change_password_button">Змінити</string>
     <string name="activity_settings_change_password_header">Змінити пароль</string>
-    <string name="activity_settings_old_password_label">Старий пароль:</string>
     <string name="activity_settings_new_password_label">Новий пароль:</string>
     <string name="activity_settings_new_password_again_label">Новий пароль вдруге:</string>
     <string name="activity_settings_reset_auth_header">Тактика скидання авторизації</string>
