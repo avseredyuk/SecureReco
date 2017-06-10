@@ -22,9 +22,9 @@ public class AES {
     private KeyCipherTuple keyCipherTuple;
 
     public static class KeyCipherTuple {
-        public final SecretKey secretKey;
-        public final Cipher cipher;
-        public KeyCipherTuple(SecretKey secretKey, Cipher cipher) {
+        final SecretKey secretKey;
+        final Cipher cipher;
+        KeyCipherTuple(SecretKey secretKey, Cipher cipher) {
             this.secretKey = secretKey;
             this.cipher = cipher;
         }
@@ -46,7 +46,7 @@ public class AES {
             cipher.init(opMode, secretKey);
             return new KeyCipherTuple(secretKey, cipher);
         } catch (Exception e) {
-            Log.e(AES.class.getSimpleName(),
+            Log.d(AES.class.getSimpleName(),
                     "Exception at AES.initEncryptWithRandom", e);
             throw new CryptoException(e);
         }
@@ -59,7 +59,7 @@ public class AES {
             localCipher.init(Cipher.DECRYPT_MODE, localSecretKey, new IvParameterSpec(iv));
             return localCipher;
         } catch (Exception e) {
-            Log.e(AES.class.getSimpleName(),
+            Log.d(AES.class.getSimpleName(),
                     "Exception at AES.initDecrypt(byte[], byte[])", e);
             throw new CryptoException(e);
         }
@@ -78,7 +78,7 @@ public class AES {
             keyCipherTuple = new KeyCipherTuple(localSecretKey, localCipher);
 
         } catch (Exception e) {
-            Log.e(getClass().getSimpleName(),
+            Log.d(getClass().getSimpleName(),
                     "Exception at AES.init()", e);
             throw new CryptoException(e);
         }
@@ -88,7 +88,7 @@ public class AES {
         try {
             return getKeyCipherTuple().getCipher().doFinal(input);
         } catch (IllegalBlockSizeException | BadPaddingException e) {
-            Log.e(getClass().getSimpleName(),
+            Log.d(getClass().getSimpleName(),
                     "Exception at doFinal", e);
             throw new CryptoException(e);
         }

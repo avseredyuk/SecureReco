@@ -63,7 +63,7 @@ public class AuthenticationManager {
             }
 
         } catch (CryptoException e) {
-            Log.e(getClass().getSimpleName(),
+            Log.d(getClass().getSimpleName(),
                     "CryptoException during authentication", e);
             throw new AuthenticationException("Exception during authentication");
         }

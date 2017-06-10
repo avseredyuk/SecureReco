@@ -61,7 +61,7 @@ public class ConfigUtil {
                 return (String) json.get(key);
             }
         } catch (JSONException e) {
-            Log.e(ConfigUtil.class.getSimpleName(),
+            Log.d(ConfigUtil.class.getSimpleName(),
                     "Exception at parsing JSON parameters", e);
         }
         return "";
@@ -95,17 +95,17 @@ public class ConfigUtil {
             return true;
 
         } catch (JSONException e) {
-            Log.e(ConfigUtil.class.getSimpleName(),
+            Log.d(ConfigUtil.class.getSimpleName(),
                     "Exception at saving JSON parameters", e);
         } catch (IOException e) {
-            Log.e(ConfigUtil.class.getSimpleName(),
+            Log.d(ConfigUtil.class.getSimpleName(),
                     "Exception at writing to output stream to config file", e);
         } finally {
             try {
                 if (out != null)
                     out.close();
             } catch (IOException e) {
-                Log.e(ConfigUtil.class.getSimpleName(),
+                Log.d(ConfigUtil.class.getSimpleName(),
                         "Exception at writing config file", e);
             }
         }
@@ -120,17 +120,17 @@ public class ConfigUtil {
                 in = new FileInputStream(configFile);
                 return new JSONObject(IOUtil.readText(in, "UTF-8"));
             } catch (JSONException e) {
-                Log.e(ConfigUtil.class.getSimpleName(),
+                Log.d(ConfigUtil.class.getSimpleName(),
                         "Exception at reading JSON parameters", e);
             } catch (IOException e) {
-                Log.e(ConfigUtil.class.getSimpleName(),
+                Log.d(ConfigUtil.class.getSimpleName(),
                         "Exception at reading config file", e);
             } finally {
                 try {
                     if (in != null)
                         in.close();
                 } catch (IOException e) {
-                    Log.e(ConfigUtil.class.getSimpleName(),
+                    Log.d(ConfigUtil.class.getSimpleName(),
                             "Exception at reading config file", e);
                 }
             }
