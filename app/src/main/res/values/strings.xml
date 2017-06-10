@@ -18,8 +18,8 @@
     <string name="toast_records_deleted">Records deleted</string>
     <string name="toast_nothing_to_delete">Nothing to delete</string>
     <string name="toast_wrong_password">Wrong password</string>
-    <string name="toast_keys_regen_started">Keys regeneration started</string>
-    <string name="toast_keys_regen_finished">Keys regeneration finished</string>
+    <string name="toast_keys_regen_update_started">Updating call records started</string>
+    <string name="toast_keys_regen_update_finished">Updating call records finished</string>
     <string name="toast_invalid_input">Invalid input</string>
     <string name="toast_password_changed">Password changed</string>
     <string name="toast_please_enter_password">Please enter password</string>
@@ -39,4 +39,6 @@
         <item>When app goes to background</item>
         <item>On timeout of inactivity / 60 sec</item>
     </string-array>
+    <string name="toast_keys_regen_changed">Keys changed. Updating all the call records...</string>
+    <string name="toast_keys_regen_update_nothing">There are no call records to update</string>
 </resources>

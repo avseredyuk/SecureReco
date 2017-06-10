@@ -18,8 +18,8 @@
     <string name="toast_records_deleted">Записи удалены</string>
     <string name="toast_nothing_to_delete">Нечего удалять</string>
     <string name="toast_wrong_password">Неправильный пароль</string>
-    <string name="toast_keys_regen_started">Регенерация ключей началась</string>
-    <string name="toast_keys_regen_finished">Регенерация ключей закончилась</string>
+    <string name="toast_keys_regen_update_started">Обновление записей звонков началось</string>
+    <string name="toast_keys_regen_update_finished">Обновление записей звонков завершено</string>
     <string name="toast_invalid_input">Неверные данные</string>
     <string name="toast_password_changed">Пароль изменен</string>
     <string name="toast_please_enter_password">Пожалуйста введите пароль</string>
@@ -39,4 +39,6 @@
         <item>При уходе программы в фон</item>
         <item>По таймауту неактивности / 60 с</item>
     </string-array>
+    <string name="toast_keys_regen_changed">Ключи изменены. Обновляем все записи звонков...</string>
+    <string name="toast_keys_regen_update_nothing">Нет записей звонков для обновления</string>
 </resources>

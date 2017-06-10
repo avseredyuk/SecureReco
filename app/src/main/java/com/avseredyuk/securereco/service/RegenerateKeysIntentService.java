@@ -31,13 +31,20 @@ public class RegenerateKeysIntentService extends IntentService {
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         isRunning = true;
+
         byte[] oldPrivateKey = intent.getByteArrayExtra(OLD_PRIVATE_KEY_INTENT_EXTRA_NAME);
         CallDao callDao = CallDao.getInstance();
         List<Call> calls = callDao.findAll();
-        for (Call call : calls) {
-            callDao.reEncryptHeader(call, oldPrivateKey);
+        if (!calls.isEmpty()) {
+            handler.post(new DisplayToast(this, getString(R.string.toast_keys_regen_update_started)));
+            for (Call call : calls) {
+                callDao.reEncryptHeader(call, oldPrivateKey);
+            }
+            handler.post(new DisplayToast(this, getString(R.string.toast_keys_regen_update_finished)));
+        } else {
+            handler.post(new DisplayToast(this, getString(R.string.toast_keys_regen_update_nothing)));
         }
-        handler.post(new DisplayToast(this, getString(R.string.toast_keys_regen_finished)));
+
         isRunning = false;
     }
 

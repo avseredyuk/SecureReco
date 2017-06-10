@@ -130,14 +130,14 @@ public class SettingsActivity extends SecuredActivity implements AdapterView.OnI
                 public void execute(String password) {
                     if (Application.getInstance().getAuthMan().regenerateKeyPair(context, password)) {
                         Toast.makeText(context,
-                                getString(R.string.toast_keys_regen_started),
+                                getString(R.string.toast_keys_regen_changed),
                                 Toast.LENGTH_SHORT).show();
-                        finish();
                     } else {
                         Toast.makeText(context,
                                 getString(R.string.toast_wrong_password),
                                 Toast.LENGTH_SHORT).show();
                     }
+                    finish();
                 }
             };
 
