@@ -24,7 +24,13 @@ public class StringUtil {
     private static ThreadLocal<SimpleDateFormat> simpleDateFormatDate = new ThreadLocal<SimpleDateFormat>() {
         @Override
         protected SimpleDateFormat initialValue() {
-            return new SimpleDateFormat("dd/MM/yyyy HH:mm");
+            return new SimpleDateFormat("HH:mm");
+        }
+    };
+    private static ThreadLocal<SimpleDateFormat> simpleDateFormatHeader = new ThreadLocal<SimpleDateFormat>() {
+        @Override
+        protected SimpleDateFormat initialValue() {
+            return new SimpleDateFormat("EEE, d MMM");
         }
     };
 
@@ -43,8 +49,21 @@ public class StringUtil {
                 ".bin");
     }
 
+    public static boolean isSameDay(Date d1, Date d2) {
+        Calendar cal1 = Calendar.getInstance();
+        Calendar cal2 = Calendar.getInstance();
+        cal1.setTime(d1);
+        cal2.setTime(d2);
+        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR);
+    }
+
     public static String formatDate(Date date) {
         return simpleDateFormatDate.get().format(date);
+    }
+
+    public static String formatDateOnly(Date date) {
+        return simpleDateFormatHeader.get().format(date);
     }
 
     public static Call getCallFromFilename(String filename) throws ParserException{

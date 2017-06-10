@@ -225,6 +225,7 @@ public class MainActivity extends SecuredActivity
     }
 
     private static class ViewHolder {
+        TextView separator;
         TextView firstLine;
         TextView secondLine;
         TextView thirdLine;
@@ -266,6 +267,7 @@ public class MainActivity extends SecuredActivity
                 LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 convertView = inflater.inflate(R.layout.list_item, parent, false);
 
+                viewHolder.separator = (TextView) convertView.findViewById(R.id.separator);
                 viewHolder.firstLine = (TextView) convertView.findViewById(R.id.contactName);
                 viewHolder.secondLine = (TextView) convertView.findViewById(R.id.callNumber);
                 viewHolder.thirdLine = (TextView) convertView.findViewById(R.id.callDate);
@@ -276,6 +278,13 @@ public class MainActivity extends SecuredActivity
                 convertView.setTag(viewHolder);
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
+            }
+
+            if ((position == 0) || (!StringUtil.isSameDay(call.getDatetimeStarted(), this.getItem(position - 1).getDatetimeStarted()))) {
+                viewHolder.separator.setText(StringUtil.formatDateOnly(call.getDatetimeStarted()));
+                viewHolder.separator.setVisibility(View.VISIBLE);
+            } else {
+                viewHolder.separator.setVisibility(View.GONE);
             }
 
             viewHolder.firstLine.setText(ContactResolverUtil.getContactName(getContext(), call.getCallNumber()));
