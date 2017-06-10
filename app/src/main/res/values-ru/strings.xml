@@ -41,4 +41,5 @@
     </string-array>
     <string name="toast_keys_regen_changed">Ключи изменены. Обновляем все записи звонков...</string>
     <string name="toast_keys_regen_update_nothing">Нет записей звонков для обновления</string>
+    <string name="main_activity_no_call_records">Нет доступных для просмотра записей</string>
 </resources>

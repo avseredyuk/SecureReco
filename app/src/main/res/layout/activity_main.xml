@@ -5,10 +5,21 @@
     android:id="@+id/main_activity">
 
     <ListView
+        android:id="@+id/listView"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/listView"
         android:clickable="false"
         tools:listitem="@layout/list_item" />
+
+    <TextView
+        android:id="@+id/emptyElement"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="#808080"
+        android:text="@string/main_activity_no_call_records"
+        android:visibility="gone" />
 
 </LinearLayout>

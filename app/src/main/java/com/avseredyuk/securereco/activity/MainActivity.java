@@ -63,6 +63,7 @@ public class MainActivity extends SecuredActivity
         ListView callsListView = (ListView) findViewById(R.id.listView);
         callArrayAdapter = new CallArrayAdapter(this, calls);
         callsListView.setAdapter(callArrayAdapter);
+        callsListView.setEmptyView(findViewById(R.id.emptyElement));
     }
 
     @Override
