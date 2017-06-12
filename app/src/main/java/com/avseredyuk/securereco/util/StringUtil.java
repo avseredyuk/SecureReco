@@ -59,6 +59,18 @@ public class StringUtil {
                 cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR);
     }
 
+    public static String formatTimeInterval(Date d1, Date d2) {
+        long s = (d2.getTime() - d1.getTime()) / 1000;
+        long sec = s % 60;
+        long min = (s % 3600) / 60;
+        long hour = s / 3600;
+        if (hour > 0) {
+            return String.format("%d:%02d:%02d", hour, min, sec);
+        } else {
+            return String.format("%02d:%02d", min, sec);
+        }
+    }
+
     public static String formatDate(Date date) {
         return simpleDateFormatDate.get().format(date);
     }

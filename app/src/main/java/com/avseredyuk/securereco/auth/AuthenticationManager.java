@@ -95,9 +95,8 @@ public class AuthenticationManager {
     public boolean regenerateKeyPair(Context context, String password) {
         byte[] oldPrivateKey = this.privateKey;
         createKeys(password);
-        Intent msgIntent = new Intent(context, RegenerateKeysIntentService.class);
-        msgIntent.putExtra(OLD_PRIVATE_KEY_INTENT_EXTRA_NAME, oldPrivateKey);
-        context.startService(msgIntent);
+        context.startService(new Intent(context, RegenerateKeysIntentService.class)
+                .putExtra(OLD_PRIVATE_KEY_INTENT_EXTRA_NAME, oldPrivateKey));
         return true;
     }
 

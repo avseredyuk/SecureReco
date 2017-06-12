@@ -269,7 +269,7 @@ public class MainActivity extends SecuredActivity
 
                 viewHolder.separator = (TextView) convertView.findViewById(R.id.separator);
                 viewHolder.firstLine = (TextView) convertView.findViewById(R.id.contactName);
-                viewHolder.secondLine = (TextView) convertView.findViewById(R.id.callNumber);
+                viewHolder.secondLine = (TextView) convertView.findViewById(R.id.callTime);
                 viewHolder.thirdLine = (TextView) convertView.findViewById(R.id.callDate);
                 viewHolder.imageView = (ImageView) convertView.findViewById(R.id.avatar);
                 viewHolder.playBtn = (ImageButton) convertView.findViewById(R.id.playButton);
@@ -292,8 +292,8 @@ public class MainActivity extends SecuredActivity
                     call.isIncoming()
                             ? getContext().getResources().getColor(R.color.colorCallIncoming)
                             : getContext().getResources().getColor(R.color.colorCallOutgoing));
-            viewHolder.secondLine.setText(call.getCallNumber());
-            viewHolder.thirdLine.setText(StringUtil.formatDate(call.getDatetimeStarted()));
+            viewHolder.secondLine.setText(StringUtil.formatDate(call.getDatetimeStarted()));
+            viewHolder.thirdLine.setText(StringUtil.formatTimeInterval(call.getDatetimeStarted(), call.getDateTimeEnded()));
             viewHolder.imageView.setImageBitmap(ContactResolverUtil.retrieveContactPhoto(getContext(), call.getCallNumber()));
             viewHolder.playBtn.setTag(call);
             viewHolder.playBtn.setOnClickListener(this);
