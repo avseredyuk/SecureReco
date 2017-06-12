@@ -141,7 +141,7 @@ public class SettingsActivity extends SecuredActivity implements AdapterView.OnI
                 }
             };
 
-            // Here we have to ask for password no mather our authentication status
+            // Here we have to ask for password no matter our authentication status
             // because of the fact that regenerate keys procedure requires current password
             makeAlertDialog(regenerateRSAKeysCallback);
         }

@@ -41,12 +41,13 @@ public class StringUtil {
         return Environment.getExternalStorageDirectory() + "/" + CALL_LOGS_DIRECTORY;
     }
 
-    public static String formatFileName(String callNumber, Date datetimeStarted, boolean isIncoming) {
-        return String.format("%s_%s_%s%s",
-                simpleDateFormatFileName.get().format(datetimeStarted),
-                callNumber,
-                isIncoming ? "I" : "O",
-                ".bin");
+    public static String formatFileName(Call call, boolean isTemporary) {
+        return String.format("%s%s_%s_%s%s",
+                simpleDateFormatFileName.get().format(call.getDatetimeStarted()),
+                isTemporary ? "" : "_" + simpleDateFormatFileName.get().format(call.getDateTimeEnded()),
+                call.getCallNumber(),
+                call.isIncoming() ? "I" : "O",
+                isTemporary ? ".tmp" : ".bin");
     }
 
     public static boolean isSameDay(Date d1, Date d2) {
@@ -67,9 +68,6 @@ public class StringUtil {
     }
 
     public static Call getCallFromFilename(String filename) throws ParserException{
-        Call call = new Call();
-        call.setFilename(StringUtil.getCallLogsDir() + "/" + filename);
-
         try {
             int day = Integer.parseInt(filename.substring(0, 2));
             int month = Integer.parseInt(filename.substring(3, 5));
@@ -77,16 +75,26 @@ public class StringUtil {
             int hour = Integer.parseInt(filename.substring(11, 13));
             int minute = Integer.parseInt(filename.substring(14, 16));
             int second = Integer.parseInt(filename.substring(17, 19));
-            String number = filename.substring(20, filename.length() - 6);
-            boolean isIncoming = "I".equals(filename.substring(filename.length()-5, filename.length()-4));
-
             Calendar c = Calendar.getInstance();
             c.set(year, month - 1, day, hour, minute, second);
             Date datetimeStarted = c.getTime();
 
-            call.setDatetimeStarted(datetimeStarted);
-            call.setCallNumber(number);
-            call.setIsIncoming(isIncoming);
+            day = Integer.parseInt(filename.substring(20, 22));
+            month = Integer.parseInt(filename.substring(23, 25));
+            year = Integer.parseInt(filename.substring(26, 30));
+            hour = Integer.parseInt(filename.substring(31, 33));
+            minute = Integer.parseInt(filename.substring(34, 36));
+            second = Integer.parseInt(filename.substring(37, 39));
+            c = Calendar.getInstance();
+            c.set(year, month - 1, day, hour, minute, second);
+            Date dateTimeEnded = c.getTime();
+
+            String number = filename.substring(40, filename.length() - 6);
+            boolean isIncoming = "I".equals(filename.substring(filename.length()-5, filename.length()-4));
+
+            Call call = new Call(number, datetimeStarted, isIncoming);
+            call.setDateTimeEnded(dateTimeEnded);
+            call.setFilename(StringUtil.getCallLogsDir() + "/" + filename);
 
             return call;
 

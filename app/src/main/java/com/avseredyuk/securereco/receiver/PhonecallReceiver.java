@@ -13,12 +13,10 @@ import android.util.Log;
 
 import com.avseredyuk.securereco.R;
 import com.avseredyuk.securereco.activity.MainActivity;
-import com.avseredyuk.securereco.dao.CallDao;
 import com.avseredyuk.securereco.model.Call;
 import com.avseredyuk.securereco.util.ConfigUtil;
 
 import java.io.FileDescriptor;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
 
@@ -29,8 +27,6 @@ import static com.avseredyuk.securereco.util.Constant.*;
  */
 public class PhonecallReceiver extends BroadcastReceiver {
     private int lastState = TelephonyManager.CALL_STATE_IDLE;
-    private Date callStartTime;
-    private boolean isIncoming;
     private String savedNumber;
     private MediaRecorder recorder;
     private boolean recordStarted = false;
@@ -63,38 +59,24 @@ public class PhonecallReceiver extends BroadcastReceiver {
         }
         switch (state) {
             case TelephonyManager.CALL_STATE_RINGING:
-                isIncoming = true;
-                callStartTime = new Date();
+                // onIncomingCallReceived
                 savedNumber = number;
-                onIncomingCallReceived(context, number, callStartTime);
                 break;
             case TelephonyManager.CALL_STATE_OFFHOOK:
-                if (lastState != TelephonyManager.CALL_STATE_RINGING) {
-                    isIncoming = false;
-                    callStartTime = new Date();
-                    startRecording();
-                    onOutgoingCallStarted(context, savedNumber, callStartTime);
-                } else {
-                    isIncoming = true;
-                    callStartTime = new Date();
-                    startRecording();
-                    onIncomingCallAnswered(context, savedNumber, callStartTime);
-                }
+                // onOutgoingCallStarted, onIncomingCallAnswered
+                startRecording(new Call(savedNumber,
+                        new Date(),
+                        lastState == TelephonyManager.CALL_STATE_RINGING));
                 break;
             case TelephonyManager.CALL_STATE_IDLE:
                 if (lastState == TelephonyManager.CALL_STATE_RINGING) {
-                    onMissedCall(context, savedNumber, callStartTime);
+                    // onMissedCall
                     break;
-                } else if (isIncoming) {
-                    stopRecording();
-                    onIncomingCallEnded(context, savedNumber, callStartTime, new Date());
                 } else {
+                    // onIncomingCallEnded, onOutgoingCallEnded
                     stopRecording();
-                    onOutgoingCallEnded(context, savedNumber, callStartTime, new Date());
                 }
-
                 doNotificationStuff(context);
-
                 break;
         }
         lastState = state;
@@ -122,7 +104,7 @@ public class PhonecallReceiver extends BroadcastReceiver {
         }
     }
 
-    private void startRecording() {
+    private void startRecording(Call call) {
         System.out.println(">>>>>>>>>>>>>>>>>>> REC START");
         if (recordStarted) {
             stopRecording();
@@ -132,7 +114,7 @@ public class PhonecallReceiver extends BroadcastReceiver {
         recorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
         recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
         try {
-            recorder.setOutputFile(getStreamFd());
+            recorder.setOutputFile(getStreamFd(call));
             recorder.prepare();
             recorder.start();
             recordStarted = true;
@@ -143,6 +125,17 @@ public class PhonecallReceiver extends BroadcastReceiver {
             Log.e(getClass().getSimpleName(),
                     "Exception at starting recording", e);
         }
+    }
+
+    private FileDescriptor getStreamFd(Call call) throws IOException {
+        pipe = ParcelFileDescriptor.createPipe();
+
+        new PipeProcessingThread(
+                call,
+                new ParcelFileDescriptor.AutoCloseInputStream(pipe[0])
+        ).start();
+
+        return pipe[1].getFileDescriptor();
     }
 
     private void stopRecording() {
@@ -159,40 +152,5 @@ public class PhonecallReceiver extends BroadcastReceiver {
                         "Exception at closing pipe during recording", e);
             }
         }
-    }
-
-    private FileDescriptor getStreamFd() throws IOException{
-        pipe = ParcelFileDescriptor.createPipe();
-        new PipeProcessingThread(new ParcelFileDescriptor.AutoCloseInputStream(pipe[0]),
-                new FileOutputStream(
-                        CallDao.getInstance().createFile(
-                                new Call(savedNumber, callStartTime, isIncoming)
-                        )
-                )).start();
-        return pipe[1].getFileDescriptor();
-    }
-
-    private void onIncomingCallReceived(Context ctx, String number, Date start) {
-        Log.d("onIncomingCallReceived", number + " " + start.toString());
-    }
-
-    private void onIncomingCallAnswered(Context ctx, String number, Date start) {
-        Log.d("onIncomingCallAnswered", number + " " + start.toString());
-    }
-
-    private void onIncomingCallEnded(Context ctx, String number, Date start, Date end) {
-        Log.d("onIncomingCallEnded", number + " " + start.toString() + "\t" + end.toString());
-    }
-
-    private void onOutgoingCallStarted(Context ctx, String number, Date start) {
-        Log.d("onOutgoingCallStarted", number + " " + start.toString());
-    }
-
-    private void onOutgoingCallEnded(Context ctx, String number, Date start, Date end) {
-        Log.d("onOutgoingCallEnded", number + " " + start.toString() + "\t" + end.toString());
-    }
-
-    private void onMissedCall(Context ctx, String number, Date start) {
-        Log.d("onMissedCall", number + " " + start.toString());
     }
 }

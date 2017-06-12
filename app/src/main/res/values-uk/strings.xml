@@ -9,7 +9,7 @@
     <string name="menu_item_settings">Налаштування</string>
     <string name="menu_item_on_off">Увімкнено</string>
     <string name="menu_item_delete_selected">Видалити</string>
-    <string name="menu_item_notification">Повідомлення</string>
+    <string name="menu_item_notification">Сповіщення</string>
     <string name="notification_title">Новий дзвінок записаний</string>
     <string name="notification_text">Натисніть для відкриття</string>
     <string name="toast_authenticated">Вхід успішний</string>

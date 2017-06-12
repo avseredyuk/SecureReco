@@ -13,10 +13,8 @@ import com.avseredyuk.securereco.util.crypto.RSA;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
@@ -27,8 +25,6 @@ import java.util.List;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
-
-import static com.avseredyuk.securereco.util.Constant.BUF_SIZE;
 
 /**
  * Created by lenfer on 2/16/17.
@@ -55,7 +51,7 @@ public class CallDao {
         File callFolder = new File(StringUtil.getCallLogsDir());
         if (callFolder.listFiles() != null) {
             for (final File fileEntry : callFolder.listFiles()) {
-                if (!fileEntry.isDirectory()) {
+                if (!fileEntry.isDirectory() && fileEntry.getName().endsWith(".bin")) {
                     try {
                         Call call = StringUtil.getCallFromFilename(fileEntry.getName());
                         calls.add(call);
@@ -74,12 +70,17 @@ public class CallDao {
         return file.delete();
     }
 
-    public File createFile(Call call) {
+    public boolean moveFromTempToPermanentFile(Call call) {
+        File sampleDir = new File(StringUtil.getCallLogsDir());
+        File from = new File(sampleDir, StringUtil.formatFileName(call, true));
+        File to = new File(sampleDir, StringUtil.formatFileName(call, false));
+        return from.renameTo(to);
+    }
+
+    public File createTemporaryFile(Call call) {
         File sampleDir = new File(StringUtil.getCallLogsDir());
         sampleDir.mkdirs();
-        return new File(sampleDir, StringUtil.formatFileName(call.getCallNumber(),
-                call.getDatetimeStarted(),
-                call.isIncoming()));
+        return new File(sampleDir, StringUtil.formatFileName(call, true));
     }
 
     public boolean reEncryptHeader(Call call, byte[] oldPrivateKey) {

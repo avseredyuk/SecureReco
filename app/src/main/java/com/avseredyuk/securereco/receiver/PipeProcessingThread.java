@@ -2,13 +2,18 @@ package com.avseredyuk.securereco.receiver;
 
 import android.util.Log;
 
+import com.avseredyuk.securereco.dao.CallDao;
 import com.avseredyuk.securereco.exception.CryptoException;
+import com.avseredyuk.securereco.model.Call;
 import com.avseredyuk.securereco.util.ArrayUtil;
 import com.avseredyuk.securereco.util.crypto.*;
+
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.GeneralSecurityException;
+import java.util.Date;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherOutputStream;
@@ -20,16 +25,19 @@ import static com.avseredyuk.securereco.util.Constant.*;
  */
 public class PipeProcessingThread extends Thread {
     private final InputStream in;
-    private final FileOutputStream out;
+    private final Call call;
 
-    PipeProcessingThread(InputStream in, FileOutputStream out) {
+    PipeProcessingThread(Call call, InputStream in) {
         this.in = in;
-        this.out = out;
+        this.call = call;
     }
 
     @Override
     public void run() {
         try {
+            File callFile = CallDao.getInstance().createTemporaryFile(call);
+            FileOutputStream out = new FileOutputStream(callFile);
+
             Cipher rsaCipher = RSA.getPublicKeyCipher();
 
             AES.KeyCipherTuple keyCipherTuple = AES.initEncryptWithRandom();
@@ -45,6 +53,7 @@ public class PipeProcessingThread extends Thread {
             }
             outCipher.close();
             in.close();
+
         } catch (GeneralSecurityException e) {
             Log.e(getClass().getSimpleName(),
                     "Exception at PipeProcessingThread.run() stuff", e);
@@ -54,6 +63,10 @@ public class PipeProcessingThread extends Thread {
         } catch (IOException e) {
             Log.e(getClass().getSimpleName(),
                     "Exception writing from pool to file", e);
+        } finally {
+            // move call log file from temporary to permanent file name
+            call.setDateTimeEnded(new Date());
+            CallDao.getInstance().moveFromTempToPermanentFile(call);
         }
     }
 }

@@ -9,6 +9,7 @@ import java.util.Date;
 public class Call {
     private String callNumber;
     private Date datetimeStarted;
+    private Date dateTimeEnded;
     private boolean isIncoming;
     private String filename;
 
@@ -59,5 +60,13 @@ public class Call {
 
     public void setFilename(String filename) {
         this.filename = filename;
+    }
+
+    public Date getDateTimeEnded() {
+        return dateTimeEnded;
+    }
+
+    public void setDateTimeEnded(Date dateTimeEnded) {
+        this.dateTimeEnded = dateTimeEnded;
     }
 }
