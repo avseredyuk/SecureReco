@@ -42,4 +42,6 @@
     <string name="toast_keys_regen_changed">Keys changed. Updating all the call records...</string>
     <string name="toast_keys_regen_update_nothing">There are no call records to update</string>
     <string name="main_activity_no_call_records">No call records available</string>
+    <string name="activity_settings_change_folder_header">Change folder</string>
+    <string name="activity_settings_change_folder_button">Change</string>
 </resources>

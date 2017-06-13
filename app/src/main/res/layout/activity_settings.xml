@@ -133,8 +133,44 @@
             android:layout_alignLeft="@+id/changePasswordNewPasswordEdit2"
             android:layout_alignStart="@+id/changePasswordNewPasswordEdit2"
             android:layout_marginRight="40dp"
+            android:layout_marginEnd="40dp" />
+
+        <TextView
+            android:id="@+id/changeFolderHeaderTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="@string/activity_settings_change_folder_header"
+            android:layout_alignLeft="@+id/resetAuthHeaderTextView"
+            android:layout_alignStart="@+id/resetAuthHeaderTextView"
+            android:layout_below="@+id/regenButton"
+            android:layout_marginTop="12dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginEnd="40dp"/>
+
+        <EditText
+            android:id="@+id/changeFolderEdit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:ems="10"
+            android:layout_below="@+id/changeFolderHeaderTextView"
+            android:layout_alignLeft="@+id/changePasswordNewPassword1TextView"
+            android:layout_alignStart="@+id/changePasswordNewPassword1TextView"
+            android:layout_marginRight="40dp"
+            android:layout_marginEnd="40dp"/>
+
+        <Button
+            android:id="@+id/changeFolderButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/activity_settings_change_folder_button"
+            android:layout_below="@+id/changeFolderEdit"
+            android:layout_alignLeft="@+id/changePasswordNewPasswordEdit2"
+            android:layout_alignStart="@+id/changePasswordNewPasswordEdit2"
+            android:layout_marginRight="40dp"
             android:layout_marginEnd="40dp"
-            android:layout_marginBottom="40dp"/>
+            android:layout_marginBottom="40dp" />
 
     </RelativeLayout>
 </ScrollView>
