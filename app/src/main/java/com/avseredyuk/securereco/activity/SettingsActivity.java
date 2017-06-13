@@ -74,6 +74,9 @@ public class SettingsActivity extends SecuredActivity implements AdapterView.OnI
         );
 
         changeFolderEdit.setText(ConfigUtil.getCallLogsDir());
+        changeFolderEdit.setEnabled(
+                !isBackgroundRunningAction(BWIS_DESTINATION_CHANGE_FOLDER)
+        );
 
         changeFolderButton.setEnabled(
                 !isBackgroundRunningAction(BWIS_DESTINATION_CHANGE_FOLDER)
@@ -186,7 +189,11 @@ public class SettingsActivity extends SecuredActivity implements AdapterView.OnI
                     finish();
                 }
             };
-            makeAlertDialog(changeFolderCallback);
+            if (Application.getInstance().isAuthenticated()) {
+                changeFolderCallback.execute(null);
+            } else {
+                makeAlertDialog(changeFolderCallback);
+            }
         }
     }
 }
