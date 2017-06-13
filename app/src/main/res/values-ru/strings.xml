@@ -44,4 +44,6 @@
     <string name="main_activity_no_call_records">Нет доступных для просмотра записей</string>
     <string name="activity_settings_change_folder_header">Сменить папку</string>
     <string name="activity_settings_change_folder_button">Сменить</string>
+    <string name="toast_keys_folder_changing">Перемещаем записи в новую папку...</string>
+    <string name="toast_keys_change_folder_nothing">Нет записей для перемещения</string>
 </resources>

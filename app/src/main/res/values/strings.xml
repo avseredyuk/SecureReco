@@ -44,4 +44,6 @@
     <string name="main_activity_no_call_records">No call records available</string>
     <string name="activity_settings_change_folder_header">Change folder</string>
     <string name="activity_settings_change_folder_button">Change</string>
+    <string name="toast_keys_folder_changing">Moving call records to new folder...</string>
+    <string name="toast_keys_change_folder_nothing">There are no calls to move</string>
 </resources>

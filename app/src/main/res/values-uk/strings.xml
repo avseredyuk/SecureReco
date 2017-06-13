@@ -40,8 +40,10 @@
         <item>По таймауту неактивності / 60 с</item>
     </string-array>
     <string name="toast_keys_regen_changed">Ключі змінено. Оновлюємо усі записи дзвінків...</string>
-    <string name="toast_keys_regen_update_nothing">Відсутні записи двзінків для оновлення</string>
+    <string name="toast_keys_regen_update_nothing">Відсутні записи дзвінків для оновлення</string>
     <string name="main_activity_no_call_records">Відсутні записи дзвінків</string>
     <string name="activity_settings_change_folder_header">Змінити папку</string>
     <string name="activity_settings_change_folder_button">Змінити</string>
+    <string name="toast_keys_folder_changing">Переміщуємо записи в нову папку</string>
+    <string name="toast_keys_change_folder_nothing">Відсутні записи дзвінків для переміщення</string>
 </resources>
