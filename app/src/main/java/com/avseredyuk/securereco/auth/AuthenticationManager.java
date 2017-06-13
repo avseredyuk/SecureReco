@@ -8,7 +8,7 @@ import android.util.Log;
 import com.avseredyuk.securereco.application.Application;
 import com.avseredyuk.securereco.exception.AuthenticationException;
 import com.avseredyuk.securereco.exception.CryptoException;
-import com.avseredyuk.securereco.service.RegenerateKeysIntentService;
+import com.avseredyuk.securereco.service.BackgroundWorkIntentService;
 import com.avseredyuk.securereco.util.ConfigUtil;
 import com.avseredyuk.securereco.util.crypto.AES;
 import com.avseredyuk.securereco.util.crypto.HMAC;
@@ -95,7 +95,7 @@ public class AuthenticationManager {
     public boolean regenerateKeyPair(Context context, String password) {
         byte[] oldPrivateKey = this.privateKey;
         createKeys(password);
-        context.startService(new Intent(context, RegenerateKeysIntentService.class)
+        context.startService(new Intent(context, BackgroundWorkIntentService.class)
                 .putExtra(OLD_PRIVATE_KEY_INTENT_EXTRA_NAME, oldPrivateKey));
         return true;
     }

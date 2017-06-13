@@ -19,12 +19,12 @@ import static com.avseredyuk.securereco.util.Constant.OLD_PRIVATE_KEY_INTENT_EXT
  * Created by Anton_Serediuk on 5/12/2017.
  */
 
-public class RegenerateKeysIntentService extends IntentService {
+public class BackgroundWorkIntentService extends IntentService {
     public static volatile boolean isRunning;
     private Handler handler;
 
-    public RegenerateKeysIntentService() {
-        super("RegenerateKeysIntentService");
+    public BackgroundWorkIntentService() {
+        super("BackgroundWorkIntentService");
         handler = new Handler();
     }
 

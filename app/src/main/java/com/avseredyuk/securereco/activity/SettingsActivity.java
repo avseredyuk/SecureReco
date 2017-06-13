@@ -14,7 +14,7 @@ import com.avseredyuk.securereco.R;
 import com.avseredyuk.securereco.application.Application;
 import com.avseredyuk.securereco.callback.Callback;
 import com.avseredyuk.securereco.model.ResetAuthenticationStrategy;
-import com.avseredyuk.securereco.service.RegenerateKeysIntentService;
+import com.avseredyuk.securereco.service.BackgroundWorkIntentService;
 import com.avseredyuk.securereco.util.ConfigUtil;
 
 import static com.avseredyuk.securereco.util.Constant.RESET_AUTH_STRATEGY;
@@ -60,7 +60,7 @@ public class SettingsActivity extends SecuredActivity implements AdapterView.OnI
 
         resetAuthStrategySpinner.setSelection(ConfigUtil.readInt(RESET_AUTH_STRATEGY));
 
-        if (RegenerateKeysIntentService.isRunning) {
+        if (BackgroundWorkIntentService.isRunning) {
             regenerateRSAKeysButton.setEnabled(false);
         } else {
             regenerateRSAKeysButton.setEnabled(true);

@@ -64,7 +64,7 @@
         
         <service android:name=".service.RecorderService"/>
 
-        <service android:name=".service.RegenerateKeysIntentService"/>
+        <service android:name=".service.BackgroundWorkIntentService"/>
     </application>
 
 </manifest>
