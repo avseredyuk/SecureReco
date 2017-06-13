@@ -2,6 +2,8 @@ package com.avseredyuk.securereco.util;
 
 import android.util.Log;
 
+import com.avseredyuk.securereco.callback.FileCallback;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -10,7 +12,6 @@ import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
-import java.io.Writer;
 
 /**
  * Created by lenfer on 2/20/17.
@@ -19,6 +20,15 @@ public class IOUtil {
     private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
 
     private IOUtil() {
+    }
+
+    public static void processFiles(String directory, FileCallback callback) {
+        File folder = new File(directory);
+        if (folder.listFiles() != null) {
+            for (File fileEntry : folder.listFiles()) {
+                callback.execute(fileEntry);
+            }
+        }
     }
 
     public static byte[] readFile(String filename) throws IOException {

@@ -22,6 +22,7 @@ public class Constant {
     public static final String BWIS_DESTINATION_CHANGE_FOLDER = "change_folder";
     public static final String OLD_PRIVATE_KEY_INTENT_EXTRA_NAME = "oldPrivateKey";
     public static final String OLD_FOLDER_PATH = "oldFolderPath";
+    public static final String NEW_FOLDER_PATH = "newFolderPath";
     public static final String INTENT_BROADCAST_RESET_AUTH = "com.avseredyuk.securereco.RESET_AUTH";
     public static final int RESET_AUTH_DELAY = 1000 * 60;
 }

@@ -8,15 +8,18 @@ import android.support.annotation.Nullable;
 import android.widget.Toast;
 
 import com.avseredyuk.securereco.R;
+import com.avseredyuk.securereco.callback.FileCallback;
 import com.avseredyuk.securereco.dao.CallDao;
 import com.avseredyuk.securereco.model.Call;
-import com.avseredyuk.securereco.util.ConfigUtil;
+import com.avseredyuk.securereco.util.IOUtil;
 
+import java.io.File;
 import java.util.List;
 
 import static com.avseredyuk.securereco.util.Constant.BWIS_ACTION;
 import static com.avseredyuk.securereco.util.Constant.BWIS_DESTINATION_CHANGE_FOLDER;
 import static com.avseredyuk.securereco.util.Constant.BWIS_DESTINATION_REGENERATE_KEYS;
+import static com.avseredyuk.securereco.util.Constant.NEW_FOLDER_PATH;
 import static com.avseredyuk.securereco.util.Constant.OLD_FOLDER_PATH;
 import static com.avseredyuk.securereco.util.Constant.OLD_PRIVATE_KEY_INTENT_EXTRA_NAME;
 
@@ -54,16 +57,17 @@ public class BackgroundWorkIntentService extends IntentService {
     }
 
     private void handlerChangeFolder(Intent intent) {
-        String newFolder = ConfigUtil.getCallLogsDir();
+        String newFolder = intent.getStringExtra(NEW_FOLDER_PATH);
         String oldFolder = intent.getStringExtra(OLD_FOLDER_PATH);
-        CallDao callDao = CallDao.getInstance();
-        List<Call> calls = callDao.findAll();
-        if (!calls.isEmpty()) {
-            //todo: move da stuff
 
-        } else {
-            handler.post(new DisplayToast(this, getString(R.string.toast_keys_change_folder_nothing)));
-        }
+        FileCallback callback = new FileCallback() {
+            @Override
+            public void execute(File file) {
+                System.out.println(file.getName());
+            }
+        };
+
+        IOUtil.processFiles(oldFolder, callback);
     }
 
     private void handleRegenerateKeys(Intent intent) {

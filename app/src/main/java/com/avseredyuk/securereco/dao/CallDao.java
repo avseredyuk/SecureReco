@@ -3,6 +3,7 @@ package com.avseredyuk.securereco.dao;
 import android.util.Log;
 
 import com.avseredyuk.securereco.auth.AuthenticationManager;
+import com.avseredyuk.securereco.callback.FileCallback;
 import com.avseredyuk.securereco.exception.CryptoException;
 import com.avseredyuk.securereco.exception.ParserException;
 import com.avseredyuk.securereco.model.Call;
@@ -48,13 +49,13 @@ public class CallDao {
     }
 
     public List<Call> findAll() {
-        List<Call> calls = new ArrayList<>();
-        File callFolder = new File(ConfigUtil.getCallLogsDir());
-        if (callFolder.listFiles() != null) {
-            for (final File fileEntry : callFolder.listFiles()) {
-                if (!fileEntry.isDirectory() && fileEntry.getName().endsWith(".bin")) {
+        final List<Call> calls = new ArrayList<>();
+        FileCallback callback = new FileCallback() {
+            @Override
+            public void execute(File file) {
+                if (!file.isDirectory() && file.getName().endsWith(".bin")) {
                     try {
-                        Call call = StringUtil.getCallFromFilename(fileEntry.getName());
+                        Call call = StringUtil.getCallFromFilename(file.getName());
                         calls.add(call);
                     } catch (ParserException e) {
                         Log.e(getClass().getSimpleName(),
@@ -62,7 +63,8 @@ public class CallDao {
                     }
                 }
             }
-        }
+        };
+        IOUtil.processFiles(ConfigUtil.getCallLogsDir(), callback);
         return calls;
     }
 
