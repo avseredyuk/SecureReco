@@ -17,6 +17,7 @@ import com.avseredyuk.securereco.model.ResetAuthenticationStrategy;
 import com.avseredyuk.securereco.service.BackgroundWorkIntentService;
 import com.avseredyuk.securereco.util.ConfigUtil;
 
+import static com.avseredyuk.securereco.util.Constant.BWIS_DESTINATION_REGENERATE_KEYS;
 import static com.avseredyuk.securereco.util.Constant.RESET_AUTH_STRATEGY;
 
 /**
@@ -58,15 +59,23 @@ public class SettingsActivity extends SecuredActivity implements AdapterView.OnI
     protected void onResume() {
         super.onResume();
 
-        resetAuthStrategySpinner.setSelection(ConfigUtil.readInt(RESET_AUTH_STRATEGY));
+        resetAuthStrategySpinner.setSelection(
+                ConfigUtil.readInt(RESET_AUTH_STRATEGY)
+        );
 
-        if (BackgroundWorkIntentService.isRunning) {
-            regenerateRSAKeysButton.setEnabled(false);
-        } else {
-            regenerateRSAKeysButton.setEnabled(true);
-        }
+        regenerateRSAKeysButton.setEnabled(
+                !isBackgroundRunningAction(BWIS_DESTINATION_REGENERATE_KEYS)
+        );
 
         updateUIOnAuthenticationReset();
+    }
+
+    private boolean isBackgroundRunningAction(String action) {
+        if (BackgroundWorkIntentService.isRunning) {
+            String localActionFromService = BackgroundWorkIntentService.action;
+            return ((localActionFromService != null) && (action.equals(localActionFromService)));
+        }
+        return false;
     }
 
     @Override

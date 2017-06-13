@@ -17,6 +17,9 @@ public class Constant {
     public static final int BUF_SIZE = 8192;
     public static final int NOTIFICATION_NEW_RECORD_ID = 61616;
     public static final int SPLASH_SHOW_TIME_IN_SECONDS = 2;
+    public static final String BWIS_ACTION = "action";
+    public static final String BWIS_DESTINATION_REGENERATE_KEYS = "regenerate_keys";
+    public static final String BWIS_DESTINATION_CHANGE_FOLDER = "change_folder";
     public static final String OLD_PRIVATE_KEY_INTENT_EXTRA_NAME = "oldPrivateKey";
     public static final String INTENT_BROADCAST_RESET_AUTH = "com.avseredyuk.securereco.RESET_AUTH";
     public static final int RESET_AUTH_DELAY = 1000 * 60;

@@ -19,6 +19,8 @@ import java.util.Arrays;
 
 import javax.crypto.Cipher;
 
+import static com.avseredyuk.securereco.util.Constant.BWIS_DESTINATION_REGENERATE_KEYS;
+import static com.avseredyuk.securereco.util.Constant.BWIS_ACTION;
 import static com.avseredyuk.securereco.util.Constant.OLD_PRIVATE_KEY_INTENT_EXTRA_NAME;
 import static com.avseredyuk.securereco.util.Constant.PRIVATE_KEY_ENCODED;
 import static com.avseredyuk.securereco.util.Constant.PRIVATE_KEY_HMAC;
@@ -96,6 +98,7 @@ public class AuthenticationManager {
         byte[] oldPrivateKey = this.privateKey;
         createKeys(password);
         context.startService(new Intent(context, BackgroundWorkIntentService.class)
+                .putExtra(BWIS_ACTION, BWIS_DESTINATION_REGENERATE_KEYS)
                 .putExtra(OLD_PRIVATE_KEY_INTENT_EXTRA_NAME, oldPrivateKey));
         return true;
     }

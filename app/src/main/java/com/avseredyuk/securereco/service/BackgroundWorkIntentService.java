@@ -13,6 +13,9 @@ import com.avseredyuk.securereco.model.Call;
 
 import java.util.List;
 
+import static com.avseredyuk.securereco.util.Constant.BWIS_ACTION;
+import static com.avseredyuk.securereco.util.Constant.BWIS_DESTINATION_CHANGE_FOLDER;
+import static com.avseredyuk.securereco.util.Constant.BWIS_DESTINATION_REGENERATE_KEYS;
 import static com.avseredyuk.securereco.util.Constant.OLD_PRIVATE_KEY_INTENT_EXTRA_NAME;
 
 /**
@@ -21,6 +24,7 @@ import static com.avseredyuk.securereco.util.Constant.OLD_PRIVATE_KEY_INTENT_EXT
 
 public class BackgroundWorkIntentService extends IntentService {
     public static volatile boolean isRunning;
+    public static volatile String action;
     private Handler handler;
 
     public BackgroundWorkIntentService() {
@@ -32,6 +36,27 @@ public class BackgroundWorkIntentService extends IntentService {
     protected void onHandleIntent(@Nullable Intent intent) {
         isRunning = true;
 
+        if (intent != null) {
+            action = intent.getStringExtra(BWIS_ACTION);
+            switch (action) {
+                case BWIS_DESTINATION_REGENERATE_KEYS:
+                    handleRegenerateKeys(intent);
+                    break;
+                case BWIS_DESTINATION_CHANGE_FOLDER:
+                    handlerChangeFolder(intent);
+                    break;
+            }
+        }
+
+
+        isRunning = false;
+    }
+
+    private void handlerChangeFolder(Intent intent) {
+        //todo
+    }
+
+    private void handleRegenerateKeys(Intent intent) {
         byte[] oldPrivateKey = intent.getByteArrayExtra(OLD_PRIVATE_KEY_INTENT_EXTRA_NAME);
         CallDao callDao = CallDao.getInstance();
         List<Call> calls = callDao.findAll();
@@ -44,8 +69,6 @@ public class BackgroundWorkIntentService extends IntentService {
         } else {
             handler.post(new DisplayToast(this, getString(R.string.toast_keys_regen_update_nothing)));
         }
-
-        isRunning = false;
     }
 
     @Override
