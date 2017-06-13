@@ -152,7 +152,7 @@
             android:id="@+id/changeFolderEdit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword"
+            android:inputType="text"
             android:ems="10"
             android:layout_below="@+id/changeFolderHeaderTextView"
             android:layout_alignLeft="@+id/changePasswordNewPassword1TextView"
