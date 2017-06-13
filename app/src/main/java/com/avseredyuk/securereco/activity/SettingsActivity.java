@@ -17,6 +17,7 @@ import com.avseredyuk.securereco.model.ResetAuthenticationStrategy;
 import com.avseredyuk.securereco.service.BackgroundWorkIntentService;
 import com.avseredyuk.securereco.util.ConfigUtil;
 
+import static com.avseredyuk.securereco.util.Constant.BWIS_DESTINATION_CHANGE_FOLDER;
 import static com.avseredyuk.securereco.util.Constant.BWIS_DESTINATION_REGENERATE_KEYS;
 import static com.avseredyuk.securereco.util.Constant.RESET_AUTH_STRATEGY;
 
@@ -30,6 +31,8 @@ public class SettingsActivity extends SecuredActivity implements AdapterView.OnI
     private EditText newPasswordEdit1;
     private EditText newPasswordEdit2;
     private Button changePasswordButton;
+    private EditText changeFolderEdit;
+    private Button changeFolderButton;
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -49,10 +52,13 @@ public class SettingsActivity extends SecuredActivity implements AdapterView.OnI
         newPasswordEdit2 = (EditText) findViewById(R.id.changePasswordNewPasswordEdit2);
         changePasswordButton = (Button) findViewById(R.id.changePasswordButton);
         regenerateRSAKeysButton = (Button) findViewById(R.id.regenButton);
+        changeFolderEdit = (EditText) findViewById(R.id.changeFolderEdit);
+        changeFolderButton = (Button) findViewById(R.id.changeFolderButton);
 
         resetAuthStrategySpinner.setOnItemSelectedListener(this);
         changePasswordButton.setOnClickListener(new ChangePasswordButtonClickListener());
         regenerateRSAKeysButton.setOnClickListener(new RegenerateRSAKeysButtonClickListener());
+        changeFolderButton.setOnClickListener(new ChangeFolderButtonClickListener());
     }
 
     @Override
@@ -65,6 +71,12 @@ public class SettingsActivity extends SecuredActivity implements AdapterView.OnI
 
         regenerateRSAKeysButton.setEnabled(
                 !isBackgroundRunningAction(BWIS_DESTINATION_REGENERATE_KEYS)
+        );
+
+        changeFolderEdit.setText(ConfigUtil.getCallLogsDir());
+
+        changeFolderButton.setEnabled(
+                !isBackgroundRunningAction(BWIS_DESTINATION_CHANGE_FOLDER)
         );
 
         updateUIOnAuthenticationReset();
@@ -153,6 +165,28 @@ public class SettingsActivity extends SecuredActivity implements AdapterView.OnI
             // Here we have to ask for password no matter our authentication status
             // because of the fact that regenerate keys procedure requires current password
             makeAlertDialog(regenerateRSAKeysCallback);
+        }
+    }
+
+    private class ChangeFolderButtonClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            Callback changeFolderCallback = new Callback() {
+                @Override
+                public void execute(String password) {
+                    if (Application.getInstance().getAuthMan().changeFolder(context, changeFolderEdit.getText().toString())) {
+                        Toast.makeText(context,
+                                getString(R.string.toast_keys_folder_changing),
+                                Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(context,
+                                getString(R.string.toast_wrong_password),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                    finish();
+                }
+            };
+            makeAlertDialog(changeFolderCallback);
         }
     }
 }

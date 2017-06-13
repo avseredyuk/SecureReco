@@ -18,6 +18,7 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 
 import static com.avseredyuk.securereco.util.Constant.APP_DIRECTORY;
+import static com.avseredyuk.securereco.util.Constant.CALL_DIR;
 import static com.avseredyuk.securereco.util.Constant.CONFIG_FILE;
 import static com.avseredyuk.securereco.util.Constant.IS_ENABLED;
 import static com.avseredyuk.securereco.util.Constant.NOTIFICATION_ON;
@@ -32,6 +33,10 @@ import static com.avseredyuk.securereco.util.Constant.RESET_AUTH_STRATEGY;
 public class ConfigUtil {
 
     private ConfigUtil() {
+    }
+
+    public static String getCallLogsDir() {
+        return readValue(CALL_DIR);
     }
 
     public static boolean isConfigValid() {
@@ -52,6 +57,8 @@ public class ConfigUtil {
         ConfigUtil.writeValue(IS_ENABLED, Boolean.toString(true));
         ConfigUtil.writeValue(RESET_AUTH_STRATEGY,
                 String.valueOf(ResetAuthenticationStrategy.WHEN_APP_GOES_TO_BACKGROUND.getValue()));
+        ConfigUtil.writeValue(CALL_DIR,
+                Environment.getExternalStorageDirectory() + "/" + APP_DIRECTORY + "/calls");
     }
 
     public static String readValue(String key)  {

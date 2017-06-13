@@ -6,6 +6,7 @@ import com.avseredyuk.securereco.auth.AuthenticationManager;
 import com.avseredyuk.securereco.exception.CryptoException;
 import com.avseredyuk.securereco.exception.ParserException;
 import com.avseredyuk.securereco.model.Call;
+import com.avseredyuk.securereco.util.ConfigUtil;
 import com.avseredyuk.securereco.util.IOUtil;
 import com.avseredyuk.securereco.util.StringUtil;
 import com.avseredyuk.securereco.util.crypto.AES;
@@ -48,7 +49,7 @@ public class CallDao {
 
     public List<Call> findAll() {
         List<Call> calls = new ArrayList<>();
-        File callFolder = new File(StringUtil.getCallLogsDir());
+        File callFolder = new File(ConfigUtil.getCallLogsDir());
         if (callFolder.listFiles() != null) {
             for (final File fileEntry : callFolder.listFiles()) {
                 if (!fileEntry.isDirectory() && fileEntry.getName().endsWith(".bin")) {
@@ -71,14 +72,14 @@ public class CallDao {
     }
 
     public boolean moveFromTempToPermanentFile(Call call) {
-        File sampleDir = new File(StringUtil.getCallLogsDir());
+        File sampleDir = new File(ConfigUtil.getCallLogsDir());
         File from = new File(sampleDir, StringUtil.formatFileName(call, true));
         File to = new File(sampleDir, StringUtil.formatFileName(call, false));
         return from.renameTo(to);
     }
 
     public File createTemporaryFile(Call call) {
-        File sampleDir = new File(StringUtil.getCallLogsDir());
+        File sampleDir = new File(ConfigUtil.getCallLogsDir());
         sampleDir.mkdirs();
         return new File(sampleDir, StringUtil.formatFileName(call, true));
     }

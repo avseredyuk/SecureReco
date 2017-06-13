@@ -10,12 +10,14 @@ import android.widget.Toast;
 import com.avseredyuk.securereco.R;
 import com.avseredyuk.securereco.dao.CallDao;
 import com.avseredyuk.securereco.model.Call;
+import com.avseredyuk.securereco.util.ConfigUtil;
 
 import java.util.List;
 
 import static com.avseredyuk.securereco.util.Constant.BWIS_ACTION;
 import static com.avseredyuk.securereco.util.Constant.BWIS_DESTINATION_CHANGE_FOLDER;
 import static com.avseredyuk.securereco.util.Constant.BWIS_DESTINATION_REGENERATE_KEYS;
+import static com.avseredyuk.securereco.util.Constant.OLD_FOLDER_PATH;
 import static com.avseredyuk.securereco.util.Constant.OLD_PRIVATE_KEY_INTENT_EXTRA_NAME;
 
 /**
@@ -48,12 +50,20 @@ public class BackgroundWorkIntentService extends IntentService {
             }
         }
 
-
         isRunning = false;
     }
 
     private void handlerChangeFolder(Intent intent) {
-        //todo
+        String newFolder = ConfigUtil.getCallLogsDir();
+        String oldFolder = intent.getStringExtra(OLD_FOLDER_PATH);
+        CallDao callDao = CallDao.getInstance();
+        List<Call> calls = callDao.findAll();
+        if (!calls.isEmpty()) {
+            //todo: move da stuff
+
+        } else {
+            handler.post(new DisplayToast(this, getString(R.string.toast_keys_change_folder_nothing)));
+        }
     }
 
     private void handleRegenerateKeys(Intent intent) {

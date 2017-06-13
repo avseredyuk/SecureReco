@@ -19,8 +19,11 @@ import java.util.Arrays;
 
 import javax.crypto.Cipher;
 
+import static com.avseredyuk.securereco.util.Constant.BWIS_DESTINATION_CHANGE_FOLDER;
 import static com.avseredyuk.securereco.util.Constant.BWIS_DESTINATION_REGENERATE_KEYS;
 import static com.avseredyuk.securereco.util.Constant.BWIS_ACTION;
+import static com.avseredyuk.securereco.util.Constant.CALL_DIR;
+import static com.avseredyuk.securereco.util.Constant.OLD_FOLDER_PATH;
 import static com.avseredyuk.securereco.util.Constant.OLD_PRIVATE_KEY_INTENT_EXTRA_NAME;
 import static com.avseredyuk.securereco.util.Constant.PRIVATE_KEY_ENCODED;
 import static com.avseredyuk.securereco.util.Constant.PRIVATE_KEY_HMAC;
@@ -100,6 +103,16 @@ public class AuthenticationManager {
         context.startService(new Intent(context, BackgroundWorkIntentService.class)
                 .putExtra(BWIS_ACTION, BWIS_DESTINATION_REGENERATE_KEYS)
                 .putExtra(OLD_PRIVATE_KEY_INTENT_EXTRA_NAME, oldPrivateKey));
+        return true;
+    }
+
+    public boolean changeFolder(Context context, String newFolder) {
+        String oldCallDir = ConfigUtil.readValue(CALL_DIR);
+        ConfigUtil.writeValue(CALL_DIR, newFolder);
+        context.startService(new Intent(context, BackgroundWorkIntentService.class)
+                .putExtra(BWIS_ACTION, BWIS_DESTINATION_CHANGE_FOLDER)
+                .putExtra(OLD_FOLDER_PATH, oldCallDir)
+        );
         return true;
     }
 

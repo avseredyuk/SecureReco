@@ -1,15 +1,11 @@
 package com.avseredyuk.securereco.util;
 
-import android.os.Environment;
-
 import com.avseredyuk.securereco.exception.ParserException;
 import com.avseredyuk.securereco.model.Call;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-
-import static com.avseredyuk.securereco.util.Constant.CALL_LOGS_DIRECTORY;
 
 /**
  * Created by lenfer on 2/15/17.
@@ -35,10 +31,6 @@ public class StringUtil {
     };
 
     private StringUtil() {
-    }
-
-    public static String getCallLogsDir() {
-        return Environment.getExternalStorageDirectory() + "/" + CALL_LOGS_DIRECTORY;
     }
 
     public static String formatFileName(Call call, boolean isTemporary) {
@@ -106,7 +98,7 @@ public class StringUtil {
 
             Call call = new Call(number, datetimeStarted, isIncoming);
             call.setDateTimeEnded(dateTimeEnded);
-            call.setFilename(StringUtil.getCallLogsDir() + "/" + filename);
+            call.setFilename(ConfigUtil.getCallLogsDir() + "/" + filename);
 
             return call;
 
