@@ -13,9 +13,6 @@ public class Call {
     private boolean isIncoming;
     private String filename;
 
-    public Call() {
-    }
-
     public Call(String callNumber, Date datetimeStarted, boolean isIncoming) {
         this.callNumber = callNumber;
         this.datetimeStarted = datetimeStarted;
