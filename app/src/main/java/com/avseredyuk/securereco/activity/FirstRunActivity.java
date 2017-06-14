@@ -53,6 +53,8 @@ public class FirstRunActivity extends AppCompatActivity {
                     ConfigUtil.initDefaultConfiguration();
 
                     startActivity(new Intent(context, MainActivity.class));
+
+                    finish();
                 } else {
                     Toast.makeText(context,
                             getString(R.string.toast_please_enter_password),
