@@ -87,5 +87,15 @@ public class MainActivityMenuTest {
         SystemClock.sleep(2000);
     }
 
+    @Test
+    public void testChangeOnAuthMenuItemAfterSuccessfulAuth() {
+        onView(withText(R.string.menu_item_authenticate)).perform(click());
+        onView(withId(R.id.passwordPromptInputPasswordEditText)).perform(typeText(TYPED_PASSWORD));
+        onView(withText(R.string.password_dialog_button_ok)).perform(click());
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+        onView(withText(R.string.menu_item_deauthenticate))
+                .check(matches(isDisplayed()));
+    }
+
 
 }
