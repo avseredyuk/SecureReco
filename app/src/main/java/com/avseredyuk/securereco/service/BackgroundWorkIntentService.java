@@ -57,13 +57,16 @@ public class BackgroundWorkIntentService extends IntentService {
     }
 
     private void handlerChangeFolder(Intent intent) {
-        String newFolder = intent.getStringExtra(NEW_FOLDER_PATH);
+        final String newFolder = intent.getStringExtra(NEW_FOLDER_PATH);
+        new File(newFolder).mkdir();
         String oldFolder = intent.getStringExtra(OLD_FOLDER_PATH);
 
         FileCallback callback = new FileCallback() {
             @Override
             public void execute(File file) {
-                System.out.println(file.getName());
+                if (IOUtil.copyFile(file, new File(newFolder, file.getName()))) {
+                    file.delete();
+                }
             }
         };
 

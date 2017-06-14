@@ -6,12 +6,15 @@ import com.avseredyuk.securereco.callback.FileCallback;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
+import java.nio.channels.FileChannel;
 
 /**
  * Created by lenfer on 2/20/17.
@@ -29,6 +32,27 @@ public class IOUtil {
                 callback.execute(fileEntry);
             }
         }
+    }
+
+    public static boolean copyFile(File src, File dst) {
+        FileChannel inChannel = null;
+        FileChannel outChannel = null;
+        try {
+            inChannel = new FileInputStream(src).getChannel();
+            outChannel = new FileOutputStream(dst).getChannel();
+            long fileSize = inChannel.size();
+            return fileSize == inChannel.transferTo(0, fileSize, outChannel);
+        } catch (IOException e) {
+            //todo
+        } finally {
+            if (outChannel != null) {
+                try {outChannel.close();} catch (IOException e) {}
+            }
+            if (inChannel != null) {
+                try {inChannel.close();} catch (IOException e) {}
+            }
+        }
+        return false;
     }
 
     public static byte[] readFile(String filename) throws IOException {
