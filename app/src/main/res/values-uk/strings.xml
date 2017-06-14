@@ -27,7 +27,6 @@
     <string name="password_dialog_button_ok">OK</string>
     <string name="password_dialog_button_cancel">Відміна</string>
     <string name="activity_settings_regenerate_button">Регенерувати</string>
-    <string name="activity_settings_password_label">Пароль:</string>
     <string name="activity_settings_regenerate_header">Регенерувати ключову пару RSA</string>
     <string name="activity_settings_change_password_button">Змінити</string>
     <string name="activity_settings_change_password_header">Змінити пароль</string>
@@ -45,5 +44,4 @@
     <string name="activity_settings_change_folder_header">Змінити папку</string>
     <string name="activity_settings_change_folder_button">Змінити</string>
     <string name="toast_keys_folder_changing">Переміщуємо записи в нову папку</string>
-    <string name="toast_keys_change_folder_nothing">Відсутні записи дзвінків для переміщення</string>
 </resources>

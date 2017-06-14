@@ -27,7 +27,6 @@
     <string name="password_dialog_button_ok">OK</string>
     <string name="password_dialog_button_cancel">Отмена</string>
     <string name="activity_settings_regenerate_button">Регенерировать</string>
-    <string name="activity_settings_password_label">Пароль:</string>
     <string name="activity_settings_regenerate_header">Регенерировать ключевую пару RSA</string>
     <string name="activity_settings_change_password_button">Сменить</string>
     <string name="activity_settings_change_password_header">Сменить пароль</string>
@@ -45,5 +44,4 @@
     <string name="activity_settings_change_folder_header">Сменить папку</string>
     <string name="activity_settings_change_folder_button">Сменить</string>
     <string name="toast_keys_folder_changing">Перемещаем записи в новую папку...</string>
-    <string name="toast_keys_change_folder_nothing">Нет записей для перемещения</string>
 </resources>

@@ -27,7 +27,6 @@
     <string name="password_dialog_button_ok">OK</string>
     <string name="password_dialog_button_cancel">Cancel</string>
     <string name="activity_settings_regenerate_button">Re-generate</string>
-    <string name="activity_settings_password_label">Password:</string>
     <string name="activity_settings_regenerate_header">Regenerate RSA key-pair</string>
     <string name="activity_settings_change_password_button">Change</string>
     <string name="activity_settings_change_password_header">Change password</string>
@@ -45,5 +44,4 @@
     <string name="activity_settings_change_folder_header">Change folder</string>
     <string name="activity_settings_change_folder_button">Change</string>
     <string name="toast_keys_folder_changing">Moving call records to new folder...</string>
-    <string name="toast_keys_change_folder_nothing">There are no calls to move</string>
 </resources>
