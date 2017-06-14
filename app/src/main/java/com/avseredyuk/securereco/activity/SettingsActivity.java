@@ -132,7 +132,7 @@ public class SettingsActivity extends SecuredActivity implements AdapterView.OnI
                         finish();
                     } else {
                         Toast.makeText(context,
-                                getString(R.string.toast_wrong_password),
+                                getString(R.string.toast_error_changing_password),
                                 Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -152,15 +152,10 @@ public class SettingsActivity extends SecuredActivity implements AdapterView.OnI
             Callback regenerateRSAKeysCallback = new Callback() {
                 @Override
                 public void execute(String password) {
-                    if (Application.getInstance().getAuthMan().regenerateKeyPair(context, password)) {
-                        Toast.makeText(context,
-                                getString(R.string.toast_keys_regen_changed),
-                                Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(context,
-                                getString(R.string.toast_wrong_password),
-                                Toast.LENGTH_SHORT).show();
-                    }
+                    Application.getInstance().getAuthMan().regenerateKeyPair(context, password);
+                    Toast.makeText(context,
+                            getString(R.string.toast_keys_regen_changed),
+                            Toast.LENGTH_SHORT).show();
                     finish();
                 }
             };
@@ -177,15 +172,10 @@ public class SettingsActivity extends SecuredActivity implements AdapterView.OnI
             Callback changeFolderCallback = new Callback() {
                 @Override
                 public void execute(String password) {
-                    if (Application.getInstance().getAuthMan().changeFolder(context, changeFolderEdit.getText().toString())) {
-                        Toast.makeText(context,
-                                getString(R.string.toast_keys_folder_changing),
-                                Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(context,
-                                getString(R.string.toast_wrong_password),
-                                Toast.LENGTH_SHORT).show();
-                    }
+                    Application.getInstance().getAuthMan().changeFolder(context, changeFolderEdit.getText().toString());
+                    Toast.makeText(context,
+                            getString(R.string.toast_keys_folder_changing),
+                            Toast.LENGTH_SHORT).show();
                     finish();
                 }
             };

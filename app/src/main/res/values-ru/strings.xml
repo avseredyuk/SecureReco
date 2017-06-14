@@ -17,7 +17,6 @@
     <string name="toast_auth_error">Ошибка авторизации</string>
     <string name="toast_records_deleted">Записи удалены</string>
     <string name="toast_nothing_to_delete">Нечего удалять</string>
-    <string name="toast_wrong_password">Неправильный пароль</string>
     <string name="toast_keys_regen_update_started">Обновление записей звонков началось</string>
     <string name="toast_keys_regen_update_finished">Обновление записей звонков завершено</string>
     <string name="toast_invalid_input">Неверные данные</string>
@@ -44,4 +43,5 @@
     <string name="activity_settings_change_folder_header">Сменить папку</string>
     <string name="activity_settings_change_folder_button">Сменить</string>
     <string name="toast_keys_folder_changing">Перемещаем записи в новую папку...</string>
+    <string name="toast_error_changing_password">Ошибка при смене пароля</string>
 </resources>

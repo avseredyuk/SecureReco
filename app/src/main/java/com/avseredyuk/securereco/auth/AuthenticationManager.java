@@ -98,16 +98,15 @@ public class AuthenticationManager {
         return this;
     }
 
-    public boolean regenerateKeyPair(Context context, String password) {
+    public void regenerateKeyPair(Context context, String password) {
         byte[] oldPrivateKey = this.privateKey;
         createKeys(password);
         context.startService(new Intent(context, BackgroundWorkIntentService.class)
                 .putExtra(BWIS_ACTION, BWIS_DESTINATION_REGENERATE_KEYS)
                 .putExtra(OLD_PRIVATE_KEY_INTENT_EXTRA_NAME, oldPrivateKey));
-        return true;
     }
 
-    public boolean changeFolder(Context context, String newFolder) {
+    public void changeFolder(Context context, String newFolder) {
         String oldCallDir = ConfigUtil.readValue(CALL_DIR);
         ConfigUtil.writeValue(CALL_DIR, newFolder);
         context.startService(new Intent(context, BackgroundWorkIntentService.class)
@@ -115,7 +114,6 @@ public class AuthenticationManager {
                 .putExtra(OLD_FOLDER_PATH, oldCallDir)
                 .putExtra(NEW_FOLDER_PATH, newFolder)
         );
-        return true;
     }
 
     public boolean changePassword(String newPassword) {
