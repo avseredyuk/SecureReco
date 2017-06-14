@@ -50,7 +50,7 @@ public abstract class SecuredActivity extends AppCompatActivity {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
         alertDialogBuilder.setView(promptsView);
         final EditText userInput = (EditText) promptsView
-                .findViewById(R.id.editTextDialogUserInput);
+                .findViewById(R.id.passwordPromptInputPasswordEditText);
         alertDialogBuilder
                 .setCancelable(false)
                 .setPositiveButton(getString(R.string.password_dialog_button_ok),
