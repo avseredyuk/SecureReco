@@ -24,5 +24,6 @@ public class Constant {
     public static final String OLD_FOLDER_PATH = "oldFolderPath";
     public static final String NEW_FOLDER_PATH = "newFolderPath";
     public static final String INTENT_BROADCAST_RESET_AUTH = "com.avseredyuk.securereco.RESET_AUTH";
+    public static final String CALLS_LIST_PARCEL_NAME = "callsListParcel";
     public static final int RESET_AUTH_DELAY = 1000 * 60;
 }

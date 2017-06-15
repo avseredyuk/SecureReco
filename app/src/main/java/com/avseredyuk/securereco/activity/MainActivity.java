@@ -39,6 +39,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static com.avseredyuk.securereco.util.Constant.CALLS_LIST_PARCEL_NAME;
 import static com.avseredyuk.securereco.util.Constant.IS_ENABLED;
 import static com.avseredyuk.securereco.util.Constant.NOTIFICATION_ON;
 
@@ -69,8 +70,16 @@ public class MainActivity extends SecuredActivity
     @Override
     protected void onResume() {
         super.onResume();
-        calls.clear();
-        calls.addAll(CallDao.getInstance().findAll(Call.CallDateComparator));
+
+        Intent intent = getIntent();
+        List<Call> callsListFromIntent = intent.getParcelableArrayListExtra(CALLS_LIST_PARCEL_NAME);
+        if (callsListFromIntent != null) {
+            calls.clear();
+            calls.addAll(callsListFromIntent);
+        } else {
+            calls.clear();
+            calls.addAll(CallDao.getInstance().findAll(Call.CallDateComparator));
+        }
         callArrayAdapter.notifyDataSetChanged();
     }
 
