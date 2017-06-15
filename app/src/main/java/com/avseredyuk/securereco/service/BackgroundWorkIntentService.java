@@ -60,7 +60,6 @@ public class BackgroundWorkIntentService extends IntentService {
         final String newFolder = intent.getStringExtra(NEW_FOLDER_PATH);
         new File(newFolder).mkdir();
         String oldFolder = intent.getStringExtra(OLD_FOLDER_PATH);
-
         FileCallback callback = new FileCallback() {
             @Override
             public void execute(File file) {
@@ -69,8 +68,8 @@ public class BackgroundWorkIntentService extends IntentService {
                 }
             }
         };
-
         IOUtil.processFiles(oldFolder, callback);
+        handler.post(new DisplayToast(this, getString(R.string.toast_calls_folder_changed)));
     }
 
     private void handleRegenerateKeys(Intent intent) {
@@ -86,16 +85,6 @@ public class BackgroundWorkIntentService extends IntentService {
         } else {
             handler.post(new DisplayToast(this, getString(R.string.toast_keys_regen_update_nothing)));
         }
-    }
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
     }
 
     public class DisplayToast implements Runnable {

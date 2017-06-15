@@ -174,7 +174,7 @@ public class SettingsActivity extends SecuredActivity implements AdapterView.OnI
                 public void execute(String password) {
                     Application.getInstance().getAuthMan().changeFolder(context, changeFolderEdit.getText().toString());
                     Toast.makeText(context,
-                            getString(R.string.toast_keys_folder_changing),
+                            getString(R.string.toast_calls_folder_changing),
                             Toast.LENGTH_SHORT).show();
                     finish();
                 }

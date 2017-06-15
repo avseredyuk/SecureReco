@@ -42,6 +42,7 @@
     <string name="main_activity_no_call_records">Відсутні записи дзвінків</string>
     <string name="activity_settings_change_folder_header">Змінити папку</string>
     <string name="activity_settings_change_folder_button">Змінити</string>
-    <string name="toast_keys_folder_changing">Переміщуємо записи в нову папку</string>
+    <string name="toast_calls_folder_changing">Переміщуємо записи в нову папку</string>
+    <string name="toast_calls_folder_changed">Записи переміщені</string>
     <string name="toast_error_changing_password">Помилка при зміні пароля</string>
 </resources>
