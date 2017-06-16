@@ -1,11 +1,14 @@
 package com.avseredyuk.securereco.activity;
 
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.v7.widget.SearchView;
 import android.util.Base64;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -18,6 +21,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -45,8 +50,10 @@ import static com.avseredyuk.securereco.util.Constant.NOTIFICATION_ON;
 
 public class MainActivity extends SecuredActivity
         implements MediaPlayer.OnPreparedListener, MediaController.MediaPlayerControl {
+    private ListView callsListView;
     private CallArrayAdapter callArrayAdapter;
     private List<Call> calls = new ArrayList<>();
+    private List<Call> originalCalls;
     private MediaPlayer mediaPlayer;
     private MediaController mediaController;
     private Handler handler = new Handler();
@@ -61,10 +68,11 @@ public class MainActivity extends SecuredActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ListView callsListView = (ListView) findViewById(R.id.listView);
+        callsListView = (ListView) findViewById(R.id.listView);
         callArrayAdapter = new CallArrayAdapter(this, calls);
         callsListView.setAdapter(callArrayAdapter);
         callsListView.setEmptyView(findViewById(R.id.emptyElement));
+        callsListView.setTextFilterEnabled(true);
     }
 
     @Override
@@ -117,6 +125,30 @@ public class MainActivity extends SecuredActivity
         this.menu = menu;
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_activity_menu, menu);
+
+
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+            @Override
+            public boolean onQueryTextChange(String query) {
+                if ("".equals(query)) {
+                    callsListView.clearTextFilter();
+                } else {
+                    callsListView.setFilterText(query);
+                }
+                return true;
+            }
+        });
+
+
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -261,7 +293,7 @@ public class MainActivity extends SecuredActivity
     }
 
     private class CallArrayAdapter extends ArrayAdapter<Call>
-            implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+            implements View.OnClickListener, CompoundButton.OnCheckedChangeListener, Filterable {
         private final Set<Integer> checkedItemsIndexes = new HashSet<>();
 
         CallArrayAdapter(Context context, List<Call> calls) {
@@ -371,6 +403,41 @@ public class MainActivity extends SecuredActivity
             } else {
                 makeAlertDialog(playCallCallback);
             }
+        }
+
+        @NonNull
+        @Override
+        public Filter getFilter() {
+            return new Filter() {
+                @Override
+                protected FilterResults performFiltering(CharSequence constraint) {
+                    final FilterResults oReturn = new FilterResults();
+                    final ArrayList<Call> results = new ArrayList<>();
+                    if (originalCalls == null)
+                        originalCalls = new ArrayList<>(calls);
+                    if (constraint != null) {
+                        if (originalCalls != null && originalCalls.size() > 0) {
+                            for (final Call c : originalCalls) {
+                                if (c.getCallNumber().toLowerCase()
+                                        .contains(constraint.toString()))
+                                    results.add(c);
+                            }
+                        }
+                        oReturn.values = results;
+                    }
+                    return oReturn;
+                }
+
+                @Override
+                protected void publishResults(CharSequence constraint, FilterResults results) {
+                    List<Call> resultsList = (ArrayList<Call>) results.values;
+                    clear();
+                    for (Call c : resultsList){
+                        add(c);
+                    }
+                    notifyDataSetChanged();
+                }
+            };
         }
     }
 
