@@ -295,6 +295,7 @@ public class MainActivity extends SecuredActivity
     private class CallArrayAdapter extends ArrayAdapter<Call>
             implements View.OnClickListener, CompoundButton.OnCheckedChangeListener, Filterable {
         private final Set<Integer> checkedItemsIndexes = new HashSet<>();
+        private Filter filter;
 
         CallArrayAdapter(Context context, List<Call> calls) {
             super(context, R.layout.list_item, calls);
@@ -408,36 +409,40 @@ public class MainActivity extends SecuredActivity
         @NonNull
         @Override
         public Filter getFilter() {
-            return new Filter() {
-                @Override
-                protected FilterResults performFiltering(CharSequence constraint) {
-                    final FilterResults oReturn = new FilterResults();
-                    final ArrayList<Call> results = new ArrayList<>();
-                    if (originalCalls == null)
-                        originalCalls = new ArrayList<>(calls);
-                    if (constraint != null) {
-                        if (originalCalls != null && originalCalls.size() > 0) {
-                            for (final Call c : originalCalls) {
-                                if (c.getCallNumber().toLowerCase()
-                                        .contains(constraint.toString()))
-                                    results.add(c);
-                            }
-                        }
-                        oReturn.values = results;
-                    }
-                    return oReturn;
-                }
+            filter = (filter == null) ? new CallFilter() : filter;
+            return filter;
+        }
 
-                @Override
-                protected void publishResults(CharSequence constraint, FilterResults results) {
-                    List<Call> resultsList = (ArrayList<Call>) results.values;
-                    clear();
-                    for (Call c : resultsList){
-                        add(c);
+        private class CallFilter extends Filter {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                final FilterResults oReturn = new FilterResults();
+                final ArrayList<Call> results = new ArrayList<>();
+                if (originalCalls == null)
+                    originalCalls = new ArrayList<>(calls);
+                if (constraint != null) {
+                    if (!originalCalls.isEmpty()) {
+                        for (final Call c : originalCalls) {
+                            if (c.getCallNumber().toLowerCase()
+                                    .contains(constraint.toString()))
+                                results.add(c);
+                        }
                     }
-                    notifyDataSetChanged();
+                    oReturn.values = results;
                 }
-            };
+                return oReturn;
+            }
+
+            @SuppressWarnings("unchecked")
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                List<Call> resultsList = (ArrayList<Call>) results.values;
+                clear();
+                for (Call c : resultsList){
+                    add(c);
+                }
+                notifyDataSetChanged();
+            }
         }
     }
 
