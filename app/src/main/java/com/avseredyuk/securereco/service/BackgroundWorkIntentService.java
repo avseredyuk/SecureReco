@@ -57,6 +57,7 @@ public class BackgroundWorkIntentService extends IntentService {
     }
 
     private void handlerChangeFolder(Intent intent) {
+        //todo: lock the activities
         final String newFolder = intent.getStringExtra(NEW_FOLDER_PATH);
         new File(newFolder).mkdir();
         String oldFolder = intent.getStringExtra(OLD_FOLDER_PATH);
@@ -70,9 +71,11 @@ public class BackgroundWorkIntentService extends IntentService {
         };
         IOUtil.processFiles(oldFolder, callback);
         handler.post(new DisplayToast(this, getString(R.string.toast_calls_folder_changed)));
+        //todo: unlock the activities
     }
 
     private void handleRegenerateKeys(Intent intent) {
+        //todo: lock the activities
         byte[] oldPrivateKey = intent.getByteArrayExtra(OLD_PRIVATE_KEY_INTENT_EXTRA_NAME);
         CallDao callDao = CallDao.getInstance();
         List<Call> calls = callDao.findAll();
@@ -85,6 +88,7 @@ public class BackgroundWorkIntentService extends IntentService {
         } else {
             handler.post(new DisplayToast(this, getString(R.string.toast_keys_regen_update_nothing)));
         }
+        //todo: unlock the activities
     }
 
     public class DisplayToast implements Runnable {
