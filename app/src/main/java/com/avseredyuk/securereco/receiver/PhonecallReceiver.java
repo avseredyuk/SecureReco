@@ -14,6 +14,7 @@ import android.util.Log;
 import com.avseredyuk.securereco.R;
 import com.avseredyuk.securereco.activity.MainActivity;
 import com.avseredyuk.securereco.model.Call;
+import com.avseredyuk.securereco.util.AudioSourceEnum;
 import com.avseredyuk.securereco.util.ConfigUtil;
 
 import java.io.FileDescriptor;
@@ -108,7 +109,11 @@ public class PhonecallReceiver extends BroadcastReceiver {
             stopRecording();
         }
         recorder = new MediaRecorder();
-        recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
+        recorder.setAudioSource(
+                AudioSourceEnum.valueOf(
+                        ConfigUtil.readValue(AUDIO_SOURCE)
+                ).getId()
+        );
         recorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
         recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
         try {

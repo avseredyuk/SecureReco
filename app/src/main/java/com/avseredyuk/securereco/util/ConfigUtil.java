@@ -18,6 +18,7 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 
 import static com.avseredyuk.securereco.util.Constant.APP_DIRECTORY;
+import static com.avseredyuk.securereco.util.Constant.AUDIO_SOURCE;
 import static com.avseredyuk.securereco.util.Constant.CALL_DIR;
 import static com.avseredyuk.securereco.util.Constant.CONFIG_FILE;
 import static com.avseredyuk.securereco.util.Constant.IS_ENABLED;
@@ -53,12 +54,16 @@ public class ConfigUtil {
     }
 
     public static void initDefaultConfiguration() {
-        ConfigUtil.writeValue(NOTIFICATION_ON, Boolean.toString(true));
-        ConfigUtil.writeValue(IS_ENABLED, Boolean.toString(true));
+        ConfigUtil.writeValue(NOTIFICATION_ON,
+                Boolean.toString(true));
+        ConfigUtil.writeValue(IS_ENABLED,
+                Boolean.toString(true));
         ConfigUtil.writeValue(RESET_AUTH_STRATEGY,
                 String.valueOf(ResetAuthenticationStrategy.WHEN_APP_GOES_TO_BACKGROUND.getValue()));
         ConfigUtil.writeValue(CALL_DIR,
                 Environment.getExternalStorageDirectory() + "/" + APP_DIRECTORY + "/calls");
+        ConfigUtil.writeValue(AUDIO_SOURCE,
+                AudioSourceEnum.VOICE_COMMUNICATION.toString());
     }
 
     public static String readValue(String key)  {

@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -15,8 +16,10 @@ import com.avseredyuk.securereco.application.Application;
 import com.avseredyuk.securereco.callback.Callback;
 import com.avseredyuk.securereco.model.ResetAuthenticationStrategy;
 import com.avseredyuk.securereco.service.BackgroundWorkIntentService;
+import com.avseredyuk.securereco.util.AudioSourceEnum;
 import com.avseredyuk.securereco.util.ConfigUtil;
 
+import static com.avseredyuk.securereco.util.Constant.AUDIO_SOURCE;
 import static com.avseredyuk.securereco.util.Constant.BWIS_DESTINATION_CHANGE_FOLDER;
 import static com.avseredyuk.securereco.util.Constant.BWIS_DESTINATION_REGENERATE_KEYS;
 import static com.avseredyuk.securereco.util.Constant.RESET_AUTH_STRATEGY;
@@ -24,9 +27,10 @@ import static com.avseredyuk.securereco.util.Constant.RESET_AUTH_STRATEGY;
 /**
  * Created by lenfer on 3/1/17.
  */
-public class SettingsActivity extends SecuredActivity implements AdapterView.OnItemSelectedListener {
+public class SettingsActivity extends SecuredActivity {
     private Context context;
     private Spinner resetAuthStrategySpinner;
+    private Spinner audioSourceSpinner;
     private Button regenerateRSAKeysButton;
     private EditText newPasswordEdit1;
     private EditText newPasswordEdit2;
@@ -39,6 +43,34 @@ public class SettingsActivity extends SecuredActivity implements AdapterView.OnI
         super.onConfigurationChanged(newConfig);
     }
 
+    private class ResetAuthSpinnerItemSelectedListener implements AdapterView.OnItemSelectedListener {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            ConfigUtil.writeValue(RESET_AUTH_STRATEGY, String.valueOf(position));
+            Application.getInstance().setResetAuthStrategy(
+                    ResetAuthenticationStrategy.valueOf(position)
+            );
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+            // nothing
+        }
+    }
+
+    private class AudioSourceSpinnerItemSelectedListener implements AdapterView.OnItemSelectedListener {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            String audioSource = parent.getItemAtPosition(position).toString();
+            ConfigUtil.writeValue(AUDIO_SOURCE, audioSource);
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+            // nothing
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +80,7 @@ public class SettingsActivity extends SecuredActivity implements AdapterView.OnI
         setContentView(R.layout.activity_settings);
 
         resetAuthStrategySpinner = (Spinner) findViewById(R.id.resetAuthStrategySpinner);
+        audioSourceSpinner = (Spinner) findViewById(R.id.audioSourceSpinner);
         newPasswordEdit1 = (EditText) findViewById(R.id.changePasswordNewPasswordEdit1);
         newPasswordEdit2 = (EditText) findViewById(R.id.changePasswordNewPasswordEdit2);
         changePasswordButton = (Button) findViewById(R.id.changePasswordButton);
@@ -55,10 +88,18 @@ public class SettingsActivity extends SecuredActivity implements AdapterView.OnI
         changeFolderEdit = (EditText) findViewById(R.id.changeFolderEdit);
         changeFolderButton = (Button) findViewById(R.id.changeFolderButton);
 
-        resetAuthStrategySpinner.setOnItemSelectedListener(this);
+        resetAuthStrategySpinner.setOnItemSelectedListener(new ResetAuthSpinnerItemSelectedListener());
+        audioSourceSpinner.setOnItemSelectedListener(new AudioSourceSpinnerItemSelectedListener());
         changePasswordButton.setOnClickListener(new ChangePasswordButtonClickListener());
         regenerateRSAKeysButton.setOnClickListener(new RegenerateRSAKeysButtonClickListener());
         changeFolderButton.setOnClickListener(new ChangeFolderButtonClickListener());
+
+        audioSourceSpinner.setAdapter
+                (new ArrayAdapter<>(
+                        this,
+                        android.R.layout.simple_list_item_1,
+                        AudioSourceEnum.values())
+        );
     }
 
     @Override
@@ -67,6 +108,12 @@ public class SettingsActivity extends SecuredActivity implements AdapterView.OnI
 
         resetAuthStrategySpinner.setSelection(
                 ConfigUtil.readInt(RESET_AUTH_STRATEGY)
+        );
+
+        audioSourceSpinner.setSelection(
+                AudioSourceEnum.valueOf(
+                        ConfigUtil.readValue(AUDIO_SOURCE)
+                ).ordinal()
         );
 
         regenerateRSAKeysButton.setEnabled(
@@ -91,19 +138,6 @@ public class SettingsActivity extends SecuredActivity implements AdapterView.OnI
             return ((localActionFromService != null) && (action.equals(localActionFromService)));
         }
         return false;
-    }
-
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        ConfigUtil.writeValue(RESET_AUTH_STRATEGY, String.valueOf(position));
-        Application.getInstance().setResetAuthStrategy(
-                ResetAuthenticationStrategy.valueOf(position)
-        );
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-        // auto-generated method stub
     }
 
     private class ChangePasswordButtonClickListener implements View.OnClickListener {
