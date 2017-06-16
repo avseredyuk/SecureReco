@@ -76,6 +76,7 @@ public class MainActivity extends SecuredActivity
         if (callsListFromIntent != null) {
             calls.clear();
             calls.addAll(callsListFromIntent);
+            intent.putExtra(CALLS_LIST_PARCEL_NAME, (String) null);
         } else {
             calls.clear();
             calls.addAll(CallDao.getInstance().findAll(Call.CallDateComparator));
