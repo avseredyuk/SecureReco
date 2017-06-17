@@ -58,6 +58,7 @@ public class MainActivity extends SecuredActivity
     private MediaController mediaController;
     private Handler handler = new Handler();
     private Menu menu;
+    private String filterString;
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -86,10 +87,14 @@ public class MainActivity extends SecuredActivity
             calls.addAll(callsListFromIntent);
             intent.putExtra(CALLS_LIST_PARCEL_NAME, (String) null);
         } else {
-            calls.clear();
-            calls.addAll(CallDao.getInstance().findAll(Call.CallDateComparator));
+            originalCalls.clear();
+            originalCalls.addAll(CallDao.getInstance().findAll(Call.CallDateComparator));
         }
         callArrayAdapter.notifyDataSetChanged();
+
+        if ((callArrayAdapter.filter != null) && (filterString != null)) {
+            callArrayAdapter.filter.filter(filterString);
+        }
     }
 
     @Override
@@ -126,7 +131,6 @@ public class MainActivity extends SecuredActivity
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_activity_menu, menu);
 
-
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
@@ -143,11 +147,10 @@ public class MainActivity extends SecuredActivity
                 } else {
                     callsListView.setFilterText(query);
                 }
+                filterString = query;
                 return true;
             }
         });
-
-
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -163,7 +166,7 @@ public class MainActivity extends SecuredActivity
 
         notificationOn.setChecked(ConfigUtil.readBoolean(NOTIFICATION_ON));
 
-        int selectedCount = callArrayAdapter.getCheckedCount();
+        int selectedCount = callArrayAdapter.getCheckedCalls().size();
         String itemTitle;
         if (selectedCount == 0) {
             deleteSelectedMenuItem.setVisible(false);
@@ -236,12 +239,12 @@ public class MainActivity extends SecuredActivity
 
     private void menuItemDeleteSelected() {
         String toastText;
-        if (callArrayAdapter.getCheckedCount() > 0) {
-            List<Integer> checkedIndexes = callArrayAdapter.getCheckedStatuses();
-            for (int i : checkedIndexes) {
-                Call call = callArrayAdapter.getItem(i);
-                if (CallDao.getInstance().delete(call)) {
-                    callArrayAdapter.remove(call);
+        List<Call> checkedCalls = callArrayAdapter.getCheckedCalls();
+        if (!checkedCalls.isEmpty()) {
+            for (Call c : checkedCalls) {
+                if (CallDao.getInstance().delete(c)) {
+                    originalCalls.remove(c);
+                    callArrayAdapter.remove(c);
                 }
             }
             callArrayAdapter.resetCheckedItems();
@@ -294,7 +297,6 @@ public class MainActivity extends SecuredActivity
 
     private class CallArrayAdapter extends ArrayAdapter<Call>
             implements View.OnClickListener, CompoundButton.OnCheckedChangeListener, Filterable {
-        private final Set<Integer> checkedItemsIndexes = new HashSet<>();
         private Filter filter;
 
         CallArrayAdapter(Context context, List<Call> calls) {
@@ -340,34 +342,33 @@ public class MainActivity extends SecuredActivity
             viewHolder.imageView.setImageBitmap(ContactResolverUtil.retrieveContactPhoto(getContext(), call.getCallNumber()));
             viewHolder.playBtn.setTag(call);
             viewHolder.playBtn.setOnClickListener(this);
-            viewHolder.checkBox.setTag(position);
+            viewHolder.checkBox.setTag(call);
             viewHolder.checkBox.setOnCheckedChangeListener(this);
-            boolean isItemChecked = checkedItemsIndexes.contains(position);
-            viewHolder.checkBox.setChecked(isItemChecked);
+            viewHolder.checkBox.setChecked(call.isChecked());
 
             return convertView;
         }
 
-        List<Integer> getCheckedStatuses() {
-            return new ArrayList<>(checkedItemsIndexes);
-        }
-
-        int getCheckedCount() {
-            return checkedItemsIndexes.size();
+        List<Call> getCheckedCalls() {
+            List<Call> resultCalls = new ArrayList<>();
+            for (Call c : calls) {
+                if (c.isChecked()) {
+                    resultCalls.add(c);
+                }
+            }
+            return resultCalls;
         }
 
         void resetCheckedItems() {
-            checkedItemsIndexes.clear();
+            for (Call c : calls) {
+                c.setChecked(false);
+            }
         }
 
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            Integer position = (Integer) buttonView.getTag();
-            if (isChecked) {
-                checkedItemsIndexes.add(position);
-            } else {
-                checkedItemsIndexes.remove(position);
-            }
+            Call checkBoxCall = (Call) buttonView.getTag();
+            checkBoxCall.setChecked(isChecked);
         }
 
         @Override

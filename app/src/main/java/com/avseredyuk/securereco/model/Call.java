@@ -16,6 +16,7 @@ public class Call implements Parcelable {
     private Date dateTimeEnded;
     private boolean isIncoming;
     private String filename;
+    private boolean checked;
 
     public Call(String callNumber, Date datetimeStarted, boolean isIncoming) {
         this.callNumber = callNumber;
@@ -79,6 +80,14 @@ public class Call implements Parcelable {
         this.dateTimeEnded = dateTimeEnded;
     }
 
+    public boolean isChecked() {
+        return checked;
+    }
+
+    public void setChecked(boolean checked) {
+        this.checked = checked;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -93,6 +102,7 @@ public class Call implements Parcelable {
         dateTimeEnded = tmpDateTimeEnded != -1 ? new Date(tmpDateTimeEnded) : null;
         isIncoming = in.readByte() != 0x00;
         filename = in.readString();
+        checked = in.readByte() != 0x00;
     }
 
     @Override
@@ -103,6 +113,7 @@ public class Call implements Parcelable {
         dest.writeLong(dateTimeEnded != null ? dateTimeEnded.getTime() : -1L);
         dest.writeByte((byte) (isIncoming ? 0x01 : 0x00));
         dest.writeString(filename);
+        dest.writeByte((byte) (checked ? 0x01 : 0x00));
     }
 
     @SuppressWarnings("unused")
