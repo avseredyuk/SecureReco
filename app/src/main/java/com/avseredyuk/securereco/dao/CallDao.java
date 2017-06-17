@@ -8,6 +8,7 @@ import com.avseredyuk.securereco.exception.CryptoException;
 import com.avseredyuk.securereco.exception.ParserException;
 import com.avseredyuk.securereco.model.Call;
 import com.avseredyuk.securereco.util.ConfigUtil;
+import com.avseredyuk.securereco.util.ContactResolverUtil;
 import com.avseredyuk.securereco.util.IOUtil;
 import com.avseredyuk.securereco.util.StringUtil;
 import com.avseredyuk.securereco.util.crypto.AES;
@@ -56,6 +57,9 @@ public class CallDao {
                 if (!file.isDirectory() && file.getName().endsWith(".bin")) {
                     try {
                         Call call = StringUtil.getCallFromFilename(file.getName());
+                        call.setContactName(
+                                ContactResolverUtil.getContactName(call.getCallNumber())
+                        );
                         calls.add(call);
                     } catch (ParserException e) {
                         Log.e(getClass().getSimpleName(),

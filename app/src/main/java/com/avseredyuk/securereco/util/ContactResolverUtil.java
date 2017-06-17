@@ -24,13 +24,13 @@ public class ContactResolverUtil {
     private ContactResolverUtil() {
     }
     
-    public static String getContactName(Context context, String number) {
+    public static String getContactName(String number) {
         Map<String, String> contactNameCache = Application.getInstance().getContactNameCache();
         String contactName = contactNameCache.get(number);
         if (contactName != null) {
             return contactName;
         }
-        ContentResolver cr = context.getContentResolver();
+        ContentResolver cr = Application.getInstance().getApplicationContext().getContentResolver();
         Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(number));
         Cursor cursor = cr.query(uri, new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME}, null, null, null);
         if (cursor == null) {

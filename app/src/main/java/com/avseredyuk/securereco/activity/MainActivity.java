@@ -330,7 +330,7 @@ public class MainActivity extends SecuredActivity
                 viewHolder.separator.setVisibility(View.GONE);
             }
 
-            viewHolder.firstLine.setText(ContactResolverUtil.getContactName(getContext(), call.getCallNumber()));
+            viewHolder.firstLine.setText(call.getContactName());
             viewHolder.firstLine.setTextColor(
                     call.isIncoming()
                             ? getContext().getResources().getColor(R.color.colorCallIncoming)
