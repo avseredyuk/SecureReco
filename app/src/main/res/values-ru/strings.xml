@@ -46,4 +46,5 @@
     <string name="toast_calls_folder_changed">Записи перемещены</string>
     <string name="toast_error_changing_password">Ошибка при смене пароля</string>
     <string name="activity_settings_audio_source_header">Источник аудио</string>
+    <string name="action_bar_query_hint">Поиск...</string>
 </resources>

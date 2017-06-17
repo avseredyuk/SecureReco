@@ -40,9 +40,7 @@ import com.avseredyuk.securereco.util.ContactResolverUtil;
 import com.avseredyuk.securereco.util.StringUtil;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static com.avseredyuk.securereco.util.Constant.CALLS_LIST_PARCEL_NAME;
 import static com.avseredyuk.securereco.util.Constant.IS_ENABLED;
@@ -53,7 +51,7 @@ public class MainActivity extends SecuredActivity
     private ListView callsListView;
     private CallArrayAdapter callArrayAdapter;
     private List<Call> calls = new ArrayList<>();
-    private List<Call> originalCalls;
+    private List<Call> originalCalls = new ArrayList<>();
     private MediaPlayer mediaPlayer;
     private MediaController mediaController;
     private Handler handler = new Handler();
@@ -82,19 +80,21 @@ public class MainActivity extends SecuredActivity
 
         Intent intent = getIntent();
         List<Call> callsListFromIntent = intent.getParcelableArrayListExtra(CALLS_LIST_PARCEL_NAME);
+        originalCalls.clear();
         if (callsListFromIntent != null) {
-            calls.clear();
-            calls.addAll(callsListFromIntent);
+            originalCalls.addAll(callsListFromIntent);
             intent.putExtra(CALLS_LIST_PARCEL_NAME, (String) null);
         } else {
-            originalCalls.clear();
             originalCalls.addAll(CallDao.getInstance().findAll(Call.CallDateComparator));
         }
+        calls.clear();
+        calls.addAll(originalCalls);
         callArrayAdapter.notifyDataSetChanged();
 
         if ((callArrayAdapter.filter != null) && (filterString != null)) {
             callArrayAdapter.filter.filter(filterString);
         }
+
     }
 
     @Override
@@ -133,12 +133,19 @@ public class MainActivity extends SecuredActivity
 
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
+        searchView.setQueryHint(getString(R.string.action_bar_query_hint));
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
             @Override
             public boolean onQueryTextSubmit(String query) {
-                return false;
+                if ("".equals(query)) {
+                    callsListView.clearTextFilter();
+                } else {
+                    callsListView.setFilterText(query);
+                }
+                filterString = query;
+                return true;
             }
             @Override
             public boolean onQueryTextChange(String query) {

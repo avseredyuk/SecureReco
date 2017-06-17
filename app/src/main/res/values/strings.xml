@@ -46,4 +46,5 @@
     <string name="toast_calls_folder_changed">Call records moved</string>
     <string name="toast_error_changing_password">Error changing password</string>
     <string name="activity_settings_audio_source_header">Audio source</string>
+    <string name="action_bar_query_hint">Search...</string>
 </resources>
