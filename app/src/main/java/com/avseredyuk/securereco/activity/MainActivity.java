@@ -423,8 +423,8 @@ public class MainActivity extends SecuredActivity
                 if (constraint != null) {
                     if (!originalCalls.isEmpty()) {
                         for (final Call c : originalCalls) {
-                            if (c.getCallNumber().toLowerCase()
-                                    .contains(constraint.toString()))
+                            if (c.getCallNumber().toLowerCase().contains(constraint.toString())
+                                    || c.getContactName().toLowerCase().contains(constraint.toString()))
                                 results.add(c);
                         }
                     }
