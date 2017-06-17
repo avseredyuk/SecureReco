@@ -11,6 +11,7 @@ import java.util.Date;
  */
 public class Call implements Parcelable {
     private String callNumber;
+    private String contactName;
     private Date datetimeStarted;
     private Date dateTimeEnded;
     private boolean isIncoming;
@@ -36,6 +37,14 @@ public class Call implements Parcelable {
 
     public void setCallNumber(String callNumber) {
         this.callNumber = callNumber;
+    }
+
+    public String getContactName() {
+        return contactName;
+    }
+
+    public void setContactName(String contactName) {
+        this.contactName = contactName;
     }
 
     public Date getDatetimeStarted() {
@@ -77,6 +86,7 @@ public class Call implements Parcelable {
 
     protected Call(Parcel in) {
         callNumber = in.readString();
+        contactName = in.readString();
         long tmpDatetimeStarted = in.readLong();
         datetimeStarted = tmpDatetimeStarted != -1 ? new Date(tmpDatetimeStarted) : null;
         long tmpDateTimeEnded = in.readLong();
@@ -88,6 +98,7 @@ public class Call implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(callNumber);
+        dest.writeString(contactName);
         dest.writeLong(datetimeStarted != null ? datetimeStarted.getTime() : -1L);
         dest.writeLong(dateTimeEnded != null ? dateTimeEnded.getTime() : -1L);
         dest.writeByte((byte) (isIncoming ? 0x01 : 0x00));
