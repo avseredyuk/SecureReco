@@ -41,7 +41,7 @@ public class ConfigUtil {
     }
 
     public static boolean isConfigValid() {
-        File sampleDir = new File(Environment.getExternalStorageDirectory(), "/" + APP_DIRECTORY + "/");
+        File sampleDir = new File(Environment.getExternalStorageDirectory(), APP_DIRECTORY);
         if (sampleDir.exists()) {
             File configFile = new File(Environment.getExternalStorageDirectory(), "/" + APP_DIRECTORY + "/" + CONFIG_FILE);
             if (!configFile.isDirectory()) {

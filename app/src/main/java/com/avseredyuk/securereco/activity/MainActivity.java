@@ -34,6 +34,9 @@ import com.avseredyuk.securereco.R;
 import com.avseredyuk.securereco.application.Application;
 import com.avseredyuk.securereco.callback.Callback;
 import com.avseredyuk.securereco.dao.CallDao;
+import com.avseredyuk.securereco.filedialog.FileOperation;
+import com.avseredyuk.securereco.filedialog.FileSelector;
+import com.avseredyuk.securereco.filedialog.OnHandleFileListener;
 import com.avseredyuk.securereco.model.Call;
 import com.avseredyuk.securereco.util.ConfigUtil;
 import com.avseredyuk.securereco.util.ContactResolverUtil;
@@ -47,8 +50,10 @@ import static com.avseredyuk.securereco.util.Constant.IS_ENABLED;
 import static com.avseredyuk.securereco.util.Constant.NOTIFICATION_ON;
 
 public class MainActivity extends SecuredActivity
-        implements MediaPlayer.OnPreparedListener, MediaController.MediaPlayerControl, SearchView.OnQueryTextListener {
-    private ListView callsListView;
+        implements MediaPlayer.OnPreparedListener,
+        MediaController.MediaPlayerControl,
+        SearchView.OnQueryTextListener {
+    public static final String AMR_SUFFIX = ".amr";
     private CallArrayAdapter callArrayAdapter;
     private List<Call> calls = new ArrayList<>();
     private List<Call> originalCalls = new ArrayList<>();
@@ -57,6 +62,7 @@ public class MainActivity extends SecuredActivity
     private Handler handler = new Handler();
     private Menu menu;
     private String filterString;
+    private static final String[] mFileFilter = { "*.*", ".amr" };
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -67,7 +73,7 @@ public class MainActivity extends SecuredActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        callsListView = (ListView) findViewById(R.id.listView);
+        ListView callsListView = (ListView) findViewById(R.id.listView);
         callArrayAdapter = new CallArrayAdapter(this, calls);
         callsListView.setAdapter(callArrayAdapter);
         callsListView.setEmptyView(findViewById(R.id.emptyElement));
@@ -295,7 +301,10 @@ public class MainActivity extends SecuredActivity
     }
 
     private class CallArrayAdapter extends ArrayAdapter<Call>
-            implements View.OnClickListener, CompoundButton.OnCheckedChangeListener, Filterable {
+            implements View.OnClickListener,
+            CompoundButton.OnCheckedChangeListener,
+            View.OnLongClickListener,
+            Filterable {
         private Filter filter;
 
         CallArrayAdapter(Context context, List<Call> calls) {
@@ -341,6 +350,7 @@ public class MainActivity extends SecuredActivity
             viewHolder.imageView.setImageBitmap(ContactResolverUtil.retrieveContactPhoto(getContext(), call.getCallNumber()));
             viewHolder.playBtn.setTag(call);
             viewHolder.playBtn.setOnClickListener(this);
+            viewHolder.playBtn.setOnLongClickListener(this);
             viewHolder.checkBox.setTag(call);
             viewHolder.checkBox.setOnCheckedChangeListener(this);
             viewHolder.checkBox.setChecked(call.isChecked());
@@ -404,6 +414,47 @@ public class MainActivity extends SecuredActivity
             } else {
                 makeAlertDialog(playCallCallback);
             }
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+            final Call call = (Call) v.getTag();
+
+            Callback exportCallCallback = new Callback() {
+                @Override
+                public void execute(String password) {
+                    new FileSelector(MainActivity.this,
+                            FileOperation.SAVE,
+                            new OnHandleFileListener() {
+                                @Override
+                                public void handleFile(String filePath) {
+                                    if (!filePath.endsWith(AMR_SUFFIX)) {
+                                        filePath += AMR_SUFFIX;
+                                    }
+                                    if (CallDao.getInstance().exportDecryptedCall(filePath, call, Application.getInstance().getAuthMan())) {
+                                        Toast.makeText(getApplication(),
+                                                getString(R.string.call_exported_successfully),
+                                                Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(getApplication(),
+                                                getString(R.string.call_exported_with_error),
+                                                Toast.LENGTH_SHORT).show();
+                                    }
+
+                                }
+                            },
+                            mFileFilter
+                    ).show();
+                }
+            };
+
+            if (Application.getInstance().isAuthenticated()) {
+                exportCallCallback.execute(null);
+            } else {
+                makeAlertDialog(exportCallCallback);
+            }
+
+            return true;
         }
 
         @NonNull

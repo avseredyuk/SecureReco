@@ -47,4 +47,21 @@
     <string name="action_bar_query_hint">Поиск...</string>
     <string name="activity_settings_password_hint">пароль</string>
     <string name="activity_settings_password_again_hint">пароль еще раз</string>
+    <string name="enterFileName">Введите имя файла:</string>
+    <string name="saveButtonText">Сохранить</string>
+    <string name="cancelButtonText">Отмена</string>
+    <string name="cannotSaveFileMessage">Ошибка сохранения файла</string>
+    <string name="fileNameFirstMessage">Сначала введите имя файла</string>
+    <string name="okButtonText">OK</string>
+    <string name="loadButtonText">Загрузить</string>
+    <string name="accessDenied">Ошибка доступа</string>
+    <string name="missingFile">Нет такого файла</string>
+    <string name="newFolderButtonText">Новая папка</string>
+    <string name="newFolderDialogMessage">Создать новую папку</string>
+    <string name="createButtonText">Создать</string>
+    <string name="folderCreationOk">Папка создана успешно</string>
+    <string name="folderCreationError">Ошибка создания папки</string>
+    <string name="information">Информация</string>
+    <string name="call_exported_successfully">Файл экспортирован успешно</string>
+    <string name="call_exported_with_error">Ошибка экспорта звонка</string>
 </resources>

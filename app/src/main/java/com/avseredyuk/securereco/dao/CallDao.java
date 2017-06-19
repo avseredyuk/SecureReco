@@ -130,6 +130,18 @@ public class CallDao {
         return false;
     }
 
+    public boolean exportDecryptedCall(String filePath, Call call, AuthenticationManager authMan) {
+        byte[] callData = getDecryptedCall(call, authMan);
+        if (callData.length > 0) {
+            try {
+                return IOUtil.writeFile(filePath, callData);
+            } catch (IOException e) {
+                //todo
+            }
+        }
+        return false;
+    }
+
     public byte[] getDecryptedCall(Call call, AuthenticationManager authMan)  {
         byte[] fileByteArray;
         byte[] iv = new byte[16];

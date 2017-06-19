@@ -34,7 +34,6 @@ public class SettingsActivity extends SecuredActivity {
     private Button regenerateRSAKeysButton;
     private EditText newPasswordEdit1;
     private EditText newPasswordEdit2;
-    private Button changePasswordButton;
     private EditText changeFolderEdit;
     private Button changeFolderButton;
 
@@ -83,7 +82,7 @@ public class SettingsActivity extends SecuredActivity {
         audioSourceSpinner = (Spinner) findViewById(R.id.audioSourceSpinner);
         newPasswordEdit1 = (EditText) findViewById(R.id.changePasswordNewPasswordEdit1);
         newPasswordEdit2 = (EditText) findViewById(R.id.changePasswordNewPasswordEdit2);
-        changePasswordButton = (Button) findViewById(R.id.changePasswordButton);
+        Button changePasswordButton = (Button) findViewById(R.id.changePasswordButton);
         regenerateRSAKeysButton = (Button) findViewById(R.id.regenButton);
         changeFolderEdit = (EditText) findViewById(R.id.changeFolderEdit);
         changeFolderButton = (Button) findViewById(R.id.changeFolderButton);
