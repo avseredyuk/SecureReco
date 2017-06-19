@@ -29,8 +29,6 @@
     <string name="activity_settings_regenerate_header">Регенерувати ключову пару RSA</string>
     <string name="activity_settings_change_password_button">Змінити</string>
     <string name="activity_settings_change_password_header">Змінити пароль</string>
-    <string name="activity_settings_new_password_label">Новий пароль:</string>
-    <string name="activity_settings_new_password_again_label">Новий пароль вдруге:</string>
     <string name="activity_settings_reset_auth_header">Тактика скидання авторизації</string>
     <string-array name="reset_auth_strategy_array">
         <item>Не скидувати</item>
@@ -47,4 +45,6 @@
     <string name="toast_error_changing_password">Помилка при зміні пароля</string>
     <string name="activity_settings_audio_source_header">Джерело аудіо</string>
     <string name="action_bar_query_hint">Пошук...</string>
+    <string name="activity_settings_password_hint">пароль</string>
+    <string name="activity_settings_password_again_hint">пароль ще раз</string>
 </resources>

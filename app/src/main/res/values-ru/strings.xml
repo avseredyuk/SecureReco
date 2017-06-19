@@ -29,8 +29,6 @@
     <string name="activity_settings_regenerate_header">Регенерировать ключевую пару RSA</string>
     <string name="activity_settings_change_password_button">Сменить</string>
     <string name="activity_settings_change_password_header">Сменить пароль</string>
-    <string name="activity_settings_new_password_label">Новый пароль:</string>
-    <string name="activity_settings_new_password_again_label">Новый пароль повторно:</string>
     <string name="activity_settings_reset_auth_header">Тактика сброса авторизации</string>
     <string-array name="reset_auth_strategy_array">
         <item>Не сбрасывать</item>
@@ -47,4 +45,6 @@
     <string name="toast_error_changing_password">Ошибка при смене пароля</string>
     <string name="activity_settings_audio_source_header">Источник аудио</string>
     <string name="action_bar_query_hint">Поиск...</string>
+    <string name="activity_settings_password_hint">пароль</string>
+    <string name="activity_settings_password_again_hint">пароль еще раз</string>
 </resources>

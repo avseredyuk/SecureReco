@@ -74,53 +74,29 @@
             android:layout_marginRight="40dp"
             android:layout_marginEnd="40dp"/>
 
-        <TextView
-            android:id="@+id/changePasswordNewPassword1TextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/activity_settings_new_password_label"
-            android:layout_below="@+id/changePasswordHeaderTextView"
-            android:layout_alignLeft="@+id/changePasswordHeaderTextView"
-            android:layout_alignStart="@+id/changePasswordHeaderTextView"
-            android:layout_marginLeft="20dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginRight="40dp"
-            android:layout_marginEnd="40dp"/>
-
         <EditText
             android:id="@+id/changePasswordNewPasswordEdit1"
+            android:hint="@string/activity_settings_password_hint"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword"
             android:ems="10"
-            android:layout_below="@+id/changePasswordNewPassword1TextView"
-            android:layout_alignLeft="@+id/changePasswordNewPassword1TextView"
-            android:layout_alignStart="@+id/changePasswordNewPassword1TextView"
-            android:layout_marginRight="40dp"
-            android:layout_marginEnd="40dp"/>
-
-        <TextView
-            android:id="@+id/changePasswordNewPassword2TextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/activity_settings_new_password_again_label"
-            android:layout_below="@+id/changePasswordNewPasswordEdit1"
-            android:layout_alignLeft="@+id/changePasswordNewPasswordEdit1"
-            android:layout_alignStart="@+id/changePasswordNewPasswordEdit1"
+            android:layout_below="@+id/changePasswordHeaderTextView"
+            android:layout_alignLeft="@+id/resetAuthStrategySpinner"
+            android:layout_alignStart="@+id/resetAuthStrategySpinner"
             android:layout_marginRight="40dp"
             android:layout_marginEnd="40dp"/>
 
         <EditText
             android:id="@+id/changePasswordNewPasswordEdit2"
+            android:hint="@string/activity_settings_password_again_hint"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword"
             android:ems="10"
-            android:layout_below="@+id/changePasswordNewPassword2TextView"
-            android:layout_alignLeft="@+id/changePasswordNewPassword2TextView"
-            android:layout_alignStart="@+id/changePasswordNewPassword2TextView"
+            android:layout_below="@+id/changePasswordNewPasswordEdit1"
+            android:layout_alignLeft="@+id/changePasswordNewPasswordEdit1"
+            android:layout_alignStart="@+id/changePasswordNewPasswordEdit1"
             android:layout_marginRight="40dp"
             android:layout_marginEnd="40dp"/>
 
@@ -179,8 +155,8 @@
             android:inputType="text"
             android:ems="10"
             android:layout_below="@+id/changeFolderHeaderTextView"
-            android:layout_alignLeft="@+id/changePasswordNewPassword1TextView"
-            android:layout_alignStart="@+id/changePasswordNewPassword1TextView"
+            android:layout_alignLeft="@+id/resetAuthStrategySpinner"
+            android:layout_alignStart="@+id/resetAuthStrategySpinner"
             android:layout_marginRight="40dp"
             android:layout_marginEnd="40dp"/>
 
