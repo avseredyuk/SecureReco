@@ -47,7 +47,7 @@ import static com.avseredyuk.securereco.util.Constant.IS_ENABLED;
 import static com.avseredyuk.securereco.util.Constant.NOTIFICATION_ON;
 
 public class MainActivity extends SecuredActivity
-        implements MediaPlayer.OnPreparedListener, MediaController.MediaPlayerControl {
+        implements MediaPlayer.OnPreparedListener, MediaController.MediaPlayerControl, SearchView.OnQueryTextListener {
     private ListView callsListView;
     private CallArrayAdapter callArrayAdapter;
     private List<Call> calls = new ArrayList<>();
@@ -126,6 +126,20 @@ public class MainActivity extends SecuredActivity
     }
 
     @Override
+    public boolean onQueryTextSubmit(String query) {
+        callArrayAdapter.getFilter().filter(query);
+        filterString = query;
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String query) {
+        callArrayAdapter.getFilter().filter(query);
+        filterString = query;
+        return true;
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         this.menu = menu;
         MenuInflater inflater = getMenuInflater();
@@ -135,29 +149,7 @@ public class MainActivity extends SecuredActivity
         SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
         searchView.setQueryHint(getString(R.string.action_bar_query_hint));
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                if ("".equals(query)) {
-                    callsListView.clearTextFilter();
-                } else {
-                    callsListView.setFilterText(query);
-                }
-                filterString = query;
-                return true;
-            }
-            @Override
-            public boolean onQueryTextChange(String query) {
-                if ("".equals(query)) {
-                    callsListView.clearTextFilter();
-                } else {
-                    callsListView.setFilterText(query);
-                }
-                filterString = query;
-                return true;
-            }
-        });
+        searchView.setOnQueryTextListener(this);
 
         return super.onCreateOptionsMenu(menu);
     }
