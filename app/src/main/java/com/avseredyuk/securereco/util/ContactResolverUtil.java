@@ -48,7 +48,7 @@ public class ContactResolverUtil {
         return contactName;
     }
 
-    public static Bitmap retrieveContactPhoto(Context context, String number) {
+    public static Bitmap retrieveContactPhotoCircleCropped(Context context, String number) {
         Map<String, Bitmap> contactPhotoCache = Application.getInstance().getContactPhotoCache();
         Bitmap photo = contactPhotoCache.get(number);
         if (photo != null) {
@@ -72,7 +72,7 @@ public class ContactResolverUtil {
                 InputStream inputStream = ContactsContract.Contacts.openContactPhotoInputStream(context.getContentResolver(),
                         ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, Long.valueOf(contactId)));
                 if (inputStream != null) {
-                    photo = BitmapFactory.decodeStream(inputStream);
+                    photo = ImageUtil.getCircleCroppedBitmap(BitmapFactory.decodeStream(inputStream));
                     inputStream.close();
                 }
             }

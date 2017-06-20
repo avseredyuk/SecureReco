@@ -11,6 +11,7 @@ import com.avseredyuk.securereco.auth.AuthenticationManager;
 import com.avseredyuk.securereco.model.ResetAuthenticationStrategy;
 import com.avseredyuk.securereco.util.ArrayUtil;
 import com.avseredyuk.securereco.util.ConfigUtil;
+import com.avseredyuk.securereco.util.ImageUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -51,7 +52,11 @@ public class Application extends android.app.Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
-        contactPhotoCache.put(null, BitmapFactory.decodeResource(getResources(), R.drawable.avatar_unknown));
+        contactPhotoCache.put(null,
+                ImageUtil.getCircleCroppedBitmap(
+                        BitmapFactory.decodeResource(getResources(), R.drawable.avatar_unknown)
+                )
+        );
     }
 
     public void resetDisconnectTimer(){
