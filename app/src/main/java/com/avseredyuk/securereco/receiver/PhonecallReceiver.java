@@ -65,9 +65,11 @@ public class PhonecallReceiver extends BroadcastReceiver {
                 break;
             case TelephonyManager.CALL_STATE_OFFHOOK:
                 // onOutgoingCallStarted, onIncomingCallAnswered
-                startRecording(new Call(savedNumber,
+                Call callToRecord = new Call(savedNumber,
                         new Date(),
-                        lastState == TelephonyManager.CALL_STATE_RINGING));
+                        lastState == TelephonyManager.CALL_STATE_RINGING);
+                startRecording(callToRecord);
+                setUpRecordNotification(context, callToRecord);
                 break;
             case TelephonyManager.CALL_STATE_IDLE:
                 if (lastState == TelephonyManager.CALL_STATE_RINGING) {
@@ -81,6 +83,10 @@ public class PhonecallReceiver extends BroadcastReceiver {
                 break;
         }
         lastState = state;
+    }
+
+    private void setUpRecordNotification(Context context, Call call) {
+        //todo: show notification with buttons
     }
 
     private void doNotificationStuff(Context context) {
