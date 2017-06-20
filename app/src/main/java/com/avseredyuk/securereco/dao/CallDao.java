@@ -148,12 +148,11 @@ public class CallDao {
         byte[] key = new byte[32];
         byte[] headerEncrypted = new byte[ENCRYPTED_HEADER_SIZE];
 
-        InputStream byteInputStream = null;
         CipherInputStream cipherInputStream = null;
         try {
             Cipher rsaCipher = RSA.getPrivateKeyCipher(authMan.getPrivateKey());
             fileByteArray = IOUtil.readFile(call.getFilename());
-            byteInputStream = new ByteArrayInputStream(fileByteArray);
+            InputStream byteInputStream = new ByteArrayInputStream(fileByteArray);
             if (byteInputStream.read(headerEncrypted) == headerEncrypted.length) {
                 byte[] fileHeader = rsaCipher.doFinal(headerEncrypted);
                 key = Arrays.copyOfRange(fileHeader, 0, key.length);
@@ -172,9 +171,6 @@ public class CallDao {
                     "Exception at playing decrypted call file", e);
         } finally {
             try {
-                if (byteInputStream != null) {
-                    byteInputStream.close();
-                }
                 if (cipherInputStream != null) {
                     cipherInputStream.close();
                 }
