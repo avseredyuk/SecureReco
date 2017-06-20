@@ -33,6 +33,15 @@ public class StringUtil {
     private StringUtil() {
     }
 
+    public static String addOrChangeFileExtension(String filePath, String extension) {
+        int index = filePath.lastIndexOf('.');
+        if (index == -1) {
+            return filePath + extension;
+        } else {
+            return filePath.substring(0, index) + extension;
+        }
+    }
+
     public static String formatFileName(Call call, boolean isTemporary) {
         return String.format("%s%s_%s_%s%s",
                 simpleDateFormatFileName.get().format(call.getDatetimeStarted()),

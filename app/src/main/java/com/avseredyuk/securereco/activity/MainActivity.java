@@ -42,6 +42,7 @@ import com.avseredyuk.securereco.util.ConfigUtil;
 import com.avseredyuk.securereco.util.ContactResolverUtil;
 import com.avseredyuk.securereco.util.StringUtil;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -428,9 +429,7 @@ public class MainActivity extends SecuredActivity
                             new OnHandleFileListener() {
                                 @Override
                                 public void handleFile(String filePath) {
-                                    if (!filePath.endsWith(AMR_SUFFIX)) {
-                                        filePath += AMR_SUFFIX;
-                                    }
+                                    filePath = StringUtil.addOrChangeFileExtension(filePath, AMR_SUFFIX);
                                     if (CallDao.getInstance().exportDecryptedCall(filePath, call, Application.getInstance().getAuthMan())) {
                                         Toast.makeText(getApplication(),
                                                 getString(R.string.call_exported_successfully),
@@ -443,7 +442,11 @@ public class MainActivity extends SecuredActivity
 
                                 }
                             },
-                            mFileFilter
+                            mFileFilter,
+                            StringUtil.addOrChangeFileExtension(
+                                    new File(call.getFilename()).getName(),
+                                    AMR_SUFFIX
+                            )
                     ).show();
                 }
             };

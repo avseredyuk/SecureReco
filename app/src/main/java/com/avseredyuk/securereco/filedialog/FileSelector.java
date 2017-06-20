@@ -44,6 +44,8 @@ public class FileSelector {
 	 */
 	private File mCurrentLocation;
 
+	private String mDefaultFileName;
+
 	/**
 	 * The file selector dialog.
 	 */
@@ -67,9 +69,11 @@ public class FileSelector {
 	 *            Array with filters
 	 */
 	public FileSelector(final Context context, final FileOperation operation,
-			final OnHandleFileListener onHandleFileListener, final String[] fileFilters) {
+						final OnHandleFileListener onHandleFileListener,
+						final String[] fileFilters, final String defaultFileName) {
 		mContext = context;
 		mOnHandleFileListener = onHandleFileListener;
+		mDefaultFileName = defaultFileName;
 
 		final File sdCard = Environment.getExternalStorageDirectory();
 		if (sdCard.canRead()) {
@@ -84,10 +88,16 @@ public class FileSelector {
 
 		prepareFilterSpinner(fileFilters);
 		prepareFilesList();
+		prepareDefaultFileName();
 
 		setSaveLoadButton(operation);
 		setNewFolderButton(operation);
 		setCancelButton();
+	}
+
+	private void prepareDefaultFileName() {
+		EditText mEditText = (EditText) mDialog.findViewById(R.id.fileName);
+		mEditText.setText(mDefaultFileName);
 	}
 
 	/**
