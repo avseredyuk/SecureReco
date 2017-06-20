@@ -64,4 +64,5 @@
     <string name="information">Information</string>
     <string name="call_exported_successfully">Call exported successfully</string>
     <string name="call_exported_with_error">Error exporting call</string>
+    <string name="toast_calls_folder_is_same">Can\'t move call logs to the same folder</string>
 </resources>

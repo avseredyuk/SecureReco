@@ -64,4 +64,5 @@
     <string name="information">Информация</string>
     <string name="call_exported_successfully">Файл экспортирован успешно</string>
     <string name="call_exported_with_error">Ошибка экспорта звонка</string>
+    <string name="toast_calls_folder_is_same">Нельзя переместить записи в ту же самую папку</string>
 </resources>

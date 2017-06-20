@@ -36,6 +36,14 @@ public class IOUtil {
         }
     }
 
+    public static boolean isSameFile(String filePath1, String filePath2) {
+        try {
+            return new File(filePath1).getCanonicalPath().equals(new File(filePath2).getCanonicalPath());
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
     /**
      * This method checks that the file is accepted by the filter
      *

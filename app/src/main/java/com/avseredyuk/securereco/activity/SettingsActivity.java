@@ -18,10 +18,12 @@ import com.avseredyuk.securereco.model.ResetAuthenticationStrategy;
 import com.avseredyuk.securereco.service.BackgroundWorkIntentService;
 import com.avseredyuk.securereco.util.AudioSourceEnum;
 import com.avseredyuk.securereco.util.ConfigUtil;
+import com.avseredyuk.securereco.util.IOUtil;
 
 import static com.avseredyuk.securereco.util.Constant.AUDIO_SOURCE;
 import static com.avseredyuk.securereco.util.Constant.BWIS_DESTINATION_CHANGE_FOLDER;
 import static com.avseredyuk.securereco.util.Constant.BWIS_DESTINATION_REGENERATE_KEYS;
+import static com.avseredyuk.securereco.util.Constant.CALL_DIR;
 import static com.avseredyuk.securereco.util.Constant.RESET_AUTH_STRATEGY;
 
 /**
@@ -205,11 +207,19 @@ public class SettingsActivity extends SecuredActivity {
             Callback changeFolderCallback = new Callback() {
                 @Override
                 public void execute(String password) {
-                    Application.getInstance().getAuthMan().changeFolder(context, changeFolderEdit.getText().toString());
-                    Toast.makeText(context,
-                            getString(R.string.toast_calls_folder_changing),
-                            Toast.LENGTH_SHORT).show();
-                    finish();
+                    if (!IOUtil.isSameFile(
+                            changeFolderEdit.getText().toString(),
+                            ConfigUtil.readValue(CALL_DIR))) {
+                        Application.getInstance().getAuthMan().changeFolder(context, changeFolderEdit.getText().toString());
+                        Toast.makeText(context,
+                                getString(R.string.toast_calls_folder_changing),
+                                Toast.LENGTH_SHORT).show();
+                        finish();
+                    } else {
+                        Toast.makeText(context,
+                                getString(R.string.toast_calls_folder_is_same),
+                                Toast.LENGTH_SHORT).show();
+                    }
                 }
             };
             if (Application.getInstance().isAuthenticated()) {
