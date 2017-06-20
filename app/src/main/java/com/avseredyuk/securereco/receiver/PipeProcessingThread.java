@@ -34,6 +34,7 @@ public class PipeProcessingThread extends Thread {
 
     @Override
     public void run() {
+        CipherOutputStream outCipher = null;
         try {
             File callFile = CallDao.getInstance().createTemporaryFile(call);
             FileOutputStream out = new FileOutputStream(callFile);
@@ -47,12 +48,10 @@ public class PipeProcessingThread extends Thread {
             out.write(rsaCipher.doFinal(ArrayUtil.combineArrays(keyCipherTuple.getKey().getEncoded(),
                     keyCipherTuple.getCipher().getIV())));
 
-            CipherOutputStream outCipher = new CipherOutputStream(out, keyCipherTuple.getCipher());
+            outCipher = new CipherOutputStream(out, keyCipherTuple.getCipher());
             while ((len = in.read(buf)) > 0) {
                 outCipher.write(buf, 0, len);
             }
-            outCipher.close();
-            in.close();
 
         } catch (GeneralSecurityException e) {
             Log.e(getClass().getSimpleName(),
@@ -64,6 +63,21 @@ public class PipeProcessingThread extends Thread {
             Log.e(getClass().getSimpleName(),
                     "Exception writing from pool to file", e);
         } finally {
+            try {
+                if (outCipher != null) {
+                    outCipher.close();
+                }
+            } catch (IOException e) {
+                //todo
+            }
+            try {
+                if (in != null) {
+                    in.close();
+                }
+            } catch (IOException e) {
+                //todo
+            }
+
             // move call log file from temporary to permanent file name
             call.setDateTimeEnded(new Date());
             CallDao.getInstance().moveFromTempToPermanentFile(call);
