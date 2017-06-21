@@ -65,4 +65,9 @@
     <string name="call_exported_successfully">Call exported successfully</string>
     <string name="call_exported_with_error">Error exporting call</string>
     <string name="toast_calls_folder_is_same">Can\'t move call logs to the same folder</string>
+    <string name="cd_play">Play and pause</string>
+    <string name="cd_next">Skip forwards</string>
+    <string name="notification_start_record_question">Start record?</string>
+    <string name="notification_start_record_name_format">Call: %s</string>
+
 </resources>

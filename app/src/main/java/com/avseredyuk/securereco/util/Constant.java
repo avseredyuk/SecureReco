@@ -16,7 +16,7 @@ public class Constant {
     public static final String CALL_DIR = "callDir";
     public static final String AUDIO_SOURCE = "audioSource";
     public static final int BUF_SIZE = 8192;
-    public static final int NOTIFICATION_NEW_RECORD_ID = 61616;
+    public static final int NOTIFICATION_ID = 61616;
     public static final String BWIS_ACTION = "action";
     public static final String BWIS_DESTINATION_REGENERATE_KEYS = "regenerate_keys";
     public static final String BWIS_DESTINATION_CHANGE_FOLDER = "change_folder";
@@ -24,6 +24,8 @@ public class Constant {
     public static final String OLD_FOLDER_PATH = "oldFolderPath";
     public static final String NEW_FOLDER_PATH = "newFolderPath";
     public static final String INTENT_BROADCAST_RESET_AUTH = "com.avseredyuk.securereco.RESET_AUTH";
+    public static final String INTENT_START_RECORD = "com.avseredyuk.securereco.START_RECORD";
+    public static final String INTENT_CANCEL_START_RECORD_NOTIFICATION = "com.avseredyuk.securereco.CANCEL_START_RECORD_NOTIFICATION";
     public static final String CALLS_LIST_PARCEL_NAME = "com.avseredyuk.securereco.callsListParcel";
     public static final int RESET_AUTH_DELAY = 1000 * 60;
 }

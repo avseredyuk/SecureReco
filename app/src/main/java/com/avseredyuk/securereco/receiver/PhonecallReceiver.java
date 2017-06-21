@@ -10,12 +10,14 @@ import android.media.MediaRecorder;
 import android.os.ParcelFileDescriptor;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.widget.RemoteViews;
 
 import com.avseredyuk.securereco.R;
 import com.avseredyuk.securereco.activity.MainActivity;
 import com.avseredyuk.securereco.model.Call;
 import com.avseredyuk.securereco.util.AudioSourceEnum;
 import com.avseredyuk.securereco.util.ConfigUtil;
+import com.avseredyuk.securereco.util.ContactResolverUtil;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
@@ -38,6 +40,10 @@ public class PhonecallReceiver extends BroadcastReceiver {
         if (ConfigUtil.readBoolean(IS_ENABLED)) {
             if (Intent.ACTION_NEW_OUTGOING_CALL.equals(intent.getAction())) {
                 savedNumber = intent.getExtras().getString(Intent.EXTRA_PHONE_NUMBER);
+            } else if (INTENT_START_RECORD.equals(intent.getAction())) {
+                //todo: start record somehow
+            } else if (INTENT_CANCEL_START_RECORD_NOTIFICATION.equals(intent.getAction())) {
+                cancelNotification(context);
             } else {
                 String stateStr = intent.getExtras().getString(TelephonyManager.EXTRA_STATE);
                 String number = intent.getExtras().getString(TelephonyManager.EXTRA_INCOMING_NUMBER);
@@ -65,11 +71,21 @@ public class PhonecallReceiver extends BroadcastReceiver {
                 break;
             case TelephonyManager.CALL_STATE_OFFHOOK:
                 // onOutgoingCallStarted, onIncomingCallAnswered
-                Call callToRecord = new Call(savedNumber,
-                        new Date(),
-                        lastState == TelephonyManager.CALL_STATE_RINGING);
-                startRecording(callToRecord);
-                setUpRecordNotification(context, callToRecord);
+
+                Call callToRecord = new Call(savedNumber, new Date(), lastState == TelephonyManager.CALL_STATE_RINGING);
+
+                // boolean toRecordOrNotToRecord = SuperSmartDecisionMakerBasedOnFiltersOrStrategies.decide();
+                // todo: remove this stub
+                boolean toRecordOrNotToRecord = false;
+
+                if (toRecordOrNotToRecord){
+                    startRecording(callToRecord);
+                    setUpRecordStartedNotification(context, callToRecord);
+                } else {
+                    setUpStartRecordNotification(context, callToRecord);
+                }
+
+
                 break;
             case TelephonyManager.CALL_STATE_IDLE:
                 if (lastState == TelephonyManager.CALL_STATE_RINGING) {
@@ -85,8 +101,42 @@ public class PhonecallReceiver extends BroadcastReceiver {
         lastState = state;
     }
 
-    private void setUpRecordNotification(Context context, Call call) {
-        //todo: show notification with buttons
+    private void cancelNotification(Context context) {
+        ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE)).cancel(NOTIFICATION_ID);
+    }
+
+    private void setUpRecordStartedNotification(Context context, Call call) {
+        //todo: record successfully started, show buttons to manage current record process
+        System.out.println(call);
+    }
+
+    private void setUpStartRecordNotification(Context context, Call call) {
+        if (ConfigUtil.readBoolean(NOTIFICATION_ON)) {
+            RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.notification_start_record);
+
+            contentView.setImageViewBitmap(R.id.notification_contact_photo,
+                    ContactResolverUtil.retrieveContactPhotoCircleCropped(context, call.getCallNumber()));
+
+            contentView.setTextViewText(R.id.notification_text_1, context.getString(R.string.notification_start_record_question));
+            contentView.setTextViewText(R.id.notification_text_2, String.format(context.getString(R.string.notification_start_record_name_format), call.getCallNumber()));
+
+            Intent intentStartRecord = new Intent().setAction(INTENT_START_RECORD);
+            PendingIntent pIntentStartRecord = PendingIntent.getBroadcast(context, 0, intentStartRecord, PendingIntent.FLAG_UPDATE_CURRENT);
+            contentView.setOnClickPendingIntent(R.id.notification_button_record, pIntentStartRecord);
+
+            Intent intentCancelStartRecordNotification = new Intent().setAction(INTENT_CANCEL_START_RECORD_NOTIFICATION);
+            PendingIntent pIntentCancelStartRecordNotification = PendingIntent.getBroadcast(context, 1, intentCancelStartRecordNotification, PendingIntent.FLAG_UPDATE_CURRENT);
+            contentView.setOnClickPendingIntent(R.id.notification_button_cancel, pIntentCancelStartRecordNotification);
+
+            Notification notification = new Notification.Builder(context)
+                    .setSmallIcon(R.drawable.button_play)
+                    .setContent(contentView)
+                    .setOngoing(true)
+                    .build();
+
+            ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE))
+                    .notify(NOTIFICATION_ID, notification);
+        }
     }
 
     private void doNotificationStuff(Context context) {
@@ -105,7 +155,7 @@ public class PhonecallReceiver extends BroadcastReceiver {
                     .build();
 
             ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE))
-                    .notify(NOTIFICATION_NEW_RECORD_ID, notification);
+                    .notify(NOTIFICATION_ID, notification);
         }
     }
 
@@ -114,26 +164,31 @@ public class PhonecallReceiver extends BroadcastReceiver {
         if (recordStarted) {
             stopRecording();
         }
-        recorder = new MediaRecorder();
-        recorder.setAudioSource(
-                AudioSourceEnum.valueOf(
-                        ConfigUtil.readValue(AUDIO_SOURCE)
-                ).getId()
-        );
-        recorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
-        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-        try {
-            recorder.setOutputFile(getStreamFd(call));
-            recorder.prepare();
-            recorder.start();
-            recordStarted = true;
-        } catch (IllegalStateException e) {
-            Log.e(getClass().getSimpleName(),
-                    "Exception at starting recording: audio source not set", e);
-        } catch (IOException e) {
-            Log.e(getClass().getSimpleName(),
-                    "Exception at starting recording", e);
-        }
+
+
+            recorder = new MediaRecorder();
+            recorder.setAudioSource(
+                    AudioSourceEnum.valueOf(
+                            ConfigUtil.readValue(AUDIO_SOURCE)
+                    ).getId()
+            );
+            recorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
+            recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+            try {
+                recorder.setOutputFile(getStreamFd(call));
+                recorder.prepare();
+                recorder.start();
+                recordStarted = true;
+
+            } catch (IllegalStateException e) {
+                Log.e(getClass().getSimpleName(),
+                        "Exception at starting recording: audio source not set", e);
+            } catch (IOException e) {
+                Log.e(getClass().getSimpleName(),
+                        "Exception at starting recording", e);
+            }
+
+
     }
 
     private FileDescriptor getStreamFd(Call call) throws IOException {
