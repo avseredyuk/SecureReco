@@ -17,7 +17,6 @@ import com.avseredyuk.securereco.activity.MainActivity;
 import com.avseredyuk.securereco.model.Call;
 import com.avseredyuk.securereco.util.AudioSourceEnum;
 import com.avseredyuk.securereco.util.ConfigUtil;
-import com.avseredyuk.securereco.util.ContactResolverUtil;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
@@ -193,29 +192,27 @@ public class PhonecallReceiver extends BroadcastReceiver {
             stopRecording();
         }
 
+        recorder = new MediaRecorder();
+        recorder.setAudioSource(
+                AudioSourceEnum.valueOf(
+                        ConfigUtil.readValue(AUDIO_SOURCE)
+                ).getId()
+        );
+        recorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
+        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+        try {
+            recorder.setOutputFile(getStreamFd(call));
+            recorder.prepare();
+            recorder.start();
+            recordStarted = true;
 
-            recorder = new MediaRecorder();
-            recorder.setAudioSource(
-                    AudioSourceEnum.valueOf(
-                            ConfigUtil.readValue(AUDIO_SOURCE)
-                    ).getId()
-            );
-            recorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
-            recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-            try {
-                recorder.setOutputFile(getStreamFd(call));
-                recorder.prepare();
-                recorder.start();
-                recordStarted = true;
-
-            } catch (IllegalStateException e) {
-                Log.e(getClass().getSimpleName(),
-                        "Exception at starting recording: audio source not set", e);
-            } catch (IOException e) {
-                Log.e(getClass().getSimpleName(),
-                        "Exception at starting recording", e);
-            }
-
+        } catch (IllegalStateException e) {
+            Log.e(getClass().getSimpleName(),
+                    "Exception at starting recording: audio source not set", e);
+        } catch (IOException e) {
+            Log.e(getClass().getSimpleName(),
+                    "Exception at starting recording", e);
+        }
 
     }
 

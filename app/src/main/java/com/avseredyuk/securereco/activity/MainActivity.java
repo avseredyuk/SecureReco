@@ -39,7 +39,6 @@ import com.avseredyuk.securereco.filedialog.FileSelector;
 import com.avseredyuk.securereco.filedialog.OnHandleFileListener;
 import com.avseredyuk.securereco.model.Call;
 import com.avseredyuk.securereco.util.ConfigUtil;
-import com.avseredyuk.securereco.util.ContactResolverUtil;
 import com.avseredyuk.securereco.util.StringUtil;
 
 import java.io.File;

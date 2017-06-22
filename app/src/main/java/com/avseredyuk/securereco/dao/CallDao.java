@@ -8,7 +8,6 @@ import com.avseredyuk.securereco.exception.CryptoException;
 import com.avseredyuk.securereco.exception.ParserException;
 import com.avseredyuk.securereco.model.Call;
 import com.avseredyuk.securereco.util.ConfigUtil;
-import com.avseredyuk.securereco.util.ContactResolverUtil;
 import com.avseredyuk.securereco.util.IOUtil;
 import com.avseredyuk.securereco.util.StringUtil;
 import com.avseredyuk.securereco.util.crypto.AES;
