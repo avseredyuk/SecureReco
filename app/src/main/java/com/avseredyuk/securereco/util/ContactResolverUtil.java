@@ -11,6 +11,7 @@ import android.provider.ContactsContract;
 import android.util.Log;
 
 import com.avseredyuk.securereco.application.Application;
+import com.avseredyuk.securereco.model.Call;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,7 +25,8 @@ public class ContactResolverUtil {
     private ContactResolverUtil() {
     }
     
-    public static String getContactName(String number) {
+    public static String getContactName(Call call) {
+        String number = call.getCallNumber();
         Map<String, String> contactNameCache = Application.getInstance().getContactNameCache();
         String contactName = contactNameCache.get(number);
         if (contactName != null) {
@@ -48,15 +50,16 @@ public class ContactResolverUtil {
         return contactName;
     }
 
-    public static Bitmap retrieveContactPhotoCircleCropped(Context context, String number) {
+    public static Bitmap retrieveContactPhotoCircleCropped(Call call) {
+        Context context = Application.getInstance().getApplicationContext();
         Map<String, Bitmap> contactPhotoCache = Application.getInstance().getContactPhotoCache();
-        Bitmap photo = contactPhotoCache.get(number);
+        Bitmap photo = contactPhotoCache.get(call.getCallNumber());
         if (photo != null) {
             return photo;
         }
         ContentResolver contentResolver = context.getContentResolver();
         String contactId = null;
-        Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(number));
+        Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(call.getCallNumber()));
         String[] projection = new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME, ContactsContract.PhoneLookup._ID};
         Cursor cursor =
                 contentResolver.query(uri, projection, null, null, null);
@@ -80,7 +83,7 @@ public class ContactResolverUtil {
             Log.e(ContactResolverUtil.class.getSimpleName(),
                     "Error retrieving contact photo", e);
         }
-        contactPhotoCache.put(number, photo);
+        contactPhotoCache.put(call.getCallNumber(), photo);
         return photo;
     }
 }

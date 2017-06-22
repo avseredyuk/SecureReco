@@ -1,7 +1,10 @@
 package com.avseredyuk.securereco.model;
 
+import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import com.avseredyuk.securereco.util.ContactResolverUtil;
 
 import java.util.Comparator;
 import java.util.Date;
@@ -17,6 +20,7 @@ public class Call implements Parcelable {
     private boolean isIncoming;
     private String filename;
     private boolean checked;
+    private Bitmap photo;
 
     public Call(String callNumber, Date datetimeStarted, boolean isIncoming) {
         this.callNumber = callNumber;
@@ -41,11 +45,10 @@ public class Call implements Parcelable {
     }
 
     public String getContactName() {
+        if (contactName == null) {
+            contactName = ContactResolverUtil.getContactName(this);
+        }
         return contactName;
-    }
-
-    public void setContactName(String contactName) {
-        this.contactName = contactName;
     }
 
     public Date getDatetimeStarted() {
@@ -86,6 +89,13 @@ public class Call implements Parcelable {
 
     public void setChecked(boolean checked) {
         this.checked = checked;
+    }
+
+    public Bitmap getPhoto() {
+        if (photo == null) {
+            photo = ContactResolverUtil.retrieveContactPhotoCircleCropped(this);
+        }
+        return photo;
     }
 
     @Override

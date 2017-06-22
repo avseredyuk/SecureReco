@@ -57,9 +57,6 @@ public class CallDao {
                 if (!file.isDirectory() && file.getName().endsWith(".bin")) {
                     try {
                         Call call = StringUtil.getCallFromFilename(file.getName());
-                        call.setContactName(
-                                ContactResolverUtil.getContactName(call.getCallNumber())
-                        );
                         calls.add(call);
                     } catch (ParserException e) {
                         Log.e(getClass().getSimpleName(),

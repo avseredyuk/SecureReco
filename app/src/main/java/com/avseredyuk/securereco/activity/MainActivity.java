@@ -348,7 +348,7 @@ public class MainActivity extends SecuredActivity
                             : getContext().getResources().getColor(R.color.colorCallOutgoing));
             viewHolder.secondLine.setText(StringUtil.formatDate(call.getDatetimeStarted()));
             viewHolder.thirdLine.setText(StringUtil.formatTimeInterval(call.getDatetimeStarted(), call.getDateTimeEnded()));
-            viewHolder.imageView.setImageBitmap(ContactResolverUtil.retrieveContactPhotoCircleCropped(getContext(), call.getCallNumber()));
+            viewHolder.imageView.setImageBitmap(call.getPhoto());
             viewHolder.playBtn.setTag(call);
             viewHolder.playBtn.setOnClickListener(this);
             viewHolder.playBtn.setOnLongClickListener(this);

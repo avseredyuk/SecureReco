@@ -113,8 +113,7 @@ public class PhonecallReceiver extends BroadcastReceiver {
         if (ConfigUtil.readBoolean(NOTIFICATION_ON)) {
             RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.notification_record_started);
 
-            contentView.setImageViewBitmap(R.id.notification_contact_photo,
-                    ContactResolverUtil.retrieveContactPhotoCircleCropped(context, call.getCallNumber()));
+            contentView.setImageViewBitmap(R.id.notification_contact_photo, call.getPhoto());
 
             contentView.setTextViewText(R.id.notification_text_1, context.getString(R.string.notification_record_started_header));
             contentView.setTextViewText(R.id.notification_text_2, String.format(context.getString(R.string.notification_start_record_name_format), call.getCallNumber()));
@@ -142,8 +141,7 @@ public class PhonecallReceiver extends BroadcastReceiver {
         if (ConfigUtil.readBoolean(NOTIFICATION_ON)) {
             RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.notification_start_record);
 
-            contentView.setImageViewBitmap(R.id.notification_contact_photo,
-                    ContactResolverUtil.retrieveContactPhotoCircleCropped(context, call.getCallNumber()));
+            contentView.setImageViewBitmap(R.id.notification_contact_photo, call.getPhoto());
 
             contentView.setTextViewText(R.id.notification_text_1, context.getString(R.string.notification_start_record_question));
             contentView.setTextViewText(R.id.notification_text_2, String.format(context.getString(R.string.notification_start_record_name_format), call.getCallNumber()));
