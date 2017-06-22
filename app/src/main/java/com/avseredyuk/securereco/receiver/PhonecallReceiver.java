@@ -116,7 +116,7 @@ public class PhonecallReceiver extends BroadcastReceiver {
             contentView.setImageViewBitmap(R.id.notification_contact_photo, call.getPhoto());
 
             contentView.setTextViewText(R.id.notification_text_1, context.getString(R.string.notification_record_started_header));
-            contentView.setTextViewText(R.id.notification_text_2, String.format(context.getString(R.string.notification_start_record_name_format), call.getCallNumber()));
+            contentView.setTextViewText(R.id.notification_text_2, String.format(context.getString(R.string.notification_start_record_name_format), call.getContactName()));
 
             Intent intentStopRecord = new Intent().setAction(INTENT_STOP_RECORD);
             PendingIntent pIntentStopRecord = PendingIntent.getBroadcast(context, 0, intentStopRecord, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -144,7 +144,7 @@ public class PhonecallReceiver extends BroadcastReceiver {
             contentView.setImageViewBitmap(R.id.notification_contact_photo, call.getPhoto());
 
             contentView.setTextViewText(R.id.notification_text_1, context.getString(R.string.notification_start_record_question));
-            contentView.setTextViewText(R.id.notification_text_2, String.format(context.getString(R.string.notification_start_record_name_format), call.getCallNumber()));
+            contentView.setTextViewText(R.id.notification_text_2, String.format(context.getString(R.string.notification_start_record_name_format), call.getContactName()));
 
             Intent intentStartRecord = new Intent().setAction(INTENT_START_RECORD);
             intentStartRecord.putExtra(INTENT_START_RECORD_EXTRA_CALL_DATA, call);
