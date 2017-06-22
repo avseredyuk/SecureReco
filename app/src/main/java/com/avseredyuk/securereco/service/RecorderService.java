@@ -33,7 +33,8 @@ public class RecorderService extends Service {
         filter.addAction(Intent.ACTION_NEW_OUTGOING_CALL);
         filter.addAction(TelephonyManager.ACTION_PHONE_STATE_CHANGED);
         filter.addAction(Constant.INTENT_START_RECORD);
-        filter.addAction(Constant.INTENT_CANCEL_START_RECORD_NOTIFICATION);
+        filter.addAction(Constant.INTENT_CANCEL_NOTIFICATION);
+        filter.addAction(Constant.INTENT_STOP_RECORD);
         phoneCallReceiver = new PhonecallReceiver();
         this.registerReceiver(phoneCallReceiver, filter);
         return super.onStartCommand(intent, flags, startId);

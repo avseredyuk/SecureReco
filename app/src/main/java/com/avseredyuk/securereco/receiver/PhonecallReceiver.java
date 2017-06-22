@@ -41,9 +41,14 @@ public class PhonecallReceiver extends BroadcastReceiver {
             if (Intent.ACTION_NEW_OUTGOING_CALL.equals(intent.getAction())) {
                 savedNumber = intent.getExtras().getString(Intent.EXTRA_PHONE_NUMBER);
             } else if (INTENT_START_RECORD.equals(intent.getAction())) {
-                //todo: start record somehow
-            } else if (INTENT_CANCEL_START_RECORD_NOTIFICATION.equals(intent.getAction())) {
+                Call callInRecord = intent.getParcelableExtra(INTENT_START_RECORD_EXTRA_CALL_DATA);
+                startRecording(callInRecord);
+                setUpRecordStartedNotification(context, callInRecord);
+            } else if (INTENT_CANCEL_NOTIFICATION.equals(intent.getAction())) {
                 cancelNotification(context);
+            } else if (INTENT_STOP_RECORD.equals(intent.getAction())) {
+                stopRecording();
+                setUpRecordFinishedNotification(context);
             } else {
                 String stateStr = intent.getExtras().getString(TelephonyManager.EXTRA_STATE);
                 String number = intent.getExtras().getString(TelephonyManager.EXTRA_INCOMING_NUMBER);
@@ -76,7 +81,7 @@ public class PhonecallReceiver extends BroadcastReceiver {
 
                 // boolean toRecordOrNotToRecord = SuperSmartDecisionMakerBasedOnFiltersOrStrategies.decide();
                 // todo: remove this stub
-                boolean toRecordOrNotToRecord = false;
+                boolean toRecordOrNotToRecord = true;
 
                 if (toRecordOrNotToRecord){
                     startRecording(callToRecord);
@@ -84,7 +89,6 @@ public class PhonecallReceiver extends BroadcastReceiver {
                 } else {
                     setUpStartRecordNotification(context, callToRecord);
                 }
-
 
                 break;
             case TelephonyManager.CALL_STATE_IDLE:
@@ -95,7 +99,7 @@ public class PhonecallReceiver extends BroadcastReceiver {
                     // onIncomingCallEnded, onOutgoingCallEnded
                     stopRecording();
                 }
-                doNotificationStuff(context);
+                setUpRecordFinishedNotification(context);
                 break;
         }
         lastState = state;
@@ -106,8 +110,32 @@ public class PhonecallReceiver extends BroadcastReceiver {
     }
 
     private void setUpRecordStartedNotification(Context context, Call call) {
-        //todo: record successfully started, show buttons to manage current record process
-        System.out.println(call);
+        if (ConfigUtil.readBoolean(NOTIFICATION_ON)) {
+            RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.notification_record_started);
+
+            contentView.setImageViewBitmap(R.id.notification_contact_photo,
+                    ContactResolverUtil.retrieveContactPhotoCircleCropped(context, call.getCallNumber()));
+
+            contentView.setTextViewText(R.id.notification_text_1, context.getString(R.string.notification_record_started_header));
+            contentView.setTextViewText(R.id.notification_text_2, String.format(context.getString(R.string.notification_start_record_name_format), call.getCallNumber()));
+
+            Intent intentStopRecord = new Intent().setAction(INTENT_STOP_RECORD);
+            PendingIntent pIntentStopRecord = PendingIntent.getBroadcast(context, 0, intentStopRecord, PendingIntent.FLAG_UPDATE_CURRENT);
+            contentView.setOnClickPendingIntent(R.id.notification_button_stop, pIntentStopRecord);
+
+            Intent intentCancelNotification = new Intent().setAction(INTENT_CANCEL_NOTIFICATION);
+            PendingIntent pIntentCancelNotification = PendingIntent.getBroadcast(context, 1, intentCancelNotification, PendingIntent.FLAG_UPDATE_CURRENT);
+            contentView.setOnClickPendingIntent(R.id.notification_button_cancel, pIntentCancelNotification);
+
+            Notification notification = new Notification.Builder(context)
+                    .setSmallIcon(R.drawable.button_play)
+                    .setContent(contentView)
+                    .setOngoing(true)
+                    .build();
+
+            ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE))
+                    .notify(NOTIFICATION_ID, notification);
+        }
     }
 
     private void setUpStartRecordNotification(Context context, Call call) {
@@ -121,10 +149,11 @@ public class PhonecallReceiver extends BroadcastReceiver {
             contentView.setTextViewText(R.id.notification_text_2, String.format(context.getString(R.string.notification_start_record_name_format), call.getCallNumber()));
 
             Intent intentStartRecord = new Intent().setAction(INTENT_START_RECORD);
+            intentStartRecord.putExtra(INTENT_START_RECORD_EXTRA_CALL_DATA, call);
             PendingIntent pIntentStartRecord = PendingIntent.getBroadcast(context, 0, intentStartRecord, PendingIntent.FLAG_UPDATE_CURRENT);
             contentView.setOnClickPendingIntent(R.id.notification_button_record, pIntentStartRecord);
 
-            Intent intentCancelStartRecordNotification = new Intent().setAction(INTENT_CANCEL_START_RECORD_NOTIFICATION);
+            Intent intentCancelStartRecordNotification = new Intent().setAction(INTENT_CANCEL_NOTIFICATION);
             PendingIntent pIntentCancelStartRecordNotification = PendingIntent.getBroadcast(context, 1, intentCancelStartRecordNotification, PendingIntent.FLAG_UPDATE_CURRENT);
             contentView.setOnClickPendingIntent(R.id.notification_button_cancel, pIntentCancelStartRecordNotification);
 
@@ -139,7 +168,8 @@ public class PhonecallReceiver extends BroadcastReceiver {
         }
     }
 
-    private void doNotificationStuff(Context context) {
+    //todo: make this notification with custom layout like others
+    private void setUpRecordFinishedNotification(Context context) {
         if (ConfigUtil.readBoolean(NOTIFICATION_ON)) {
             PendingIntent myPendingIntent = PendingIntent.getActivity(context,
                     0,

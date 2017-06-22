@@ -37,10 +37,10 @@
     </LinearLayout>
 
     <ImageButton
-        android:id="@+id/notification_button_record"
+        android:id="@+id/notification_button_stop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/media_record_6x"
+        android:src="@drawable/media_stop_6x"
         android:layout_gravity="center_vertical"/>
 
     <ImageButton

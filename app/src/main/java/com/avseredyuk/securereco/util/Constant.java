@@ -25,7 +25,9 @@ public class Constant {
     public static final String NEW_FOLDER_PATH = "newFolderPath";
     public static final String INTENT_BROADCAST_RESET_AUTH = "com.avseredyuk.securereco.RESET_AUTH";
     public static final String INTENT_START_RECORD = "com.avseredyuk.securereco.START_RECORD";
-    public static final String INTENT_CANCEL_START_RECORD_NOTIFICATION = "com.avseredyuk.securereco.CANCEL_START_RECORD_NOTIFICATION";
+    public static final String INTENT_START_RECORD_EXTRA_CALL_DATA = "call";
+    public static final String INTENT_CANCEL_NOTIFICATION = "com.avseredyuk.securereco.CANCEL_NOTIFICATION";
+    public static final String INTENT_STOP_RECORD = "com.avseredyuk.securereco.INTENT_STOP_RECORD";
     public static final String CALLS_LIST_PARCEL_NAME = "com.avseredyuk.securereco.callsListParcel";
     public static final int RESET_AUTH_DELAY = 1000 * 60;
 }

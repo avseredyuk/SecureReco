@@ -6,12 +6,6 @@
     <dimen name="text_size_small">14sp</dimen>
     <dimen name="text_size_medium">16sp</dimen>
     <dimen name="text_size_large">18sp</dimen>
-
-    <!-- Nofication bar button -->
-    <dimen name="status_bar_button_width_height">48dp</dimen>
-    <dimen name="status_bar_album_art">64dp</dimen>
-    <dimen name="status_bar_button_info_container_padding_left">11dp</dimen>
-    <dimen name="notification_expanded_height">128.0dip</dimen>
-    <dimen name="play_controls_notification">48.0dip</dimen>
-    <dimen name="notification_padding">8.0dip</dimen>
+    <dimen name="contact_photo_size">64dp</dimen>
+    <dimen name="notification_layout_padding_left">11dp</dimen>
 </resources>

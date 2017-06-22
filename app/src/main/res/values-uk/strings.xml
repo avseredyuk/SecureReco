@@ -67,4 +67,5 @@
     <string name="toast_calls_folder_is_same">Не можна перемістити записи в ту саму папку</string>
     <string name="notification_start_record_question">Почати запис?</string>
     <string name="notification_start_record_name_format">Дзвінок: %s</string>
+    <string name="notification_record_started_header">Запис почався</string>
 </resources>
