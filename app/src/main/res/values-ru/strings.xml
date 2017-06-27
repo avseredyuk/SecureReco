@@ -10,8 +10,6 @@
     <string name="menu_item_on_off">Включено</string>
     <string name="menu_item_delete_selected">Удалить</string>
     <string name="menu_item_notification">Уведомления</string>
-    <string name="notification_title">Новый звонок записан</string>
-    <string name="notification_text">Нажмите для открытия</string>
     <string name="toast_authenticated">Вход успешен</string>
     <string name="toast_deauthenticated">Выход успешен</string>
     <string name="toast_auth_error">Ошибка авторизации</string>
@@ -68,4 +66,5 @@
     <string name="notification_start_record_question">Начать запись?</string>
     <string name="notification_start_record_name_format">Звонок: %s</string>
     <string name="notification_record_started_header">Запись началась</string>
+    <string name="notification_record_finished_header">Запись окончена</string>
 </resources>

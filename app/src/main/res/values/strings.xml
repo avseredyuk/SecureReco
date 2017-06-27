@@ -10,8 +10,6 @@
     <string name="menu_item_on_off">Enabled</string>
     <string name="menu_item_delete_selected">Delete</string>
     <string name="menu_item_notification">Notification</string>
-    <string name="notification_title">New call recorded</string>
-    <string name="notification_text">Click to open</string>
     <string name="toast_authenticated">Authenticated</string>
     <string name="toast_deauthenticated">De-authenticated</string>
     <string name="toast_auth_error">Authentication error</string>
@@ -68,5 +66,6 @@
     <string name="notification_start_record_question">Start record?</string>
     <string name="notification_start_record_name_format">Call: %s</string>
     <string name="notification_record_started_header">Record started</string>
+    <string name="notification_record_finished_header">Recording finished</string>
 
 </resources>

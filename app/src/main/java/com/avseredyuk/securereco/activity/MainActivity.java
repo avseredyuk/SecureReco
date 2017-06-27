@@ -46,6 +46,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.avseredyuk.securereco.util.Constant.CALLS_LIST_PARCEL_NAME;
+import static com.avseredyuk.securereco.util.Constant.INTENT_EXTRA_CALL_DATA;
 import static com.avseredyuk.securereco.util.Constant.IS_ENABLED;
 import static com.avseredyuk.securereco.util.Constant.NOTIFICATION_ON;
 
@@ -101,6 +102,17 @@ public class MainActivity extends SecuredActivity
             callArrayAdapter.filter.filter(filterString);
         }
 
+        Call callToOpen = intent.getParcelableExtra(INTENT_EXTRA_CALL_DATA);
+        if (callToOpen != null) {
+            //todo: start call play
+            System.out.println("~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~- PLAYING");
+        }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
     }
 
     @Override
