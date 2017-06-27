@@ -104,8 +104,12 @@ public class MainActivity extends SecuredActivity
 
         Call callToOpen = intent.getParcelableExtra(INTENT_EXTRA_CALL_DATA);
         if (callToOpen != null) {
-            //todo: start call play
-            System.out.println("~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~- PLAYING");
+            Callback playCallCallback = new PlayCallCallback(callToOpen);
+            if (Application.getInstance().isAuthenticated()) {
+                playCallCallback.execute(null);
+            } else {
+                makeAlertDialog(playCallCallback);
+            }
         }
     }
 
@@ -396,30 +400,7 @@ public class MainActivity extends SecuredActivity
         public void onClick(View v) {
             final Call call = (Call) v.getTag();
 
-            Callback playCallCallback = new Callback() {
-                @Override
-                public void execute(String password) {
-                    destroyMedia();
-
-                    byte[] callData = CallDao.getInstance().getDecryptedCall(call, Application.getInstance().getAuthMan());
-
-                    String base64EncodedString = Base64.encodeToString(callData, Base64.DEFAULT);
-                    mediaController = new MyMediaController(MainActivity.this);
-                    try {
-                        String url = "data:audio/amr;base64,"+base64EncodedString;
-                        mediaPlayer = new MediaPlayer();
-                        mediaPlayer.setDataSource(url);
-                        mediaPlayer.setOnPreparedListener(MainActivity.this);
-                        mediaPlayer.prepareAsync();
-                    } catch(Exception e){
-                        Log.e(this.getClass().getSimpleName(),
-                                "Error during playing preparing MediaPlayer at MainActivity", e);
-                        Toast.makeText(getContext(),
-                                getContext().getString(R.string.toast_media_player_failed_init),
-                                Toast.LENGTH_SHORT).show();
-                    }
-                }
-            };
+            Callback playCallCallback = new PlayCallCallback(call);
 
             if (Application.getInstance().isAuthenticated()) {
                 playCallCallback.execute(null);
@@ -432,35 +413,7 @@ public class MainActivity extends SecuredActivity
         public boolean onLongClick(View v) {
             final Call call = (Call) v.getTag();
 
-            Callback exportCallCallback = new Callback() {
-                @Override
-                public void execute(String password) {
-                    new FileSelector(MainActivity.this,
-                            FileOperation.SAVE,
-                            new OnHandleFileListener() {
-                                @Override
-                                public void handleFile(String filePath) {
-                                    filePath = StringUtil.addOrChangeFileExtension(filePath, AMR_SUFFIX);
-                                    if (CallDao.getInstance().exportDecryptedCall(filePath, call, Application.getInstance().getAuthMan())) {
-                                        Toast.makeText(getApplication(),
-                                                getString(R.string.call_exported_successfully),
-                                                Toast.LENGTH_SHORT).show();
-                                    } else {
-                                        Toast.makeText(getApplication(),
-                                                getString(R.string.call_exported_with_error),
-                                                Toast.LENGTH_SHORT).show();
-                                    }
-
-                                }
-                            },
-                            mFileFilter,
-                            StringUtil.addOrChangeFileExtension(
-                                    new File(call.getFilename()).getName(),
-                                    AMR_SUFFIX
-                            )
-                    ).show();
-                }
-            };
+            Callback exportCallCallback = new ExportCallCallback(call);
 
             if (Application.getInstance().isAuthenticated()) {
                 exportCallCallback.execute(null);
@@ -577,6 +530,73 @@ public class MainActivity extends SecuredActivity
     @Override
     public int getAudioSessionId() {
         return 0;
+    }
+
+    private class PlayCallCallback implements Callback {
+        private Call call;
+
+        public PlayCallCallback(Call call) {
+            this.call = call;
+        }
+
+        @Override
+        public void execute(String password) {
+            destroyMedia();
+
+            byte[] callData = CallDao.getInstance().getDecryptedCall(call, Application.getInstance().getAuthMan());
+
+            String base64EncodedString = Base64.encodeToString(callData, Base64.DEFAULT);
+            mediaController = new MyMediaController(MainActivity.this);
+            try {
+                String url = "data:audio/amr;base64,"+base64EncodedString;
+                mediaPlayer = new MediaPlayer();
+                mediaPlayer.setDataSource(url);
+                mediaPlayer.setOnPreparedListener(MainActivity.this);
+                mediaPlayer.prepareAsync();
+            } catch(Exception e){
+                Log.e(this.getClass().getSimpleName(),
+                        "Error during playing preparing MediaPlayer at MainActivity", e);
+                Toast.makeText(Application.getInstance(),
+                        Application.getInstance().getString(R.string.toast_media_player_failed_init),
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private class ExportCallCallback implements Callback {
+        private Call call;
+
+        public ExportCallCallback(Call call) {
+            this.call = call;
+        }
+
+        @Override
+        public void execute(String password) {
+            new FileSelector(MainActivity.this,
+                    FileOperation.SAVE,
+                    new OnHandleFileListener() {
+                        @Override
+                        public void handleFile(String filePath) {
+                            filePath = StringUtil.addOrChangeFileExtension(filePath, AMR_SUFFIX);
+                            if (CallDao.getInstance().exportDecryptedCall(filePath, call, Application.getInstance().getAuthMan())) {
+                                Toast.makeText(getApplication(),
+                                        getString(R.string.call_exported_successfully),
+                                        Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getApplication(),
+                                        getString(R.string.call_exported_with_error),
+                                        Toast.LENGTH_SHORT).show();
+                            }
+
+                        }
+                    },
+                    mFileFilter,
+                    StringUtil.addOrChangeFileExtension(
+                            new File(call.getFilename()).getName(),
+                            AMR_SUFFIX
+                    )
+            ).show();
+        }
     }
 
 }
