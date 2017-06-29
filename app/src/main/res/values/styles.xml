@@ -12,19 +12,4 @@
         <item name="android:windowBackground">@drawable/background_splash</item>
     </style>
 
-    <style name="NotificationTitleStyle" parent="@style/TextAppearance.StatusBar.EventContent">
-        <item name="android:textSize">@dimen/notification_text_size</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textColor">#ff008080</item>
-        <item name="android:fontFamily">sans-serif-light</item>
-        <item name="android:shadowRadius">1.0</item>
-        <item name="android:shadowDy">1.0</item>
-        <item name="android:shadowDx">1.0</item>
-    </style>
-
-    <style name="NotificationTextStyle" parent="@style/TextAppearance.StatusBar.EventContent">
-        <item name="android:textColor">#ff008080</item>
-        <item name="android:textSize">@dimen/notification_text_size</item>
-    </style>
-
 </resources>
