@@ -46,6 +46,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.avseredyuk.securereco.util.Constant.CALLS_LIST_PARCEL_NAME;
+import static com.avseredyuk.securereco.util.Constant.INTENT_CANCEL_NOTIFICATION;
 import static com.avseredyuk.securereco.util.Constant.INTENT_EXTRA_CALL_DATA;
 import static com.avseredyuk.securereco.util.Constant.IS_ENABLED;
 import static com.avseredyuk.securereco.util.Constant.NOTIFICATION_ON;
@@ -104,6 +105,7 @@ public class MainActivity extends SecuredActivity
 
         Call callToOpen = intent.getParcelableExtra(INTENT_EXTRA_CALL_DATA);
         if (callToOpen != null) {
+            sendBroadcast(new Intent().setAction(INTENT_CANCEL_NOTIFICATION));
             Callback playCallCallback = new PlayCallCallback(callToOpen);
             if (Application.getInstance().isAuthenticated()) {
                 playCallCallback.execute(null);
