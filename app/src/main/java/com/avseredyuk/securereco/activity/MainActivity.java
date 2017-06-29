@@ -105,6 +105,7 @@ public class MainActivity extends SecuredActivity
 
         Call callToOpen = intent.getParcelableExtra(INTENT_EXTRA_CALL_DATA);
         if (callToOpen != null) {
+            intent.putExtra(INTENT_EXTRA_CALL_DATA, (String) null);
             sendBroadcast(new Intent().setAction(INTENT_CANCEL_NOTIFICATION));
             Callback playCallCallback = new PlayCallCallback(callToOpen);
             if (Application.getInstance().isAuthenticated()) {
