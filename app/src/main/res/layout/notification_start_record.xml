@@ -38,6 +38,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/media_record_6x"
+        android:background="@null"
         android:layout_gravity="center_vertical"/>
 
     <ImageButton
@@ -45,6 +46,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/x_6x"
+        android:background="@null"
         android:layout_gravity="center_vertical"/>
 
 </LinearLayout>
