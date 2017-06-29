@@ -140,7 +140,7 @@ public class MainActivity extends SecuredActivity
             try {
                 mediaPlayer.stop();
             } catch (IllegalStateException e) {
-                Log.e(this.getClass().getSimpleName(),
+                Log.d(this.getClass().getSimpleName(),
                         "Error destroying media at MainActivity", e);
             }
             mediaPlayer.release();

@@ -49,7 +49,6 @@ public class PhonecallReceiver extends BroadcastReceiver {
                 cancelNotification(context);
             } else if (INTENT_STOP_RECORD.equals(intent.getAction())) {
                 stopRecording();
-                setUpRecordFinishedNotification(context, savedCall);
             } else {
                 String stateStr = intent.getExtras().getString(TelephonyManager.EXTRA_STATE);
                 String number = intent.getExtras().getString(TelephonyManager.EXTRA_INCOMING_NUMBER);
@@ -100,7 +99,6 @@ public class PhonecallReceiver extends BroadcastReceiver {
                     // onIncomingCallEnded, onOutgoingCallEnded
                     stopRecording();
                 }
-                setUpRecordFinishedNotification(context, savedCall);
                 break;
         }
         lastState = state;
@@ -167,34 +165,7 @@ public class PhonecallReceiver extends BroadcastReceiver {
         }
     }
 
-    private void setUpRecordFinishedNotification(Context context, Call call) {
-        if (ConfigUtil.readBoolean(NOTIFICATION_ON)) {
 
-            RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.notification_record_finished);
-
-            contentView.setImageViewBitmap(R.id.notification_contact_photo, call.getPhoto());
-
-            contentView.setTextViewText(R.id.notification_text_1, context.getString(R.string.notification_record_finished_header));
-            contentView.setTextViewText(R.id.notification_text_2, String.format(context.getString(R.string.notification_start_record_name_format), call.getContactName()));
-
-            Intent intentOpenRecorded = new Intent(context, MainActivity.class).putExtra(INTENT_EXTRA_CALL_DATA, call);
-            PendingIntent pIntentOpenRecorded = PendingIntent.getActivity(context, 0, intentOpenRecorded, FLAG_UPDATE_CURRENT);
-            contentView.setOnClickPendingIntent(R.id.notification_button_open, pIntentOpenRecorded);
-
-            Intent intentCancelRecordFinishedNotification = new Intent().setAction(INTENT_CANCEL_NOTIFICATION);
-            PendingIntent pIntentCancelRecordFinishedNotification = PendingIntent.getBroadcast(context, 1, intentCancelRecordFinishedNotification, FLAG_UPDATE_CURRENT);
-            contentView.setOnClickPendingIntent(R.id.notification_button_cancel, pIntentCancelRecordFinishedNotification);
-
-            Notification notification = new Notification.Builder(context)
-                    .setSmallIcon(R.drawable.button_play)
-                    .setContent(contentView)
-                    .setOngoing(true)
-                    .build();
-
-            ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE))
-                    .notify(NOTIFICATION_ID, notification);
-        }
-    }
 
     private void startRecording(Call call) {
         System.out.println(">>>>>>>>>>>>>>>>>>> REC START");

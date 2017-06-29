@@ -73,11 +73,17 @@ public class CallDao {
         return file.delete();
     }
 
-    public boolean moveFromTempToPermanentFile(Call call) {
+    public String moveFromTempToPermanentFile(Call call) {
         File sampleDir = new File(ConfigUtil.getCallLogsDir());
         File from = new File(sampleDir, StringUtil.formatFileName(call, true));
         File to = new File(sampleDir, StringUtil.formatFileName(call, false));
-        return from.renameTo(to);
+        from.renameTo(to);
+        try {
+            return to.getCanonicalPath();
+        } catch (IOException e) {
+            //todo
+        }
+        return "";
     }
 
     public File createTemporaryFile(Call call) {
