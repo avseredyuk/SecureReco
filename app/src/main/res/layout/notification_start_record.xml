@@ -23,16 +23,13 @@
             android:id="@+id/notification_text_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:textSize="@dimen/text_size_medium"
-            android:textStyle="bold"
-            android:text="1"/>
+            android:textAppearance="@style/NotificationTitleStyle" />
 
         <TextView
             android:id="@+id/notification_text_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="2"/>
+            android:textAppearance="@style/NotificationTextStyle" />
 
     </LinearLayout>
 
