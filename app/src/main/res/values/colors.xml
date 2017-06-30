@@ -7,6 +7,5 @@
     <color name="colorAuthenticated">#20A620</color>
     <color name="colorCallIncoming">#039F00</color>
     <color name="colorCallOutgoing">#0000FF</color>
-    <color name="white">#ffffffff</color>
 
 </resources>
