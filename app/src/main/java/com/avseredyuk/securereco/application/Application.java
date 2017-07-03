@@ -54,7 +54,7 @@ public class Application extends android.app.Application {
         instance = this;
         contactPhotoCache.put(null,
                 ImageUtil.getCircleCroppedBitmap(
-                        BitmapFactory.decodeResource(getResources(), R.drawable.avatar_unknown)
+                        ImageUtil.drawableToBitmap(getResources().getDrawable(R.drawable.ic_person_outline_black_24dp))
                 )
         );
     }

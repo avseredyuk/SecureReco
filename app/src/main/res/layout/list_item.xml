@@ -11,26 +11,14 @@
         android:textColor="#666666" />
 
     <CheckBox
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
-        android:text=""
-        android:layout_below="@id/separator"
         android:id="@+id/checkBox"
-        android:gravity="center" />
-
-    <ImageView
-        android:id="@+id/avatar"
         android:layout_margin="6dp"
         android:layout_width="32dp"
         android:layout_height="32dp"
+        android:text=""
         android:layout_below="@id/separator"
-        android:layout_centerHorizontal="false"
-        android:layout_centerVertical="false"
-        android:layout_marginRight="6dip"
-        android:layout_toRightOf="@id/checkBox"
-        android:adjustViewBounds="false"
-        android:contentDescription="TODO"
-        android:src="@drawable/avatar_unknown" />
+        android:gravity="center"
+        android:layout_centerVertical="true"/>
 
     <ImageButton
         android:id="@+id/playButton"
@@ -53,12 +41,12 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignWithParentIfMissing="true"
-        android:layout_toRightOf="@id/avatar"
+        android:layout_toRightOf="@id/checkBox"
         android:gravity="center_vertical"
         android:textSize="16sp" />
 
     <TextView
-        android:id="@+id/callDate"
+        android:id="@+id/callDuration"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_below="@id/separator"
@@ -71,16 +59,26 @@
         android:textAlignment="textEnd"
         android:textSize="16sp" />
 
+    <ImageView
+        android:id="@+id/callType"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_centerHorizontal="false"
+        android:layout_centerVertical="false"
+        android:layout_below="@id/contactName"
+        android:layout_toRightOf="@id/checkBox"
+        android:adjustViewBounds="false"
+        android:contentDescription="TODO"
+        android:src="@drawable/ic_call_made_black_24dp" />
+
     <TextView
         android:id="@+id/callTime"
         android:layout_width="fill_parent"
         android:layout_height="26dip"
         android:layout_below="@id/contactName"
-        android:layout_toRightOf="@id/avatar"
+        android:layout_toRightOf="@id/callType"
         android:ellipsize="marquee"
         android:singleLine="true"
-        android:textSize="12sp"
-        android:layout_alignLeft="@+id/contactName"
-        android:layout_alignStart="@+id/contactName" />
+        android:textSize="12sp" />
 
 </RelativeLayout>

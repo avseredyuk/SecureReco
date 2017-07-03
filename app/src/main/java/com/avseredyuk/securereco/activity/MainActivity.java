@@ -4,6 +4,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -298,9 +299,9 @@ public class MainActivity extends SecuredActivity
         TextView firstLine;
         TextView secondLine;
         TextView thirdLine;
-        ImageView imageView;
         ImageButton playBtn;
         CheckBox checkBox;
+        ImageView callType;
     }
 
     private class MyMediaController extends MediaController {
@@ -342,10 +343,10 @@ public class MainActivity extends SecuredActivity
                 viewHolder.separator = (TextView) convertView.findViewById(R.id.separator);
                 viewHolder.firstLine = (TextView) convertView.findViewById(R.id.contactName);
                 viewHolder.secondLine = (TextView) convertView.findViewById(R.id.callTime);
-                viewHolder.thirdLine = (TextView) convertView.findViewById(R.id.callDate);
-                viewHolder.imageView = (ImageView) convertView.findViewById(R.id.avatar);
+                viewHolder.thirdLine = (TextView) convertView.findViewById(R.id.callDuration);
                 viewHolder.playBtn = (ImageButton) convertView.findViewById(R.id.playButton);
                 viewHolder.checkBox = (CheckBox) convertView.findViewById(R.id.checkBox);
+                viewHolder.callType = (ImageView) convertView.findViewById(R.id.callType);
 
                 convertView.setTag(viewHolder);
             } else {
@@ -360,13 +361,16 @@ public class MainActivity extends SecuredActivity
             }
 
             viewHolder.firstLine.setText(call.getContactName());
-            viewHolder.firstLine.setTextColor(
+            viewHolder.callType.setImageResource(
                     call.isIncoming()
-                            ? getContext().getResources().getColor(R.color.colorCallIncoming)
-                            : getContext().getResources().getColor(R.color.colorCallOutgoing));
+                            ? R.drawable.ic_call_received_black_24dp
+                            : R.drawable.ic_call_made_black_24dp
+            );
             viewHolder.secondLine.setText(StringUtil.formatDate(call.getDatetimeStarted()));
             viewHolder.thirdLine.setText(StringUtil.formatTimeInterval(call.getDatetimeStarted(), call.getDateTimeEnded()));
-            viewHolder.imageView.setImageBitmap(call.getPhoto());
+            viewHolder.checkBox.setButtonDrawable(
+                    new BitmapDrawable(getResources(), call.getPhoto())
+            );
             viewHolder.playBtn.setTag(call);
             viewHolder.playBtn.setOnClickListener(this);
             viewHolder.playBtn.setOnLongClickListener(this);
@@ -397,6 +401,18 @@ public class MainActivity extends SecuredActivity
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             Call checkBoxCall = (Call) buttonView.getTag();
             checkBoxCall.setChecked(isChecked);
+
+            if (isChecked) {
+                buttonView.setButtonDrawable(R.drawable.ic_check_black_24dp);
+            } else {
+                buttonView.setButtonDrawable(
+                        new BitmapDrawable(
+                                getResources(),
+                                checkBoxCall.getPhoto()
+                        )
+                );
+            }
+
         }
 
         @Override

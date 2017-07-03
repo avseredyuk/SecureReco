@@ -72,8 +72,13 @@ public class ContactResolverUtil {
         photo = contactPhotoCache.get(null);
         try {
             if (contactId != null) {
-                InputStream inputStream = ContactsContract.Contacts.openContactPhotoInputStream(context.getContentResolver(),
-                        ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, Long.valueOf(contactId)));
+                InputStream inputStream = ContactsContract.Contacts.openContactPhotoInputStream(
+                        context.getContentResolver(),
+                        ContentUris.withAppendedId(
+                                ContactsContract.Contacts.CONTENT_URI,
+                                Long.valueOf(contactId)
+                        )
+                );
                 if (inputStream != null) {
                     photo = ImageUtil.getCircleCroppedBitmap(BitmapFactory.decodeStream(inputStream));
                     inputStream.close();
