@@ -85,16 +85,12 @@ public class SettingsActivity extends SecuredActivity {
         audioSourceSpinner = (Spinner) findViewById(R.id.audioSourceSpinner);
         newPasswordEdit1 = (EditText) findViewById(R.id.changePasswordNewPasswordEdit1);
         newPasswordEdit2 = (EditText) findViewById(R.id.changePasswordNewPasswordEdit2);
-        Button changePasswordButton = (Button) findViewById(R.id.changePasswordButton);
         regenerateRSAKeysButton = (Button) findViewById(R.id.regenButton);
         changeFolderEdit = (EditText) findViewById(R.id.changeFolderEdit);
         changeFolderButton = (Button) findViewById(R.id.changeFolderButton);
 
         resetAuthStrategySpinner.setOnItemSelectedListener(new ResetAuthSpinnerItemSelectedListener());
         audioSourceSpinner.setOnItemSelectedListener(new AudioSourceSpinnerItemSelectedListener());
-        changePasswordButton.setOnClickListener(new ChangePasswordButtonClickListener());
-        regenerateRSAKeysButton.setOnClickListener(new RegenerateRSAKeysButtonClickListener());
-        changeFolderButton.setOnClickListener(new ChangeFolderButtonClickListener());
 
         audioSourceSpinner.setAdapter
                 (new ArrayAdapter<>(
@@ -142,87 +138,74 @@ public class SettingsActivity extends SecuredActivity {
         return false;
     }
 
-    private class ChangePasswordButtonClickListener implements View.OnClickListener {
-
-        @Override
-        public void onClick(View v) {
-            if (!StringUtil.isEditTextDataValid(newPasswordEdit1, newPasswordEdit2)) {
-                Toast.makeText(context,
-                        getString(R.string.toast_invalid_input),
-                        Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            Callback changePasswordCallback = new Callback() {
-                @Override
-                public void execute(String password) {
-                    if (Application.getInstance().getAuthMan().changePassword(newPasswordEdit1.getText().toString())) {
-                        Toast.makeText(context,
-                                getString(R.string.toast_password_changed),
-                                Toast.LENGTH_SHORT).show();
-                        finish();
-                    } else {
-                        Toast.makeText(context,
-                                getString(R.string.toast_error_changing_password),
-                                Toast.LENGTH_SHORT).show();
-                    }
-                }
-            };
-
-            if (Application.getInstance().isAuthenticated()) {
-                changePasswordCallback.execute(null);
-            } else {
-                makeAlertDialog(changePasswordCallback);
-            }
+    public void ChangePasswordButtonClickListenerOnClick(View v) {
+        if (!StringUtil.isEditTextDataValid(newPasswordEdit1, newPasswordEdit2)) {
+            Toast.makeText(context,
+                    getString(R.string.toast_invalid_input),
+                    Toast.LENGTH_SHORT).show();
+            return;
         }
-    }
-
-    private class RegenerateRSAKeysButtonClickListener implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-            Callback regenerateRSAKeysCallback = new Callback() {
-                @Override
-                public void execute(String password) {
-                    Application.getInstance().getAuthMan().regenerateKeyPair(context, password);
+        Callback changePasswordCallback = new Callback() {
+            @Override
+            public void execute(String password) {
+                if (Application.getInstance().getAuthMan().changePassword(newPasswordEdit1.getText().toString())) {
                     Toast.makeText(context,
-                            getString(R.string.toast_keys_regen_changed),
+                            getString(R.string.toast_password_changed),
                             Toast.LENGTH_SHORT).show();
                     finish();
+                } else {
+                    Toast.makeText(context,
+                            getString(R.string.toast_error_changing_password),
+                            Toast.LENGTH_SHORT).show();
                 }
-            };
-
-            // Here we have to ask for password no matter our authentication status
-            // because of the fact that regenerate keys procedure requires current password
-            makeAlertDialog(regenerateRSAKeysCallback);
+            }
+        };
+        if (Application.getInstance().isAuthenticated()) {
+            changePasswordCallback.execute(null);
+        } else {
+            makeAlertDialog(changePasswordCallback);
         }
     }
 
-    private class ChangeFolderButtonClickListener implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-            Callback changeFolderCallback = new Callback() {
-                @Override
-                public void execute(String password) {
-                    if (!IOUtil.isSameFile(
-                            changeFolderEdit.getText().toString(),
-                            ConfigUtil.readValue(CALL_DIR))) {
-                        Application.getInstance().getAuthMan().changeFolder(context, changeFolderEdit.getText().toString());
-                        Toast.makeText(context,
-                                getString(R.string.toast_calls_folder_changing),
-                                Toast.LENGTH_SHORT).show();
-                        finish();
-                    } else {
-                        Toast.makeText(context,
-                                getString(R.string.toast_calls_folder_is_same),
-                                Toast.LENGTH_SHORT).show();
-                    }
-                }
-            };
-            if (Application.getInstance().isAuthenticated()) {
-                changeFolderCallback.execute(null);
-            } else {
-                makeAlertDialog(changeFolderCallback);
+    public void RegenerateRSAKeysButtonClickListenerOnClick(View v) {
+        Callback regenerateRSAKeysCallback = new Callback() {
+            @Override
+            public void execute(String password) {
+                Application.getInstance().getAuthMan().regenerateKeyPair(context, password);
+                Toast.makeText(context,
+                        getString(R.string.toast_keys_regen_changed),
+                        Toast.LENGTH_SHORT).show();
+                finish();
             }
+        };
+        // Here we have to ask for password no matter our authentication status
+        // because of the fact that regenerate keys procedure requires current password
+        makeAlertDialog(regenerateRSAKeysCallback);
+    }
+
+    public void ChangeFolderButtonClickListenerOnClick(View v) {
+        Callback changeFolderCallback = new Callback() {
+            @Override
+            public void execute(String password) {
+                if (!IOUtil.isSameFile(
+                        changeFolderEdit.getText().toString(),
+                        ConfigUtil.readValue(CALL_DIR))) {
+                    Application.getInstance().getAuthMan().changeFolder(context, changeFolderEdit.getText().toString());
+                    Toast.makeText(context,
+                            getString(R.string.toast_calls_folder_changing),
+                            Toast.LENGTH_SHORT).show();
+                    finish();
+                } else {
+                    Toast.makeText(context,
+                            getString(R.string.toast_calls_folder_is_same),
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
+        if (Application.getInstance().isAuthenticated()) {
+            changeFolderCallback.execute(null);
+        } else {
+            makeAlertDialog(changeFolderCallback);
         }
     }
 }
