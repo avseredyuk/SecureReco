@@ -19,6 +19,7 @@ import com.avseredyuk.securereco.service.BackgroundWorkIntentService;
 import com.avseredyuk.securereco.util.AudioSourceEnum;
 import com.avseredyuk.securereco.util.ConfigUtil;
 import com.avseredyuk.securereco.util.IOUtil;
+import com.avseredyuk.securereco.util.StringUtil;
 
 import static com.avseredyuk.securereco.util.Constant.AUDIO_SOURCE;
 import static com.avseredyuk.securereco.util.Constant.BWIS_DESTINATION_CHANGE_FOLDER;
@@ -142,15 +143,10 @@ public class SettingsActivity extends SecuredActivity {
     }
 
     private class ChangePasswordButtonClickListener implements View.OnClickListener {
-        boolean isEditTextDataValid(EditText e1, EditText e2) {
-            final String s1 = e1.getText().toString();
-            final String s2 = e2.getText().toString();
-            return (s1.length() != 0 && s2.length() != 0 && s1.equals(s2));
-        }
 
         @Override
         public void onClick(View v) {
-            if (!isEditTextDataValid(newPasswordEdit1, newPasswordEdit2)) {
+            if (!StringUtil.isEditTextDataValid(newPasswordEdit1, newPasswordEdit2)) {
                 Toast.makeText(context,
                         getString(R.string.toast_invalid_input),
                         Toast.LENGTH_SHORT).show();

@@ -1,5 +1,7 @@
 package com.avseredyuk.securereco.util;
 
+import android.widget.EditText;
+
 import com.avseredyuk.securereco.exception.ParserException;
 import com.avseredyuk.securereco.model.Call;
 
@@ -114,6 +116,12 @@ public class StringUtil {
         } catch (StringIndexOutOfBoundsException | NumberFormatException e) {
             throw new ParserException("Exception at parsing encrypted call filename", e);
         }
+    }
+
+    public static boolean isEditTextDataValid(EditText e1, EditText e2) {
+        final String s1 = e1.getText().toString();
+        final String s2 = e2.getText().toString();
+        return (s1.length() != 0 && s2.length() != 0 && s1.equals(s2));
     }
 
 }
