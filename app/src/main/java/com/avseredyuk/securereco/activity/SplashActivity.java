@@ -45,8 +45,7 @@ public class SplashActivity extends AppCompatActivity {
         protected void onPostExecute(List<Call> calls) {
             super.onPostExecute(calls);
             startActivity(new Intent(Application.getInstance(), MainActivity.class)
-                    .putParcelableArrayListExtra(CALLS_LIST_PARCEL_NAME,
-                            (ArrayList<Call>) CallDao.getInstance().findAll(Call.CallDateComparator)));
+                    .putParcelableArrayListExtra(CALLS_LIST_PARCEL_NAME, (ArrayList<Call>) calls));
             finish();
         }
     }
