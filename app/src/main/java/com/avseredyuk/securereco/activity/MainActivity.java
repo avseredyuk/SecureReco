@@ -407,15 +407,23 @@ public class MainActivity extends SecuredActivity
             Call checkBoxCall = (Call) buttonView.getTag();
             checkBoxCall.setChecked(isChecked);
 
+            View listItemView = (View) buttonView.getParent();
+            View dateHeaderTextView = listItemView.findViewById(R.id.separator);
             if (isChecked) {
                 buttonView.setButtonDrawable(R.drawable.ic_check_black_24dp);
+                listItemView.setBackgroundColor(getResources().getColor(R.color.listViewBgColorSelected));
             } else {
+                View parentRow = (View) buttonView.getParent();
+                parentRow.setBackgroundColor(getResources().getColor(R.color.listViewBgColor));
                 buttonView.setButtonDrawable(
                         new BitmapDrawable(
                                 getResources(),
                                 checkBoxCall.getPhoto()
                         )
                 );
+            }
+            if (dateHeaderTextView.getVisibility() != View.GONE) {
+                dateHeaderTextView.setBackgroundResource(R.color.listViewHeaderBgColor);
             }
 
         }

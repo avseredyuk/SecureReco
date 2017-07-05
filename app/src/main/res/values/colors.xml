@@ -7,4 +7,7 @@
     <color name="colorAuthenticated">#20A620</color>
     <color name="notificationBgColor">#FFFFFF</color>
     <color name="notificationTextColor">#454545</color>
+    <color name="listViewBgColor">#FFFFFF</color>
+    <color name="listViewBgColorSelected">#e6e6e6</color>
+    <color name="listViewHeaderBgColor">#d6d6d6</color>
 </resources>
