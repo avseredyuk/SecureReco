@@ -15,23 +15,29 @@ import java.util.Date;
 public class Call implements Parcelable {
     private String callNumber;
     private String contactName;
-    private Date datetimeStarted;
+    private Date dateTimeStarted;
     private Date dateTimeEnded;
     private boolean isIncoming;
     private String filename;
     private boolean checked;
     private Bitmap photo;
+    private long id;
+    private boolean starred;
+    private String notes;
 
-    public Call(String callNumber, Date datetimeStarted, boolean isIncoming) {
+    public Call() {
+    }
+
+    public Call(String callNumber, Date dateTimeStarted, boolean isIncoming) {
         this.callNumber = callNumber;
-        this.datetimeStarted = datetimeStarted;
+        this.dateTimeStarted = dateTimeStarted;
         this.isIncoming = isIncoming;
     }
 
     public static final Comparator<Call> CallDateComparator = new Comparator<Call>() {
 
         public int compare(Call call1, Call call2) {
-            return call2.getDatetimeStarted().compareTo(call1.getDatetimeStarted());
+            return call2.getDateTimeStarted().compareTo(call1.getDateTimeStarted());
         }
 
     };
@@ -51,12 +57,12 @@ public class Call implements Parcelable {
         return contactName;
     }
 
-    public Date getDatetimeStarted() {
-        return datetimeStarted;
+    public Date getDateTimeStarted() {
+        return dateTimeStarted;
     }
 
-    public void setDatetimeStarted(Date datetimeStarted) {
-        this.datetimeStarted = datetimeStarted;
+    public void setDateTimeStarted(Date dateTimeStarted) {
+        this.dateTimeStarted = dateTimeStarted;
     }
 
     public boolean isIncoming() {
@@ -98,6 +104,30 @@ public class Call implements Parcelable {
         return photo;
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public boolean isStarred() {
+        return starred;
+    }
+
+    public void setStarred(boolean starred) {
+        this.starred = starred;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -107,23 +137,29 @@ public class Call implements Parcelable {
         callNumber = in.readString();
         contactName = in.readString();
         long tmpDatetimeStarted = in.readLong();
-        datetimeStarted = tmpDatetimeStarted != -1 ? new Date(tmpDatetimeStarted) : null;
+        dateTimeStarted = tmpDatetimeStarted != -1 ? new Date(tmpDatetimeStarted) : null;
         long tmpDateTimeEnded = in.readLong();
         dateTimeEnded = tmpDateTimeEnded != -1 ? new Date(tmpDateTimeEnded) : null;
         isIncoming = in.readByte() != 0x00;
         filename = in.readString();
         checked = in.readByte() != 0x00;
+        id = in.readLong();
+        starred = in.readByte() != 0x00;
+        notes = in.readString();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(callNumber);
         dest.writeString(contactName);
-        dest.writeLong(datetimeStarted != null ? datetimeStarted.getTime() : -1L);
+        dest.writeLong(dateTimeStarted != null ? dateTimeStarted.getTime() : -1L);
         dest.writeLong(dateTimeEnded != null ? dateTimeEnded.getTime() : -1L);
         dest.writeByte((byte) (isIncoming ? 0x01 : 0x00));
         dest.writeString(filename);
         dest.writeByte((byte) (checked ? 0x01 : 0x00));
+        dest.writeLong(id);
+        dest.writeByte((byte) (starred ? 0x01 : 0x00));
+        dest.writeString(notes);
     }
 
     @SuppressWarnings("unused")

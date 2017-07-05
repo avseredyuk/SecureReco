@@ -1,9 +1,11 @@
 package com.avseredyuk.securereco.receiver;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.avseredyuk.securereco.application.Application;
-import com.avseredyuk.securereco.dao.CallDao;
+import com.avseredyuk.securereco.dao.FileCallDao;
+import com.avseredyuk.securereco.dao.SQLiteCallDao;
 import com.avseredyuk.securereco.exception.CryptoException;
 import com.avseredyuk.securereco.model.Call;
 import com.avseredyuk.securereco.notification.RecordFinishedNotification;
@@ -38,8 +40,14 @@ public class PipeProcessingThread extends Thread {
     @Override
     public void run() {
         CipherOutputStream outCipher = null;
+        Context context = Application.getInstance().getApplicationContext();
+        SQLiteCallDao dao = new SQLiteCallDao(context);
+
+        File callFile = FileCallDao.getInstance().createNew();
+        call.setFilename(callFile.getName());
+
+        Call persistedCall = dao.open().persistCall(call);
         try {
-            File callFile = CallDao.getInstance().createTemporaryFile(call);
             FileOutputStream out = new FileOutputStream(callFile);
 
             Cipher rsaCipher = RSA.getPublicKeyCipher();
@@ -81,14 +89,11 @@ public class PipeProcessingThread extends Thread {
                 //todo
             }
 
-            // move call log file from temporary to permanent file name
-            call.setDateTimeEnded(new Date());
-            call.setFilename(CallDao.getInstance().moveFromTempToPermanentFile(call));
+            persistedCall.setDateTimeEnded(new Date());
+            dao.updateCallDateEnded(persistedCall);
+            dao.close();
 
-            new RecordFinishedNotification(
-                    Application.getInstance().getApplicationContext(),
-                    call
-            ).alert();
+            new RecordFinishedNotification(context, call).alert();
 
         }
     }

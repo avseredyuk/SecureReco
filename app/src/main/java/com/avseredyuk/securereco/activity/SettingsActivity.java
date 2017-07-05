@@ -138,7 +138,7 @@ public class SettingsActivity extends SecuredActivity {
         return false;
     }
 
-    public void ChangePasswordButtonClickListenerOnClick(View v) {
+    public void changePasswordButtonClickListenerOnClick(View v) {
         if (!StringUtil.isEditTextDataValid(newPasswordEdit1, newPasswordEdit2)) {
             Toast.makeText(context,
                     getString(R.string.toast_invalid_input),
@@ -167,7 +167,7 @@ public class SettingsActivity extends SecuredActivity {
         }
     }
 
-    public void RegenerateRSAKeysButtonClickListenerOnClick(View v) {
+    public void regenerateRSAKeysButtonClickListenerOnClick(View v) {
         Callback regenerateRSAKeysCallback = new Callback() {
             @Override
             public void execute(String password) {
@@ -183,7 +183,7 @@ public class SettingsActivity extends SecuredActivity {
         makeAlertDialog(regenerateRSAKeysCallback);
     }
 
-    public void ChangeFolderButtonClickListenerOnClick(View v) {
+    public void changeFolderButtonClickListenerOnClick(View v) {
         Callback changeFolderCallback = new Callback() {
             @Override
             public void execute(String password) {

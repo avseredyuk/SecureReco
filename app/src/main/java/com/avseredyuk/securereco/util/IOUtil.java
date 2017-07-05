@@ -103,10 +103,6 @@ public class IOUtil {
         return false;
     }
 
-    public static byte[] readFile(String filename) throws IOException {
-        return readFile(new File(filename));
-    }
-
     public static byte[] readFile(File file) throws IOException {
         RandomAccessFile f = new RandomAccessFile(file, "r");
         try {

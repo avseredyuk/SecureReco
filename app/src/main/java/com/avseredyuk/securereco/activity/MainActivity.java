@@ -34,7 +34,8 @@ import android.widget.Toast;
 import com.avseredyuk.securereco.R;
 import com.avseredyuk.securereco.application.Application;
 import com.avseredyuk.securereco.callback.Callback;
-import com.avseredyuk.securereco.dao.CallDao;
+import com.avseredyuk.securereco.dao.FileCallDao;
+import com.avseredyuk.securereco.dao.SQLiteCallDao;
 import com.avseredyuk.securereco.filedialog.FileOperation;
 import com.avseredyuk.securereco.filedialog.FileSelector;
 import com.avseredyuk.securereco.filedialog.OnHandleFileListener;
@@ -94,7 +95,9 @@ public class MainActivity extends SecuredActivity
             originalCalls.addAll(callsListFromIntent);
             intent.putExtra(CALLS_LIST_PARCEL_NAME, (String) null);
         } else {
-            originalCalls.addAll(CallDao.getInstance().findAll(Call.CallDateComparator));
+            SQLiteCallDao dao = new SQLiteCallDao(getApplicationContext()).open();
+            originalCalls.addAll(dao.findAllOrderedByDate());
+            dao.close();
         }
         calls.clear();
         calls.addAll(originalCalls);
@@ -266,12 +269,14 @@ public class MainActivity extends SecuredActivity
         String toastText;
         List<Call> checkedCalls = callArrayAdapter.getCheckedCalls();
         if (!checkedCalls.isEmpty()) {
+            SQLiteCallDao dao = new SQLiteCallDao(getApplicationContext()).open();
             for (Call c : checkedCalls) {
-                if (CallDao.getInstance().delete(c)) {
+                if ((dao.delete(c)) && (FileCallDao.getInstance().delete(c))) {
                     originalCalls.remove(c);
                     callArrayAdapter.remove(c);
                 }
             }
+            dao.close();
             callArrayAdapter.resetCheckedItems();
             toastText = getString(R.string.toast_records_deleted);
         } else {
@@ -353,8 +358,8 @@ public class MainActivity extends SecuredActivity
                 viewHolder = (ViewHolder) convertView.getTag();
             }
 
-            if ((position == 0) || (!StringUtil.isSameDay(call.getDatetimeStarted(), this.getItem(position - 1).getDatetimeStarted()))) {
-                viewHolder.separator.setText(StringUtil.formatDateOnly(call.getDatetimeStarted()));
+            if ((position == 0) || (!StringUtil.isSameDay(call.getDateTimeStarted(), this.getItem(position - 1).getDateTimeStarted()))) {
+                viewHolder.separator.setText(StringUtil.formatDateOnly(call.getDateTimeStarted()));
                 viewHolder.separator.setVisibility(View.VISIBLE);
             } else {
                 viewHolder.separator.setVisibility(View.GONE);
@@ -366,8 +371,8 @@ public class MainActivity extends SecuredActivity
                             ? R.drawable.ic_call_received_black_24dp
                             : R.drawable.ic_call_made_black_24dp
             );
-            viewHolder.secondLine.setText(StringUtil.formatDate(call.getDatetimeStarted()));
-            viewHolder.thirdLine.setText(StringUtil.formatTimeInterval(call.getDatetimeStarted(), call.getDateTimeEnded()));
+            viewHolder.secondLine.setText(StringUtil.formatDate(call.getDateTimeStarted()));
+            viewHolder.thirdLine.setText(StringUtil.formatTimeInterval(call.getDateTimeStarted(), call.getDateTimeEnded()));
             viewHolder.checkBox.setButtonDrawable(
                     new BitmapDrawable(getResources(), call.getPhoto())
             );
@@ -562,7 +567,7 @@ public class MainActivity extends SecuredActivity
         public void execute(String password) {
             destroyMedia();
 
-            byte[] callData = CallDao.getInstance().getDecryptedCall(call, Application.getInstance().getAuthMan());
+            byte[] callData = FileCallDao.getInstance().getDecryptedCall(call, Application.getInstance().getAuthMan());
 
             String base64EncodedString = Base64.encodeToString(callData, Base64.DEFAULT);
             mediaController = new MyMediaController(MainActivity.this);
@@ -597,7 +602,7 @@ public class MainActivity extends SecuredActivity
                         @Override
                         public void handleFile(String filePath) {
                             filePath = StringUtil.addOrChangeFileExtension(filePath, AMR_SUFFIX);
-                            if (CallDao.getInstance().exportDecryptedCall(filePath, call, Application.getInstance().getAuthMan())) {
+                            if (FileCallDao.getInstance().exportDecryptedCall(filePath, call, Application.getInstance().getAuthMan())) {
                                 Toast.makeText(getApplication(),
                                         getString(R.string.call_exported_successfully),
                                         Toast.LENGTH_SHORT).show();
@@ -606,7 +611,6 @@ public class MainActivity extends SecuredActivity
                                         getString(R.string.call_exported_with_error),
                                         Toast.LENGTH_SHORT).show();
                             }
-
                         }
                     },
                     mFileFilter,

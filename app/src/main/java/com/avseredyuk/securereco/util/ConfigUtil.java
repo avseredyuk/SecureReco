@@ -54,10 +54,8 @@ public class ConfigUtil {
     }
 
     public static void initDefaultConfiguration() {
-        ConfigUtil.writeValue(NOTIFICATION_ON,
-                Boolean.toString(true));
-        ConfigUtil.writeValue(IS_ENABLED,
-                Boolean.toString(true));
+        ConfigUtil.writeBoolean(NOTIFICATION_ON, true);
+        ConfigUtil.writeBoolean(IS_ENABLED, true);
         ConfigUtil.writeValue(RESET_AUTH_STRATEGY,
                 String.valueOf(ResetAuthenticationStrategy.WHEN_APP_GOES_TO_BACKGROUND.getValue()));
         ConfigUtil.writeValue(CALL_DIR,

@@ -9,7 +9,8 @@ import android.widget.Toast;
 
 import com.avseredyuk.securereco.R;
 import com.avseredyuk.securereco.callback.FileCallback;
-import com.avseredyuk.securereco.dao.CallDao;
+import com.avseredyuk.securereco.dao.FileCallDao;
+import com.avseredyuk.securereco.dao.SQLiteCallDao;
 import com.avseredyuk.securereco.model.Call;
 import com.avseredyuk.securereco.util.IOUtil;
 
@@ -77,12 +78,14 @@ public class BackgroundWorkIntentService extends IntentService {
     private void handleRegenerateKeys(Intent intent) {
         //todo: lock the activities
         byte[] oldPrivateKey = intent.getByteArrayExtra(OLD_PRIVATE_KEY_INTENT_EXTRA_NAME);
-        CallDao callDao = CallDao.getInstance();
-        List<Call> calls = callDao.findAll();
+        SQLiteCallDao dao = new SQLiteCallDao(getApplicationContext()).open();
+        FileCallDao fileDao = FileCallDao.getInstance();
+        List<Call> calls = dao.findAll();
+        dao.close();
         if (!calls.isEmpty()) {
             handler.post(new DisplayToast(this, getString(R.string.toast_keys_regen_update_started)));
             for (Call call : calls) {
-                callDao.reEncryptHeader(call, oldPrivateKey);
+                fileDao.reEncryptHeader(call, oldPrivateKey);
             }
             handler.post(new DisplayToast(this, getString(R.string.toast_keys_regen_update_finished)));
         } else {
@@ -91,10 +94,10 @@ public class BackgroundWorkIntentService extends IntentService {
         //todo: unlock the activities
     }
 
-    public class DisplayToast implements Runnable {
+    private class DisplayToast implements Runnable {
         private final Context mContext;
         String mText;
-        public DisplayToast(Context mContext, String text){
+        DisplayToast(Context mContext, String text){
             this.mContext = mContext;
             mText = text;
         }

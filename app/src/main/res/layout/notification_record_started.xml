@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal" >
+    android:orientation="horizontal"
+    android:background="@color/notificationBgColor" >
 
     <ImageView
         android:id="@+id/notification_contact_photo"
@@ -24,14 +25,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.StatusBar.EventContent.Title"
-            android:textColor="#757575"/>
+            android:textColor="@color/notificationTextColor"/>
 
         <TextView
             android:id="@+id/notification_text_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.StatusBar.EventContent.Line2"
-            android:textColor="#757575"/>
+            android:textColor="@color/notificationTextColor"/>
 
     </LinearLayout>
 

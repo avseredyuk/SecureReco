@@ -2,9 +2,6 @@ package com.avseredyuk.securereco.util;
 
 import android.widget.EditText;
 
-import com.avseredyuk.securereco.exception.ParserException;
-import com.avseredyuk.securereco.model.Call;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -13,12 +10,6 @@ import java.util.Date;
  * Created by lenfer on 2/15/17.
  */
 public class StringUtil {
-    private static ThreadLocal<SimpleDateFormat> simpleDateFormatFileName = new ThreadLocal<SimpleDateFormat>() {
-        @Override
-        protected SimpleDateFormat initialValue() {
-            return new SimpleDateFormat("dd_MM_yyyy_HH_mm_ss");
-        }
-    };
     private static ThreadLocal<SimpleDateFormat> simpleDateFormatDate = new ThreadLocal<SimpleDateFormat>() {
         @Override
         protected SimpleDateFormat initialValue() {
@@ -42,15 +33,6 @@ public class StringUtil {
         } else {
             return filePath.substring(0, index) + extension;
         }
-    }
-
-    public static String formatFileName(Call call, boolean isTemporary) {
-        return String.format("%s%s_%s_%s%s",
-                simpleDateFormatFileName.get().format(call.getDatetimeStarted()),
-                isTemporary ? "" : "_" + simpleDateFormatFileName.get().format(call.getDateTimeEnded()),
-                call.getCallNumber(),
-                call.isIncoming() ? "I" : "O",
-                isTemporary ? ".tmp" : ".bin");
     }
 
     public static boolean isSameDay(Date d1, Date d2) {
@@ -80,42 +62,6 @@ public class StringUtil {
 
     public static String formatDateOnly(Date date) {
         return simpleDateFormatHeader.get().format(date);
-    }
-
-    public static Call getCallFromFilename(String filename) throws ParserException{
-        try {
-            int day = Integer.parseInt(filename.substring(0, 2));
-            int month = Integer.parseInt(filename.substring(3, 5));
-            int year = Integer.parseInt(filename.substring(6, 10));
-            int hour = Integer.parseInt(filename.substring(11, 13));
-            int minute = Integer.parseInt(filename.substring(14, 16));
-            int second = Integer.parseInt(filename.substring(17, 19));
-            Calendar c = Calendar.getInstance();
-            c.set(year, month - 1, day, hour, minute, second);
-            Date datetimeStarted = c.getTime();
-
-            day = Integer.parseInt(filename.substring(20, 22));
-            month = Integer.parseInt(filename.substring(23, 25));
-            year = Integer.parseInt(filename.substring(26, 30));
-            hour = Integer.parseInt(filename.substring(31, 33));
-            minute = Integer.parseInt(filename.substring(34, 36));
-            second = Integer.parseInt(filename.substring(37, 39));
-            c = Calendar.getInstance();
-            c.set(year, month - 1, day, hour, minute, second);
-            Date dateTimeEnded = c.getTime();
-
-            String number = filename.substring(40, filename.length() - 6);
-            boolean isIncoming = "I".equals(filename.substring(filename.length()-5, filename.length()-4));
-
-            Call call = new Call(number, datetimeStarted, isIncoming);
-            call.setDateTimeEnded(dateTimeEnded);
-            call.setFilename(ConfigUtil.getCallLogsDir() + "/" + filename);
-
-            return call;
-
-        } catch (StringIndexOutOfBoundsException | NumberFormatException e) {
-            throw new ParserException("Exception at parsing encrypted call filename", e);
-        }
     }
 
     public static boolean isEditTextDataValid(EditText e1, EditText e2) {

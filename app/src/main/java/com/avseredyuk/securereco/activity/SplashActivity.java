@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.avseredyuk.securereco.application.Application;
-import com.avseredyuk.securereco.dao.CallDao;
+import com.avseredyuk.securereco.dao.SQLiteCallDao;
 import com.avseredyuk.securereco.model.Call;
 import com.avseredyuk.securereco.service.RecorderService;
 import com.avseredyuk.securereco.util.ConfigUtil;
@@ -38,7 +38,10 @@ public class SplashActivity extends AppCompatActivity {
     private class LoadCallsTask extends AsyncTask<Void, Void, List<Call>> {
         @Override
         protected List<Call> doInBackground(Void... voids) {
-            return CallDao.getInstance().findAll(Call.CallDateComparator);
+            SQLiteCallDao dao = new SQLiteCallDao(getApplicationContext()).open();
+            List<Call> result = dao.findAllOrderedByDate();
+            dao.close();
+            return result;
         }
 
         @Override
