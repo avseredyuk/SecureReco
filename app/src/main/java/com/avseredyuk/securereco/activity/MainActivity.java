@@ -256,13 +256,13 @@ public class MainActivity extends SecuredActivity
     private void menuItemOnOff() {
         Boolean isEnabledPrevious = ConfigUtil.readBoolean(IS_ENABLED);
         Boolean isEnabledNew = !isEnabledPrevious;
-        ConfigUtil.writeValue(IS_ENABLED, isEnabledNew.toString().toLowerCase());
+        ConfigUtil.writeBoolean(IS_ENABLED, isEnabledNew);
     }
 
     private void menuItemNotificationOnOff() {
         Boolean isNotificationPrevious = ConfigUtil.readBoolean(NOTIFICATION_ON);
         Boolean isNotificationNew = !isNotificationPrevious;
-        ConfigUtil.writeValue(NOTIFICATION_ON, isNotificationNew.toString().toLowerCase());
+        ConfigUtil.writeBoolean(NOTIFICATION_ON, isNotificationNew);
     }
 
     private void menuItemDeleteSelected() {

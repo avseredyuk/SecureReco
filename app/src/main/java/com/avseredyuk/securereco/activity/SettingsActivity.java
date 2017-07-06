@@ -189,7 +189,7 @@ public class SettingsActivity extends SecuredActivity {
             public void execute(String password) {
                 if (!IOUtil.isSameFile(
                         changeFolderEdit.getText().toString(),
-                        ConfigUtil.readValue(CALL_DIR))) {
+                        ConfigUtil.getCallLogsDir())) {
                     Application.getInstance().getAuthMan().changeFolder(context, changeFolderEdit.getText().toString());
                     Toast.makeText(context,
                             getString(R.string.toast_calls_folder_changing),
