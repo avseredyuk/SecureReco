@@ -15,8 +15,6 @@ import com.avseredyuk.securereco.auth.AuthenticationManager;
 import com.avseredyuk.securereco.exception.AuthenticationException;
 import com.avseredyuk.securereco.util.ConfigUtil;
 
-import static com.avseredyuk.securereco.util.Constant.*;
-
 /**
  * Created by lenfer on 2/15/17.
  */

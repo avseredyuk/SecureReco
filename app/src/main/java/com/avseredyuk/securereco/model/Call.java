@@ -34,14 +34,6 @@ public class Call implements Parcelable {
         this.isIncoming = isIncoming;
     }
 
-    public static final Comparator<Call> CallDateComparator = new Comparator<Call>() {
-
-        public int compare(Call call1, Call call2) {
-            return call2.getDateTimeStarted().compareTo(call1.getDateTimeStarted());
-        }
-
-    };
-
     public String getCallNumber() {
         return callNumber;
     }
