@@ -304,6 +304,7 @@ public class MainActivity extends SecuredActivity
         TextView firstLine;
         TextView secondLine;
         TextView thirdLine;
+        ImageButton starBtn;
         ImageButton playBtn;
         CheckBox checkBox;
         ImageView callType;
@@ -349,6 +350,7 @@ public class MainActivity extends SecuredActivity
                 viewHolder.firstLine = (TextView) convertView.findViewById(R.id.contactName);
                 viewHolder.secondLine = (TextView) convertView.findViewById(R.id.callTime);
                 viewHolder.thirdLine = (TextView) convertView.findViewById(R.id.callDuration);
+                viewHolder.starBtn = (ImageButton) convertView.findViewById(R.id.starButton);
                 viewHolder.playBtn = (ImageButton) convertView.findViewById(R.id.playButton);
                 viewHolder.checkBox = (CheckBox) convertView.findViewById(R.id.checkBox);
                 viewHolder.callType = (ImageView) convertView.findViewById(R.id.callType);
@@ -376,6 +378,13 @@ public class MainActivity extends SecuredActivity
             viewHolder.checkBox.setButtonDrawable(
                     new BitmapDrawable(getResources(), call.getPhoto())
             );
+            viewHolder.starBtn.setImageResource(
+                    call.isStarred()
+                            ? R.drawable.ic_star_black_24dp
+                            : R.drawable.ic_star_border_black_24dp
+            );
+            viewHolder.starBtn.setTag(call);
+            viewHolder.starBtn.setOnClickListener(new StarButtonOnClickListener());
             viewHolder.playBtn.setTag(call);
             viewHolder.playBtn.setOnClickListener(this);
             viewHolder.playBtn.setOnLongClickListener(this);
@@ -426,6 +435,23 @@ public class MainActivity extends SecuredActivity
                 dateHeaderTextView.setBackgroundResource(R.color.listViewHeaderBgColor);
             }
 
+        }
+
+        class StarButtonOnClickListener implements View.OnClickListener {
+            @Override
+            public void onClick(View v) {
+                final Call call = (Call) v.getTag();
+                call.setStarred(!call.isStarred());
+                SQLiteCallDao dao = new SQLiteCallDao(getApplicationContext()).open();
+                dao.updateStarredCall(call);
+                dao.close();
+
+                ((ImageButton) v).setImageResource(
+                        call.isStarred()
+                                ? R.drawable.ic_star_black_24dp
+                                : R.drawable.ic_star_border_black_24dp
+                );
+            }
         }
 
         @Override

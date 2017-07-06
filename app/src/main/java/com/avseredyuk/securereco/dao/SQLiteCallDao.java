@@ -101,6 +101,12 @@ public class SQLiteCallDao {
         db.update(DatabaseHelper.TABLE_CALLS, cv, DatabaseHelper.COLUMN_ID + " = " + call.getId(), null);
     }
 
+    public void updateStarredCall(Call call) {
+        ContentValues cv = new ContentValues();
+        cv.put(DatabaseHelper.COLUMN_STARRED, call.isStarred());
+        db.update(DatabaseHelper.TABLE_CALLS, cv, DatabaseHelper.COLUMN_ID + " = " + call.getId(), null);
+    }
+
     private Call cursorToCall(Cursor cursor) {
         Call call = new Call();
         call.setId(cursor.getLong(0));
