@@ -6,7 +6,6 @@ import android.os.Parcelable;
 
 import com.avseredyuk.securereco.util.ContactResolverUtil;
 
-import java.util.Comparator;
 import java.util.Date;
 
 /**
