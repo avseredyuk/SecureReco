@@ -1,10 +1,9 @@
 package com.avseredyuk.securereco.util.crypto;
 
-import android.util.Base64;
 import android.util.Log;
 
+import com.avseredyuk.securereco.application.Application;
 import com.avseredyuk.securereco.exception.CryptoException;
-import com.avseredyuk.securereco.util.ConfigUtil;
 
 import java.security.KeyFactory;
 import java.security.KeyPair;
@@ -16,8 +15,6 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
 import javax.crypto.Cipher;
-
-import static com.avseredyuk.securereco.util.Constant.*;
 
 /**
  * Created by lenfer on 2/16/17.
@@ -38,8 +35,7 @@ public class RSA {
     }
 
     public static Cipher getPublicKeyCipher() throws CryptoException{
-        String keyStringBaseEncoded = ConfigUtil.readValue(PUBLIC_KEY);
-        byte[] keyBaseEncoded = Base64.decode(keyStringBaseEncoded, Base64.DEFAULT);
+        byte[] keyBaseEncoded = Application.getInstance().getConfiguration().getPublicKey();
         try {
             PublicKey publicKey = KeyFactory.getInstance(RSA).generatePublic(new X509EncodedKeySpec(keyBaseEncoded));
             Cipher localCipher = Cipher.getInstance(RSA);

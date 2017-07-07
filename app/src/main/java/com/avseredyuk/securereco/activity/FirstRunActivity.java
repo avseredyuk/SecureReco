@@ -13,7 +13,6 @@ import android.widget.Toast;
 import com.avseredyuk.securereco.R;
 import com.avseredyuk.securereco.auth.AuthenticationManager;
 import com.avseredyuk.securereco.exception.AuthenticationException;
-import com.avseredyuk.securereco.util.ConfigUtil;
 
 /**
  * Created by lenfer on 2/15/17.
@@ -47,8 +46,6 @@ public class FirstRunActivity extends AppCompatActivity {
                                 getString(R.string.toast_auth_error),
                                 Toast.LENGTH_SHORT).show();
                     }
-
-                    ConfigUtil.initDefaultConfiguration();
 
                     startActivity(new Intent(context, MainActivity.class));
 

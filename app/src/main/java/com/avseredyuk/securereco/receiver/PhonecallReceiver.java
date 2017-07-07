@@ -9,22 +9,19 @@ import android.os.ParcelFileDescriptor;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import com.avseredyuk.securereco.application.Application;
 import com.avseredyuk.securereco.model.Call;
 import com.avseredyuk.securereco.notification.RecordStartedNotification;
 import com.avseredyuk.securereco.notification.StartRecordNotification;
-import com.avseredyuk.securereco.util.AudioSourceEnum;
-import com.avseredyuk.securereco.util.ConfigUtil;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.util.Date;
 
-import static com.avseredyuk.securereco.util.Constant.AUDIO_SOURCE;
 import static com.avseredyuk.securereco.util.Constant.INTENT_CANCEL_NOTIFICATION;
 import static com.avseredyuk.securereco.util.Constant.INTENT_EXTRA_CALL_DATA;
 import static com.avseredyuk.securereco.util.Constant.INTENT_START_RECORD;
 import static com.avseredyuk.securereco.util.Constant.INTENT_STOP_RECORD;
-import static com.avseredyuk.securereco.util.Constant.IS_ENABLED;
 import static com.avseredyuk.securereco.util.Constant.NOTIFICATION_ID;
 
 /**
@@ -40,7 +37,7 @@ public class PhonecallReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (ConfigUtil.readBoolean(IS_ENABLED)) {
+        if (Application.getInstance().getConfiguration().isEnabled()) {
             if (Intent.ACTION_NEW_OUTGOING_CALL.equals(intent.getAction())) {
                 savedNumber = intent.getExtras().getString(Intent.EXTRA_PHONE_NUMBER);
             } else if (INTENT_START_RECORD.equals(intent.getAction())) {
@@ -126,11 +123,7 @@ public class PhonecallReceiver extends BroadcastReceiver {
         }
 
         recorder = new MediaRecorder();
-        recorder.setAudioSource(
-                AudioSourceEnum.valueOf(
-                        ConfigUtil.readValue(AUDIO_SOURCE)
-                ).getId()
-        );
+        recorder.setAudioSource(Application.getInstance().getConfiguration().getAudioSourceEnum().getId());
         recorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
         recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
         try {

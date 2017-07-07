@@ -2,14 +2,12 @@ package com.avseredyuk.securereco.auth;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Base64;
 import android.util.Log;
 
 import com.avseredyuk.securereco.application.Application;
 import com.avseredyuk.securereco.exception.AuthenticationException;
 import com.avseredyuk.securereco.exception.CryptoException;
 import com.avseredyuk.securereco.service.BackgroundWorkIntentService;
-import com.avseredyuk.securereco.util.ConfigUtil;
 import com.avseredyuk.securereco.util.crypto.AES;
 import com.avseredyuk.securereco.util.crypto.HMAC;
 import com.avseredyuk.securereco.util.crypto.RSA;
@@ -22,14 +20,9 @@ import javax.crypto.Cipher;
 import static com.avseredyuk.securereco.util.Constant.BWIS_DESTINATION_CHANGE_FOLDER;
 import static com.avseredyuk.securereco.util.Constant.BWIS_DESTINATION_REGENERATE_KEYS;
 import static com.avseredyuk.securereco.util.Constant.BWIS_ACTION;
-import static com.avseredyuk.securereco.util.Constant.CALL_DIR;
 import static com.avseredyuk.securereco.util.Constant.NEW_FOLDER_PATH;
 import static com.avseredyuk.securereco.util.Constant.OLD_FOLDER_PATH;
 import static com.avseredyuk.securereco.util.Constant.OLD_PRIVATE_KEY_INTENT_EXTRA_NAME;
-import static com.avseredyuk.securereco.util.Constant.PRIVATE_KEY_ENCODED;
-import static com.avseredyuk.securereco.util.Constant.PRIVATE_KEY_HMAC;
-import static com.avseredyuk.securereco.util.Constant.PRIVATE_KEY_IV;
-import static com.avseredyuk.securereco.util.Constant.PUBLIC_KEY;
 
 /**
  * Created by lenfer on 2/27/17.
@@ -55,12 +48,12 @@ public class AuthenticationManager {
 
     private AuthenticationManager authenticate(String password) throws AuthenticationException {
         try {
-            byte[] hmacFromConfig = Base64.decode(ConfigUtil.readValue(PRIVATE_KEY_HMAC), Base64.DEFAULT);
+            byte[] hmacFromConfig = Application.getInstance().getConfiguration().getPrivateKeyHMAC();
 
-            byte[] privateKeyIV = Base64.decode(ConfigUtil.readValue(PRIVATE_KEY_IV), Base64.DEFAULT);
+            byte[] privateKeyIV = Application.getInstance().getConfiguration().getPrivateKeyIV();
             AES aes = new AES();
             aes.init(password, Cipher.DECRYPT_MODE, privateKeyIV);
-            byte[] privateKeyEncoded = Base64.decode(ConfigUtil.readValue(PRIVATE_KEY_ENCODED), Base64.DEFAULT);
+            byte[] privateKeyEncoded = Application.getInstance().getConfiguration().getPrivateKeyEncoded();
             privateKey = aes.doFinal(privateKeyEncoded);
             byte[] hmacFromPassword = HMAC.makeHMAC(aes.getKeyCipherTuple().getKey(), privateKey);
 
@@ -87,11 +80,13 @@ public class AuthenticationManager {
             byte[] hmacFromPassword = HMAC.makeHMAC(aes.getKeyCipherTuple().getKey(), privateKey);
             byte[] privateKeyIV = aes.getKeyCipherTuple().getCipher().getIV();
 
-            ConfigUtil.writeValue(PRIVATE_KEY_ENCODED, Base64.encodeToString(privateKeyEncoded, Base64.DEFAULT));
-            ConfigUtil.writeValue(PRIVATE_KEY_HMAC, Base64.encodeToString(hmacFromPassword, Base64.DEFAULT));
-            ConfigUtil.writeValue(PRIVATE_KEY_IV, Base64.encodeToString(privateKeyIV, Base64.DEFAULT));
+            Application.getInstance().getConfiguration()
+                    .setPrivateKeyEncoded(privateKeyEncoded)
+                    .setPrivateKeyHMAC(hmacFromPassword)
+                    .setPrivateKeyIV(privateKeyIV)
+                    .setPublicKey(keyPair.getPublic().getEncoded())
+                    .commit();
 
-            ConfigUtil.writeValue(PUBLIC_KEY, Base64.encodeToString(keyPair.getPublic().getEncoded(), Base64.DEFAULT));
         } catch (CryptoException e) {
             Log.e(getClass().getSimpleName(), "Exception at crypto stuff", e);
         }
@@ -107,8 +102,10 @@ public class AuthenticationManager {
     }
 
     public void changeFolder(Context context, String newFolder) {
-        String oldCallDir = ConfigUtil.readValue(CALL_DIR);
-        ConfigUtil.writeValue(CALL_DIR, newFolder);
+        String oldCallDir = Application.getInstance().getConfiguration().getCallDir();
+        Application.getInstance().getConfiguration()
+                .setCallDir(newFolder)
+                .commit();
         context.startService(new Intent(context, BackgroundWorkIntentService.class)
                 .putExtra(BWIS_ACTION, BWIS_DESTINATION_CHANGE_FOLDER)
                 .putExtra(OLD_FOLDER_PATH, oldCallDir)
@@ -124,9 +121,12 @@ public class AuthenticationManager {
             byte[] hmacFromPassword = HMAC.makeHMAC(aes.getKeyCipherTuple().getKey(), privateKey);
             byte[] privateKeyIV = aes.getKeyCipherTuple().getCipher().getIV();
 
-            ConfigUtil.writeValue(PRIVATE_KEY_ENCODED, Base64.encodeToString(privateKeyEncoded, Base64.DEFAULT));
-            ConfigUtil.writeValue(PRIVATE_KEY_HMAC, Base64.encodeToString(hmacFromPassword, Base64.DEFAULT));
-            ConfigUtil.writeValue(PRIVATE_KEY_IV, Base64.encodeToString(privateKeyIV, Base64.DEFAULT));
+            Application.getInstance().getConfiguration()
+                    .setPrivateKeyEncoded(privateKeyEncoded)
+                    .setPrivateKeyHMAC(hmacFromPassword)
+                    .setPrivateKeyIV(privateKeyIV)
+                    .commit();
+
             return true;
         } catch (CryptoException e) {
             Log.e(getClass().getSimpleName(), "Exception changing password", e);

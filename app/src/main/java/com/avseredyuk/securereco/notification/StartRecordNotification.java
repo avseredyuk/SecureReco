@@ -7,15 +7,14 @@ import android.content.Intent;
 import android.widget.RemoteViews;
 
 import com.avseredyuk.securereco.R;
+import com.avseredyuk.securereco.application.Application;
 import com.avseredyuk.securereco.model.Call;
-import com.avseredyuk.securereco.util.ConfigUtil;
 
 import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
 import static com.avseredyuk.securereco.util.Constant.INTENT_CANCEL_NOTIFICATION;
 import static com.avseredyuk.securereco.util.Constant.INTENT_EXTRA_CALL_DATA;
 import static com.avseredyuk.securereco.util.Constant.INTENT_START_RECORD;
 import static com.avseredyuk.securereco.util.Constant.NOTIFICATION_ID;
-import static com.avseredyuk.securereco.util.Constant.NOTIFICATION_ON;
 
 /**
  * Created by Anton_Serediuk on 6/29/2017.
@@ -32,7 +31,7 @@ public class StartRecordNotification implements ApplicationNotification {
 
     @Override
     public void alert() {
-        if (ConfigUtil.readBoolean(NOTIFICATION_ON)) {
+        if (Application.getInstance().getConfiguration().isNotificationOn()) {
             RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.notification_start_record);
 
             contentView.setImageViewBitmap(R.id.notification_contact_photo, call.getPhoto());

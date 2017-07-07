@@ -17,15 +17,11 @@ import com.avseredyuk.securereco.callback.Callback;
 import com.avseredyuk.securereco.model.ResetAuthenticationStrategy;
 import com.avseredyuk.securereco.service.BackgroundWorkIntentService;
 import com.avseredyuk.securereco.util.AudioSourceEnum;
-import com.avseredyuk.securereco.util.ConfigUtil;
 import com.avseredyuk.securereco.util.IOUtil;
 import com.avseredyuk.securereco.util.StringUtil;
 
-import static com.avseredyuk.securereco.util.Constant.AUDIO_SOURCE;
 import static com.avseredyuk.securereco.util.Constant.BWIS_DESTINATION_CHANGE_FOLDER;
 import static com.avseredyuk.securereco.util.Constant.BWIS_DESTINATION_REGENERATE_KEYS;
-import static com.avseredyuk.securereco.util.Constant.CALL_DIR;
-import static com.avseredyuk.securereco.util.Constant.RESET_AUTH_STRATEGY;
 
 /**
  * Created by lenfer on 3/1/17.
@@ -46,12 +42,17 @@ public class SettingsActivity extends SecuredActivity {
     }
 
     private class ResetAuthSpinnerItemSelectedListener implements AdapterView.OnItemSelectedListener {
+        private int callsCount = 0;
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            ConfigUtil.writeValue(RESET_AUTH_STRATEGY, String.valueOf(position));
-            Application.getInstance().setResetAuthStrategy(
-                    ResetAuthenticationStrategy.valueOf(position)
-            );
+            if (callsCount > 0) {
+                Application.getInstance().getConfiguration().
+                        setResetAuthenticationStrategy(
+                                ResetAuthenticationStrategy.valueOf(position))
+                        .commit();
+            } else {
+                callsCount++;
+            }
         }
 
         @Override
@@ -61,10 +62,17 @@ public class SettingsActivity extends SecuredActivity {
     }
 
     private class AudioSourceSpinnerItemSelectedListener implements AdapterView.OnItemSelectedListener {
+        private int callsCount = 0;
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            String audioSource = parent.getItemAtPosition(position).toString();
-            ConfigUtil.writeValue(AUDIO_SOURCE, audioSource);
+            if (callsCount > 0) {
+                Application.getInstance().getConfiguration()
+                        .setAudioSourceEnum(AudioSourceEnum.valueOf(
+                                parent.getItemAtPosition(position).toString()))
+                        .commit();
+            } else {
+                callsCount++;
+            }
         }
 
         @Override
@@ -91,13 +99,12 @@ public class SettingsActivity extends SecuredActivity {
 
         resetAuthStrategySpinner.setOnItemSelectedListener(new ResetAuthSpinnerItemSelectedListener());
         audioSourceSpinner.setOnItemSelectedListener(new AudioSourceSpinnerItemSelectedListener());
-
         audioSourceSpinner.setAdapter
                 (new ArrayAdapter<>(
                         this,
                         android.R.layout.simple_list_item_1,
                         AudioSourceEnum.values())
-        );
+                );
     }
 
     @Override
@@ -105,20 +112,18 @@ public class SettingsActivity extends SecuredActivity {
         super.onResume();
 
         resetAuthStrategySpinner.setSelection(
-                ConfigUtil.readInt(RESET_AUTH_STRATEGY)
+                Application.getInstance().getConfiguration().getResetAuthenticationStrategy().ordinal()
         );
 
         audioSourceSpinner.setSelection(
-                AudioSourceEnum.valueOf(
-                        ConfigUtil.readValue(AUDIO_SOURCE)
-                ).ordinal()
+                Application.getInstance().getConfiguration().getAudioSourceEnum().ordinal()
         );
 
         regenerateRSAKeysButton.setEnabled(
                 !isBackgroundRunningAction(BWIS_DESTINATION_REGENERATE_KEYS)
         );
 
-        changeFolderEdit.setText(ConfigUtil.getCallLogsDir());
+        changeFolderEdit.setText(Application.getInstance().getConfiguration().getCallDir());
         changeFolderEdit.setEnabled(
                 !isBackgroundRunningAction(BWIS_DESTINATION_CHANGE_FOLDER)
         );
@@ -189,7 +194,8 @@ public class SettingsActivity extends SecuredActivity {
             public void execute(String password) {
                 if (!IOUtil.isSameFile(
                         changeFolderEdit.getText().toString(),
-                        ConfigUtil.getCallLogsDir())) {
+                        Application.getInstance().getConfiguration().getCallDir())
+                        ) {
                     Application.getInstance().getAuthMan().changeFolder(context, changeFolderEdit.getText().toString());
                     Toast.makeText(context,
                             getString(R.string.toast_calls_folder_changing),

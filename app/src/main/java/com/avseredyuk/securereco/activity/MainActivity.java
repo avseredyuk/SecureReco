@@ -40,7 +40,6 @@ import com.avseredyuk.securereco.filedialog.FileOperation;
 import com.avseredyuk.securereco.filedialog.FileSelector;
 import com.avseredyuk.securereco.filedialog.OnHandleFileListener;
 import com.avseredyuk.securereco.model.Call;
-import com.avseredyuk.securereco.util.ConfigUtil;
 import com.avseredyuk.securereco.util.StringUtil;
 
 import java.io.File;
@@ -50,8 +49,6 @@ import java.util.List;
 import static com.avseredyuk.securereco.util.Constant.CALLS_LIST_PARCEL_NAME;
 import static com.avseredyuk.securereco.util.Constant.INTENT_CANCEL_NOTIFICATION;
 import static com.avseredyuk.securereco.util.Constant.INTENT_EXTRA_CALL_DATA;
-import static com.avseredyuk.securereco.util.Constant.IS_ENABLED;
-import static com.avseredyuk.securereco.util.Constant.NOTIFICATION_ON;
 
 public class MainActivity extends SecuredActivity
         implements MediaPlayer.OnPreparedListener,
@@ -190,9 +187,9 @@ public class MainActivity extends SecuredActivity
         MenuItem authenticateMenuItem = menu.findItem(R.id.action_authenticate);
         MenuItem notificationOn = menu.findItem(R.id.action_notification_on_off);
 
-        enabledDisabledMenuItem.setChecked(ConfigUtil.readBoolean(IS_ENABLED));
+        enabledDisabledMenuItem.setChecked(Application.getInstance().getConfiguration().isEnabled());
 
-        notificationOn.setChecked(ConfigUtil.readBoolean(NOTIFICATION_ON));
+        notificationOn.setChecked(Application.getInstance().getConfiguration().isNotificationOn());
 
         int selectedCount = callArrayAdapter.getCheckedCalls().size();
         String itemTitle;
@@ -254,15 +251,15 @@ public class MainActivity extends SecuredActivity
     }
 
     private void menuItemOnOff() {
-        Boolean isEnabledPrevious = ConfigUtil.readBoolean(IS_ENABLED);
-        Boolean isEnabledNew = !isEnabledPrevious;
-        ConfigUtil.writeBoolean(IS_ENABLED, isEnabledNew);
+        Application.getInstance().getConfiguration()
+                .setEnabled(!Application.getInstance().getConfiguration().isEnabled())
+                .commit();
     }
 
     private void menuItemNotificationOnOff() {
-        Boolean isNotificationPrevious = ConfigUtil.readBoolean(NOTIFICATION_ON);
-        Boolean isNotificationNew = !isNotificationPrevious;
-        ConfigUtil.writeBoolean(NOTIFICATION_ON, isNotificationNew);
+        Application.getInstance().getConfiguration()
+                .setNotificationOn(!Application.getInstance().getConfiguration().isNotificationOn())
+                .commit();
     }
 
     private void menuItemDeleteSelected() {

@@ -127,7 +127,7 @@ public abstract class SecuredActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        if (Application.getInstance().getResetAuthStrategy()
+        if (Application.getInstance().getConfiguration().getResetAuthenticationStrategy()
                 .equals(ResetAuthenticationStrategy.WHEN_APP_GOES_TO_BACKGROUND)) {
             if (!Application.getInstance().authHolder.isLocked()) {
                 Application.getInstance().eraseAuthMan();
@@ -138,7 +138,7 @@ public abstract class SecuredActivity extends AppCompatActivity {
     @Override
     public void onUserInteraction() {
         super.onUserInteraction();
-        if (Application.getInstance().getResetAuthStrategy()
+        if (Application.getInstance().getConfiguration().getResetAuthenticationStrategy()
                 .equals(ResetAuthenticationStrategy.ON_TIMEOUT_OF_INACTIVITY)) {
             Application.getInstance().resetDisconnectTimer();
         }

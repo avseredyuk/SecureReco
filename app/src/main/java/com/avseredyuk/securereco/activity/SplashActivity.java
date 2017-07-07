@@ -9,7 +9,6 @@ import com.avseredyuk.securereco.application.Application;
 import com.avseredyuk.securereco.dao.SQLiteCallDao;
 import com.avseredyuk.securereco.model.Call;
 import com.avseredyuk.securereco.service.RecorderService;
-import com.avseredyuk.securereco.util.ConfigUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +25,7 @@ public class SplashActivity extends AppCompatActivity {
 
         startService(new Intent(Application.getInstance(), RecorderService.class));
 
-        if (ConfigUtil.isConfigValid()) {
+        if (Application.getInstance().getConfiguration().isConfigValid()) {
             LoadCallsTask loadTask = new LoadCallsTask();
             loadTask.execute();
         } else {

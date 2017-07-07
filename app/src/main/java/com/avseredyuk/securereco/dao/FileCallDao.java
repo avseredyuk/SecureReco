@@ -2,10 +2,10 @@ package com.avseredyuk.securereco.dao;
 
 import android.util.Log;
 
+import com.avseredyuk.securereco.application.Application;
 import com.avseredyuk.securereco.auth.AuthenticationManager;
 import com.avseredyuk.securereco.exception.CryptoException;
 import com.avseredyuk.securereco.model.Call;
-import com.avseredyuk.securereco.util.ConfigUtil;
 import com.avseredyuk.securereco.util.IOUtil;
 import com.avseredyuk.securereco.util.crypto.AES;
 import com.avseredyuk.securereco.util.crypto.RSA;
@@ -38,14 +38,14 @@ public class FileCallDao {
     }
 
     public File createNew() {
-        File callLogsDir = new File(ConfigUtil.getCallLogsDir());
+        File callLogsDir = new File(Application.getInstance().getConfiguration().getCallDir());
         callLogsDir.mkdirs();
         String uuid = UUID.randomUUID().toString();
         return new File(callLogsDir, uuid);
     }
 
     public boolean delete(Call call) {
-        File file = new File(ConfigUtil.getCallLogsDir(), call.getFilename());
+        File file = new File(Application.getInstance().getConfiguration().getCallDir(), call.getFilename());
         return file.delete();
     }
 
@@ -58,7 +58,7 @@ public class FileCallDao {
         CipherInputStream cipherInputStream = null;
         try {
             Cipher rsaCipher = RSA.getPrivateKeyCipher(authMan.getPrivateKey());
-            fileByteArray = IOUtil.readFile(new File(ConfigUtil.getCallLogsDir(), call.getFilename()));
+            fileByteArray = IOUtil.readFile(new File(Application.getInstance().getConfiguration().getCallDir(), call.getFilename()));
             InputStream byteInputStream = new ByteArrayInputStream(fileByteArray);
             if (byteInputStream.read(headerEncrypted) == headerEncrypted.length) {
                 byte[] fileHeader = rsaCipher.doFinal(headerEncrypted);
@@ -105,7 +105,7 @@ public class FileCallDao {
         byte[] fileHeaderEncrypted = new byte[ENCRYPTED_HEADER_SIZE];
         RandomAccessFile f = null;
         try {
-            f = new RandomAccessFile(new File(ConfigUtil.getCallLogsDir(), call.getFilename()), "rw");
+            f = new RandomAccessFile(new File(Application.getInstance().getConfiguration().getCallDir(), call.getFilename()), "rw");
             f.seek(0);
 
             Cipher rsaDecryptCipher = RSA.getPrivateKeyCipher(oldPrivateKey);
