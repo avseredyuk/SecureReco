@@ -4,7 +4,7 @@ import android.util.Log;
 
 import com.avseredyuk.securereco.exception.CryptoException;
 
-import java.nio.charset.StandardCharsets;
+import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -19,7 +19,7 @@ public class HashingUtil {
     public static byte[] hashPassword(String in) throws CryptoException{
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
-            md.update(in.getBytes(StandardCharsets.UTF_8));
+            md.update(in.getBytes(Charset.forName("UTF-8")));
             return md.digest();
         } catch (NoSuchAlgorithmException e) {
             Log.e(HashingUtil.class.getSimpleName(),
