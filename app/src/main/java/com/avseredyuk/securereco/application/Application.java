@@ -23,19 +23,13 @@ import static com.avseredyuk.securereco.util.Constant.RESET_AUTH_DELAY;
  * Created by lenfer on 3/1/17.
  */
 public class Application extends android.app.Application {
-    private Map<String, Bitmap> contactPhotoCache = new HashMap<>();
-    private Map<String, String> contactNameCache = new HashMap<>();
-    private AuthenticationManager authMan = null;
-    public ReentrantLock authHolder = new ReentrantLock();
-    private Configuration configuration = new Configuration();
-    private static Application instance;
-    private static Handler disconnectHandler = new Handler () {
+    private static final Handler disconnectHandler = new Handler () {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
         }
     };
-    private static Runnable disconnectCallback = new Runnable() {
+    private static final Runnable disconnectCallback = new Runnable() {
         @Override
         public void run() {
             if (Application.getInstance().getConfiguration().getResetAuthenticationStrategy()
@@ -45,6 +39,12 @@ public class Application extends android.app.Application {
             }
         }
     };
+    private static Application instance;
+    private final Map<String, Bitmap> contactPhotoCache = new HashMap<>();
+    private final Map<String, String> contactNameCache = new HashMap<>();
+    private final Configuration configuration = new Configuration();
+    private AuthenticationManager authMan = null;
+    public final ReentrantLock authHolder = new ReentrantLock();
 
     @Override
     public void onCreate() {

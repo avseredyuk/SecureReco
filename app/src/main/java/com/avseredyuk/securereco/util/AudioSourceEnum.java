@@ -10,7 +10,7 @@ public enum AudioSourceEnum {
     VOICE_CALL(MediaRecorder.AudioSource.VOICE_CALL),
     VOICE_COMMUNICATION(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
 
-    private int id;
+    private final int id;
 
     AudioSourceEnum(int id) {
         this.id = id;

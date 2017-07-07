@@ -44,14 +44,14 @@ public class FileSelector {
 	 */
 	private File mCurrentLocation;
 
-	private String mDefaultFileName;
+	private final String mDefaultFileName;
 
 	/**
 	 * The file selector dialog.
 	 */
 	private final Dialog mDialog;
 
-	private Context mContext;
+	private final Context mContext;
 
 	/** Save or Load file listener. */
 	final OnHandleFileListener mOnHandleFileListener;

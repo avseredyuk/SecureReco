@@ -31,7 +31,7 @@ import static com.avseredyuk.securereco.util.Constant.OLD_PRIVATE_KEY_INTENT_EXT
 public class BackgroundWorkIntentService extends IntentService {
     public static volatile boolean isRunning;
     public static volatile String action;
-    private Handler handler;
+    private final Handler handler;
 
     public BackgroundWorkIntentService() {
         super("BackgroundWorkIntentService");
@@ -96,7 +96,7 @@ public class BackgroundWorkIntentService extends IntentService {
 
     private class DisplayToast implements Runnable {
         private final Context mContext;
-        String mText;
+        private final String mText;
         DisplayToast(Context mContext, String text){
             this.mContext = mContext;
             mText = text;

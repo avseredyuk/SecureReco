@@ -12,8 +12,8 @@ public enum ResetAuthenticationStrategy {
     WHEN_APP_GOES_TO_BACKGROUND(1),
     ON_TIMEOUT_OF_INACTIVITY(2);
 
+    private static final Map<Integer, ResetAuthenticationStrategy> map = new HashMap<>();
     private int value;
-    private static Map<Integer, ResetAuthenticationStrategy> map = new HashMap<>();
 
     static {
         for (ResetAuthenticationStrategy strategyEnum : ResetAuthenticationStrategy.values()) {

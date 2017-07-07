@@ -20,8 +20,8 @@ import static com.avseredyuk.securereco.util.Constant.NOTIFICATION_ID;
  */
 
 public class RecordStartedNotification implements ApplicationNotification {
-    private Context context;
-    private Call call;
+    private final Context context;
+    private final Call call;
 
     public RecordStartedNotification(Context context, Call call) {
         this.context = context;

@@ -10,13 +10,13 @@ import java.util.Date;
  * Created by lenfer on 2/15/17.
  */
 public class StringUtil {
-    private static ThreadLocal<SimpleDateFormat> simpleDateFormatDate = new ThreadLocal<SimpleDateFormat>() {
+    private static final ThreadLocal<SimpleDateFormat> simpleDateFormatDate = new ThreadLocal<SimpleDateFormat>() {
         @Override
         protected SimpleDateFormat initialValue() {
             return new SimpleDateFormat("HH:mm");
         }
     };
-    private static ThreadLocal<SimpleDateFormat> simpleDateFormatHeader = new ThreadLocal<SimpleDateFormat>() {
+    private static final ThreadLocal<SimpleDateFormat> simpleDateFormatHeader = new ThreadLocal<SimpleDateFormat>() {
         @Override
         protected SimpleDateFormat initialValue() {
             return new SimpleDateFormat("EEE, d MMM");

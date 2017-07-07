@@ -54,16 +54,16 @@ public class MainActivity extends SecuredActivity
         implements MediaPlayer.OnPreparedListener,
         MediaController.MediaPlayerControl,
         SearchView.OnQueryTextListener {
-    public static final String AMR_SUFFIX = ".amr";
+    private static final String AMR_SUFFIX = ".amr";
+    private static final String[] mFileFilter = { "*.*", ".amr" };
+    private final Handler handler = new Handler();
+    private final List<Call> calls = new ArrayList<>();
     private CallArrayAdapter callArrayAdapter;
-    private List<Call> calls = new ArrayList<>();
     private List<Call> originalCalls = new ArrayList<>();
     private MediaPlayer mediaPlayer;
     private MediaController mediaController;
-    private Handler handler = new Handler();
     private Menu menu;
     private String filterString;
-    private static final String[] mFileFilter = { "*.*", ".amr" };
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -588,7 +588,7 @@ public class MainActivity extends SecuredActivity
     }
 
     private class PlayCallCallback implements Callback {
-        private Call call;
+        private final Call call;
 
         public PlayCallCallback(Call call) {
             this.call = call;
@@ -619,7 +619,7 @@ public class MainActivity extends SecuredActivity
     }
 
     private class ExportCallCallback implements Callback {
-        private Call call;
+        private final Call call;
 
         public ExportCallCallback(Call call) {
             this.call = call;

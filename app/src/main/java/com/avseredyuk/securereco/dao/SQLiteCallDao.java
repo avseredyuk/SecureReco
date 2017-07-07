@@ -28,8 +28,8 @@ import static com.avseredyuk.securereco.sql.DatabaseHelper.TABLE_CALLS;
 
 public class SQLiteCallDao {
     private SQLiteDatabase db;
-    private DatabaseHelper dbHelper;
-    private String[] allColumns = { COLUMN_ID, COLUMN_CALL_NUMBER, COLUMN_DATETIME_STARTED,
+    private final DatabaseHelper dbHelper;
+    private final String[] allColumns = { COLUMN_ID, COLUMN_CALL_NUMBER, COLUMN_DATETIME_STARTED,
             COLUMN_DATETIME_ENDED, COLUMN_IS_INCOMING, COLUMN_FILENAME, COLUMN_STARRED, COLUMN_NOTES};
 
     public SQLiteCallDao(Context context) {
