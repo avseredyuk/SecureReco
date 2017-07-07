@@ -246,8 +246,8 @@ public class MainActivity extends SecuredActivity
     }
 
     private void menuItemShowSettings() {
-        Intent settingActivityIntent = new Intent(this, SettingsActivity.class);
-        startActivity(settingActivityIntent);
+        Intent settingsActivityIntent = new Intent(this, SettingsActivity.class);
+        startActivity(settingsActivityIntent);
     }
 
     private void menuItemOnOff() {
