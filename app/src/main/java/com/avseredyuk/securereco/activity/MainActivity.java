@@ -303,6 +303,7 @@ public class MainActivity extends SecuredActivity
         TextView thirdLine;
         ImageButton starBtn;
         ImageButton playBtn;
+        ImageButton moreButton;
         CheckBox checkBox;
         ImageView callType;
     }
@@ -349,6 +350,7 @@ public class MainActivity extends SecuredActivity
                 viewHolder.thirdLine = (TextView) convertView.findViewById(R.id.callDuration);
                 viewHolder.starBtn = (ImageButton) convertView.findViewById(R.id.starButton);
                 viewHolder.playBtn = (ImageButton) convertView.findViewById(R.id.playButton);
+                viewHolder.moreButton = (ImageButton) convertView.findViewById(R.id.moreButton);
                 viewHolder.checkBox = (CheckBox) convertView.findViewById(R.id.checkBox);
                 viewHolder.callType = (ImageView) convertView.findViewById(R.id.callType);
 
@@ -385,6 +387,8 @@ public class MainActivity extends SecuredActivity
             viewHolder.playBtn.setTag(call);
             viewHolder.playBtn.setOnClickListener(this);
             viewHolder.playBtn.setOnLongClickListener(this);
+            viewHolder.moreButton.setTag(call);
+            viewHolder.moreButton.setOnClickListener(new MoreButtonOnClickListener());
             viewHolder.checkBox.setTag(call);
             viewHolder.checkBox.setOnCheckedChangeListener(this);
             viewHolder.checkBox.setChecked(call.isChecked());
@@ -432,6 +436,16 @@ public class MainActivity extends SecuredActivity
                 dateHeaderTextView.setBackgroundResource(R.color.listViewHeaderBgColor);
             }
 
+        }
+
+        class MoreButtonOnClickListener implements View.OnClickListener {
+            @Override
+            public void onClick(View v) {
+                final Call call = (Call) v.getTag();
+                Intent moreActivityIntent = new Intent(getContext(), MoreActivity.class);
+                moreActivityIntent.putExtra(INTENT_EXTRA_CALL_DATA, call);
+                startActivity(moreActivityIntent);
+            }
         }
 
         class StarButtonOnClickListener implements View.OnClickListener {
