@@ -33,11 +33,16 @@
         <item>При уходе программы в фон</item>
         <item>По таймауту неактивности / 60 с</item>
     </string-array>
+    <string-array name="notification_colors">
+        <item>День</item>
+        <item>Ночь</item>
+    </string-array>
     <string name="toast_keys_regen_changed">Ключи изменены. Обновляем все записи звонков...</string>
     <string name="toast_keys_regen_update_nothing">Нет записей звонков для обновления</string>
     <string name="main_activity_no_call_records">Нет доступных для просмотра записей</string>
     <string name="activity_settings_change_folder_header">Сменить папку</string>
     <string name="activity_settings_change_folder_button">Сменить</string>
+    <string name="activity_settings_notification_color_header">Цвет уведомлений</string>
     <string name="toast_calls_folder_changing">Перемещаем записи в новую папку...</string>
     <string name="toast_calls_folder_changed">Записи перемещены</string>
     <string name="toast_error_changing_password">Ошибка при смене пароля</string>

@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.util.Base64;
 import android.util.Log;
 
+import com.avseredyuk.securereco.model.NotificationColor;
 import com.avseredyuk.securereco.model.ResetAuthenticationStrategy;
 import com.avseredyuk.securereco.util.AudioSourceEnum;
 import com.avseredyuk.securereco.util.IOUtil;
@@ -46,6 +47,7 @@ public class Configuration {
     private String callDir;
     private byte[] privateKeyHMAC;
     private ResetAuthenticationStrategy resetAuthenticationStrategy;
+    private NotificationColor notificationColor;
     private Boolean isEnabled;
 
     public Configuration() {

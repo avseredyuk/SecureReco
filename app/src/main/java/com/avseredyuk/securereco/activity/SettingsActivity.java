@@ -1,5 +1,6 @@
 package com.avseredyuk.securereco.activity;
 
+import android.app.Notification;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 import com.avseredyuk.securereco.R;
 import com.avseredyuk.securereco.application.Application;
 import com.avseredyuk.securereco.callback.Callback;
+import com.avseredyuk.securereco.model.NotificationColor;
 import com.avseredyuk.securereco.model.ResetAuthenticationStrategy;
 import com.avseredyuk.securereco.service.BackgroundWorkIntentService;
 import com.avseredyuk.securereco.util.AudioSourceEnum;
@@ -30,6 +32,7 @@ public class SettingsActivity extends SecuredActivity {
     private Context context;
     private Spinner resetAuthStrategySpinner;
     private Spinner audioSourceSpinner;
+    private Spinner notificationColorSpinner;
     private Button regenerateRSAKeysButton;
     private EditText newPasswordEdit1;
     private EditText newPasswordEdit2;
@@ -39,6 +42,26 @@ public class SettingsActivity extends SecuredActivity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+    }
+
+    private class NotificationColorSpinnerItemSelectedListener implements AdapterView.OnItemSelectedListener {
+        private int callsCount = 0;
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            if (callsCount > 0) {
+                Application.getInstance().getConfiguration().
+                        setNotificationColor(
+                                NotificationColor.valueOf(position))
+                        .commit();
+            } else {
+                callsCount++;
+            }
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+            //nothing
+        }
     }
 
     private class ResetAuthSpinnerItemSelectedListener implements AdapterView.OnItemSelectedListener {
@@ -91,6 +114,7 @@ public class SettingsActivity extends SecuredActivity {
 
         resetAuthStrategySpinner = (Spinner) findViewById(R.id.resetAuthStrategySpinner);
         audioSourceSpinner = (Spinner) findViewById(R.id.audioSourceSpinner);
+        notificationColorSpinner = (Spinner) findViewById(R.id.notificationColorSpinner);
         newPasswordEdit1 = (EditText) findViewById(R.id.changePasswordNewPasswordEdit1);
         newPasswordEdit2 = (EditText) findViewById(R.id.changePasswordNewPasswordEdit2);
         regenerateRSAKeysButton = (Button) findViewById(R.id.regenButton);
@@ -98,6 +122,7 @@ public class SettingsActivity extends SecuredActivity {
         changeFolderButton = (Button) findViewById(R.id.changeFolderButton);
 
         resetAuthStrategySpinner.setOnItemSelectedListener(new ResetAuthSpinnerItemSelectedListener());
+        notificationColorSpinner.setOnItemSelectedListener(new NotificationColorSpinnerItemSelectedListener());
         audioSourceSpinner.setOnItemSelectedListener(new AudioSourceSpinnerItemSelectedListener());
         audioSourceSpinner.setAdapter
                 (new ArrayAdapter<>(
@@ -117,6 +142,10 @@ public class SettingsActivity extends SecuredActivity {
 
         audioSourceSpinner.setSelection(
                 Application.getInstance().getConfiguration().getAudioSourceEnum().ordinal()
+        );
+
+        notificationColorSpinner.setSelected(
+                Application.getInstance().getConfiguration().getNotificationColor().ordinal()
         );
 
         regenerateRSAKeysButton.setEnabled(
