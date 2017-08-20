@@ -17,11 +17,8 @@ import java.util.Arrays;
 
 import javax.crypto.Cipher;
 
-import static com.avseredyuk.securereco.util.Constant.BWIS_DESTINATION_CHANGE_FOLDER;
 import static com.avseredyuk.securereco.util.Constant.BWIS_DESTINATION_REGENERATE_KEYS;
 import static com.avseredyuk.securereco.util.Constant.BWIS_ACTION;
-import static com.avseredyuk.securereco.util.Constant.NEW_FOLDER_PATH;
-import static com.avseredyuk.securereco.util.Constant.OLD_FOLDER_PATH;
 import static com.avseredyuk.securereco.util.Constant.OLD_PRIVATE_KEY_INTENT_EXTRA_NAME;
 
 /**
@@ -99,18 +96,6 @@ public class AuthenticationManager {
         context.startService(new Intent(context, BackgroundWorkIntentService.class)
                 .putExtra(BWIS_ACTION, BWIS_DESTINATION_REGENERATE_KEYS)
                 .putExtra(OLD_PRIVATE_KEY_INTENT_EXTRA_NAME, oldPrivateKey));
-    }
-
-    public void changeFolder(Context context, String newFolder) {
-        String oldCallDir = Application.getInstance().getConfiguration().getCallDir();
-        Application.getInstance().getConfiguration()
-                .setCallDir(newFolder)
-                .commit();
-        context.startService(new Intent(context, BackgroundWorkIntentService.class)
-                .putExtra(BWIS_ACTION, BWIS_DESTINATION_CHANGE_FOLDER)
-                .putExtra(OLD_FOLDER_PATH, oldCallDir)
-                .putExtra(NEW_FOLDER_PATH, newFolder)
-        );
     }
 
     public boolean changePassword(String newPassword) {

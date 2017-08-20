@@ -1,7 +1,7 @@
 package com.avseredyuk.securereco.activity;
 
-import android.app.Notification;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
@@ -13,6 +13,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.avseredyuk.securereco.R;
+import com.avseredyuk.securereco.activity.listener.CustomizedSpinnerOnItemSelectedListener;
 import com.avseredyuk.securereco.application.Application;
 import com.avseredyuk.securereco.callback.Callback;
 import com.avseredyuk.securereco.model.NotificationColor;
@@ -22,8 +23,11 @@ import com.avseredyuk.securereco.util.AudioSourceEnum;
 import com.avseredyuk.securereco.util.IOUtil;
 import com.avseredyuk.securereco.util.StringUtil;
 
+import static com.avseredyuk.securereco.util.Constant.BWIS_ACTION;
 import static com.avseredyuk.securereco.util.Constant.BWIS_DESTINATION_CHANGE_FOLDER;
 import static com.avseredyuk.securereco.util.Constant.BWIS_DESTINATION_REGENERATE_KEYS;
+import static com.avseredyuk.securereco.util.Constant.NEW_FOLDER_PATH;
+import static com.avseredyuk.securereco.util.Constant.OLD_FOLDER_PATH;
 
 /**
  * Created by lenfer on 3/1/17.
@@ -44,63 +48,31 @@ public class SettingsActivity extends SecuredActivity {
         super.onConfigurationChanged(newConfig);
     }
 
-    private class NotificationColorSpinnerItemSelectedListener implements AdapterView.OnItemSelectedListener {
-        private int callsCount = 0;
+    private class NotificationColorSpinnerItemSelectedListener extends CustomizedSpinnerOnItemSelectedListener {
         @Override
-        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            if (callsCount > 0) {
-                Application.getInstance().getConfiguration().
-                        setNotificationColor(
-                                NotificationColor.valueOf(position))
-                        .commit();
-            } else {
-                callsCount++;
-            }
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> parent) {
-            //nothing
+        public void onItemSelectedCustomHandler(AdapterView<?> adapterView, int position) {
+            Application.getInstance().getConfiguration().
+                    setNotificationColor(NotificationColor.values()[position])
+                    .commit();
         }
     }
 
-    private class ResetAuthSpinnerItemSelectedListener implements AdapterView.OnItemSelectedListener {
-        private int callsCount = 0;
+    private class ResetAuthSpinnerItemSelectedListener extends CustomizedSpinnerOnItemSelectedListener {
         @Override
-        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            if (callsCount > 0) {
-                Application.getInstance().getConfiguration().
-                        setResetAuthenticationStrategy(
-                                ResetAuthenticationStrategy.valueOf(position))
-                        .commit();
-            } else {
-                callsCount++;
-            }
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> parent) {
-            // nothing
+        public void onItemSelectedCustomHandler(AdapterView<?> adapterView, int position) {
+            Application.getInstance().getConfiguration().
+                    setResetAuthenticationStrategy(ResetAuthenticationStrategy.valueOf(position))
+                    .commit();
         }
     }
 
-    private class AudioSourceSpinnerItemSelectedListener implements AdapterView.OnItemSelectedListener {
-        private int callsCount = 0;
+    private class AudioSourceSpinnerItemSelectedListener extends CustomizedSpinnerOnItemSelectedListener {
         @Override
-        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            if (callsCount > 0) {
-                Application.getInstance().getConfiguration()
-                        .setAudioSourceEnum(AudioSourceEnum.valueOf(
-                                parent.getItemAtPosition(position).toString()))
-                        .commit();
-            } else {
-                callsCount++;
-            }
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> parent) {
-            // nothing
+        public void onItemSelectedCustomHandler(AdapterView<?> adapterView, int position) {
+            Application.getInstance().getConfiguration()
+                    .setAudioSource(AudioSourceEnum.valueOf(
+                            adapterView.getItemAtPosition(position).toString()))
+                    .commit();
         }
     }
 
@@ -141,10 +113,10 @@ public class SettingsActivity extends SecuredActivity {
         );
 
         audioSourceSpinner.setSelection(
-                Application.getInstance().getConfiguration().getAudioSourceEnum().ordinal()
+                Application.getInstance().getConfiguration().getAudioSource().ordinal()
         );
 
-        notificationColorSpinner.setSelected(
+        notificationColorSpinner.setSelection(
                 Application.getInstance().getConfiguration().getNotificationColor().ordinal()
         );
 
@@ -221,11 +193,11 @@ public class SettingsActivity extends SecuredActivity {
         Callback changeFolderCallback = new Callback() {
             @Override
             public void execute(String password) {
-                if (!IOUtil.isSameFile(
-                        changeFolderEdit.getText().toString(),
-                        Application.getInstance().getConfiguration().getCallDir())
-                        ) {
-                    Application.getInstance().getAuthMan().changeFolder(context, changeFolderEdit.getText().toString());
+                if (!IOUtil.isSameFile(changeFolderEdit.getText().toString(),
+                        Application.getInstance().getConfiguration().getCallDir())) {
+
+                    changeFolder(context, changeFolderEdit.getText().toString());
+
                     Toast.makeText(context,
                             getString(R.string.toast_calls_folder_changing),
                             Toast.LENGTH_SHORT).show();
@@ -242,5 +214,17 @@ public class SettingsActivity extends SecuredActivity {
         } else {
             makeAlertDialog(changeFolderCallback);
         }
+    }
+
+    public void changeFolder(Context context, String newFolder) {
+        String oldCallDir = Application.getInstance().getConfiguration().getCallDir();
+        Application.getInstance().getConfiguration()
+                .setCallDir(newFolder)
+                .commit();
+        context.startService(new Intent(context, BackgroundWorkIntentService.class)
+                .putExtra(BWIS_ACTION, BWIS_DESTINATION_CHANGE_FOLDER)
+                .putExtra(OLD_FOLDER_PATH, oldCallDir)
+                .putExtra(NEW_FOLDER_PATH, newFolder)
+        );
     }
 }

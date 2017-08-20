@@ -13,6 +13,7 @@ public class Constant {
     public static final String IS_ENABLED = "isEnabled";
     public static final String NOTIFICATION_ON = "notificationOn";
     public static final String RESET_AUTH_STRATEGY = "resetAuthStrategy";
+    public static final String NOTIFICATION_COLOR = "notificationColor";
     public static final String CALL_DIR = "callDir";
     public static final String AUDIO_SOURCE = "audioSource";
     public static final int BUF_SIZE = 8192;

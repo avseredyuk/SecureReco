@@ -379,8 +379,8 @@ public class MainActivity extends SecuredActivity
             );
             viewHolder.starBtn.setImageResource(
                     call.isStarred()
-                            ? R.drawable.ic_star_black_24dp
-                            : R.drawable.ic_star_border_black_24dp
+                            ? R.drawable.ic_star_24dp
+                            : R.drawable.ic_star_border_24dp
             );
             viewHolder.starBtn.setTag(call);
             viewHolder.starBtn.setOnClickListener(new StarButtonOnClickListener());
@@ -459,8 +459,8 @@ public class MainActivity extends SecuredActivity
 
                 ((ImageButton) v).setImageResource(
                         call.isStarred()
-                                ? R.drawable.ic_star_black_24dp
-                                : R.drawable.ic_star_border_black_24dp
+                                ? R.drawable.ic_star_24dp
+                                : R.drawable.ic_star_border_24dp
                 );
             }
         }

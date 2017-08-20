@@ -123,7 +123,7 @@ public class PhonecallReceiver extends BroadcastReceiver {
         }
 
         recorder = new MediaRecorder();
-        recorder.setAudioSource(Application.getInstance().getConfiguration().getAudioSourceEnum().getId());
+        recorder.setAudioSource(Application.getInstance().getConfiguration().getAudioSource().getId());
         recorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
         recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
         try {

@@ -26,6 +26,7 @@ import static com.avseredyuk.securereco.util.Constant.AUDIO_SOURCE;
 import static com.avseredyuk.securereco.util.Constant.CALL_DIR;
 import static com.avseredyuk.securereco.util.Constant.CONFIG_FILE;
 import static com.avseredyuk.securereco.util.Constant.IS_ENABLED;
+import static com.avseredyuk.securereco.util.Constant.NOTIFICATION_COLOR;
 import static com.avseredyuk.securereco.util.Constant.NOTIFICATION_ON;
 import static com.avseredyuk.securereco.util.Constant.PRIVATE_KEY_ENCODED;
 import static com.avseredyuk.securereco.util.Constant.PRIVATE_KEY_HMAC;
@@ -43,7 +44,7 @@ public class Configuration {
     private byte[] privateKeyEncoded;
     private byte[] privateKeyIV;
     private Boolean notificationOn;
-    private AudioSourceEnum audioSourceEnum;
+    private AudioSourceEnum audioSource;
     private String callDir;
     private byte[] privateKeyHMAC;
     private ResetAuthenticationStrategy resetAuthenticationStrategy;
@@ -86,9 +87,14 @@ public class Configuration {
                             : notificationOn);
 
             o.put(AUDIO_SOURCE,
-                    audioSourceEnum == null
+                    audioSource == null
                             ? valueOrDefault(getValue(AUDIO_SOURCE), AudioSourceEnum.VOICE_COMMUNICATION)
-                            : audioSourceEnum.toString());
+                            : audioSource.toString());
+
+            o.put(NOTIFICATION_COLOR,
+                    notificationColor == null
+                            ? valueOrDefault(getValue(NOTIFICATION_COLOR), NotificationColor.NIGHT)
+                            : notificationColor.toString());
 
             o.put(CALL_DIR,
                     callDir == null
@@ -185,15 +191,15 @@ public class Configuration {
         return this;
     }
 
-    public AudioSourceEnum getAudioSourceEnum() {
-        if (audioSourceEnum == null) {
-            audioSourceEnum = AudioSourceEnum.valueOf(getValue(AUDIO_SOURCE));
+    public AudioSourceEnum getAudioSource() {
+        if (audioSource == null) {
+            audioSource = AudioSourceEnum.valueOf(getValue(AUDIO_SOURCE));
         }
-        return audioSourceEnum;
+        return audioSource;
     }
 
-    public Configuration setAudioSourceEnum(AudioSourceEnum audioSourceEnum) {
-        this.audioSourceEnum = audioSourceEnum;
+    public Configuration setAudioSource(AudioSourceEnum audioSource) {
+        this.audioSource = audioSource;
         return this;
     }
 
@@ -242,6 +248,18 @@ public class Configuration {
 
     public Configuration setEnabled(boolean enabled) {
         isEnabled = enabled;
+        return this;
+    }
+
+    public NotificationColor getNotificationColor() {
+        if (notificationColor == null) {
+            notificationColor = NotificationColor.valueOf(getValue(NOTIFICATION_COLOR));
+        }
+        return notificationColor;
+    }
+
+    public Configuration setNotificationColor(NotificationColor notificationColor) {
+        this.notificationColor = notificationColor;
         return this;
     }
 

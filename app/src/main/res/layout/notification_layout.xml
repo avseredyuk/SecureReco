@@ -3,14 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    android:background="@color/notificationBgColor" >
+    android:id="@+id/notificationLayout">
 
     <ImageView
         android:id="@+id/notification_contact_photo"
         android:layout_width="@dimen/contact_photo_size"
         android:layout_height="@dimen/contact_photo_size"
         android:gravity="center"
-        android:src="@drawable/ic_person_outline_black_24dp"/>
+        android:background="#FFFFFF"/>
 
     <LinearLayout
         android:layout_width="0dp"
@@ -24,31 +24,27 @@
             android:id="@+id/notification_text_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.StatusBar.EventContent.Title"
-            android:textColor="@color/notificationTextColor"/>
+            android:textAppearance="@style/TextAppearance.StatusBar.EventContent.Title" />
 
         <TextView
             android:id="@+id/notification_text_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.StatusBar.EventContent.Line2"
-            android:textColor="@color/notificationTextColor"/>
+            android:textAppearance="@style/TextAppearance.StatusBar.EventContent.Line2" />
 
     </LinearLayout>
 
     <ImageButton
-        android:id="@+id/notification_button_open"
+        android:id="@+id/notification_button_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_play_circle_outline_black_24dp"
         android:background="@null"
         android:layout_gravity="center_vertical"/>
 
     <ImageButton
-        android:id="@+id/notification_button_cancel"
+        android:id="@+id/notification_button_2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_cancel_black_24dp"
         android:background="@null"
         android:layout_gravity="center_vertical"/>
 
