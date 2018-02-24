@@ -10,9 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.SearchView;
-import android.util.Base64;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -34,11 +32,14 @@ import android.widget.Toast;
 import com.avseredyuk.securereco.R;
 import com.avseredyuk.securereco.application.Application;
 import com.avseredyuk.securereco.callback.Callback;
+import com.avseredyuk.securereco.callback.PlayCallCallback;
 import com.avseredyuk.securereco.dao.FileCallDao;
 import com.avseredyuk.securereco.dao.SQLiteCallDao;
 import com.avseredyuk.securereco.filedialog.FileOperation;
 import com.avseredyuk.securereco.filedialog.FileSelector;
 import com.avseredyuk.securereco.filedialog.OnHandleFileListener;
+import com.avseredyuk.securereco.media.PermanentMediaController;
+import com.avseredyuk.securereco.media.MediaDestroyer;
 import com.avseredyuk.securereco.model.Call;
 import com.avseredyuk.securereco.util.StringUtil;
 
@@ -53,15 +54,16 @@ import static com.avseredyuk.securereco.util.Constant.INTENT_EXTRA_CALL_DATA;
 public class MainActivity extends SecuredActivity
         implements MediaPlayer.OnPreparedListener,
         MediaController.MediaPlayerControl,
+        MediaDestroyer,
         SearchView.OnQueryTextListener {
     private static final String AMR_SUFFIX = ".amr";
     private static final String[] mFileFilter = { "*.*", ".amr" };
     private final Handler handler = new Handler();
     private final List<Call> calls = new ArrayList<>();
+    private final MediaPlayer mediaPlayer = new MediaPlayer();
+    private MediaController mediaController;
     private CallArrayAdapter callArrayAdapter;
     private List<Call> originalCalls = new ArrayList<>();
-    private MediaPlayer mediaPlayer;
-    private MediaController mediaController;
     private Menu menu;
     private String filterString;
 
@@ -79,6 +81,7 @@ public class MainActivity extends SecuredActivity
         callsListView.setAdapter(callArrayAdapter);
         callsListView.setEmptyView(findViewById(R.id.emptyElement));
         callsListView.setTextFilterEnabled(true);
+        mediaController = new PermanentMediaController(MainActivity.this, MainActivity.this);
     }
 
     @Override
@@ -108,7 +111,7 @@ public class MainActivity extends SecuredActivity
         if (callToOpen != null) {
             intent.putExtra(INTENT_EXTRA_CALL_DATA, (String) null);
             sendBroadcast(new Intent().setAction(INTENT_CANCEL_NOTIFICATION));
-            Callback playCallCallback = new PlayCallCallback(callToOpen);
+            Callback playCallCallback = new PlayCallCallback(MainActivity.this, callToOpen, MainActivity.this, mediaPlayer);
             if (Application.getInstance().isAuthenticated()) {
                 playCallCallback.execute(null);
             } else {
@@ -127,28 +130,26 @@ public class MainActivity extends SecuredActivity
     public void updateUIOnAuthenticationReset() {
         super.updateUIOnAuthenticationReset();
         setAuthMenuItemText(menu.findItem(R.id.action_authenticate));
-        destroyMedia();
+        destroyMedia(true);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        destroyMedia();
+        destroyMedia(true);
     }
 
-    private void destroyMedia() {
-        if (mediaController != null) {
+    @Override
+    public void destroyMedia(boolean hideUi) {
+        if (hideUi) {
             mediaController.hide();
         }
-        if (mediaPlayer != null) {
-            try {
-                mediaPlayer.stop();
-            } catch (IllegalStateException e) {
-                Log.d(this.getClass().getSimpleName(),
-                        "Error destroying media at MainActivity", e);
-            }
-            mediaPlayer.release();
+        try {
+            mediaPlayer.stop();
+        } catch (IllegalStateException e) {
+            Log.d(this.getClass().getSimpleName(), "Error destroying media", e);
         }
+        mediaPlayer.reset();
     }
 
     @Override
@@ -308,22 +309,6 @@ public class MainActivity extends SecuredActivity
         ImageView callType;
     }
 
-    private class MyMediaController extends MediaController {
-        public MyMediaController(Context context) {
-            super(context);
-        }
-        @Override
-        public void show(int timeout) {
-            super.show(0);
-        }
-        @Override
-        public boolean dispatchKeyEvent(KeyEvent event) {
-            if (event.getKeyCode() == KeyEvent.KEYCODE_BACK)
-                destroyMedia();
-            return super.dispatchKeyEvent(event);
-        }
-    }
-
     private class CallArrayAdapter extends ArrayAdapter<Call>
             implements View.OnClickListener,
             CompoundButton.OnCheckedChangeListener,
@@ -469,7 +454,7 @@ public class MainActivity extends SecuredActivity
         public void onClick(View v) {
             final Call call = (Call) v.getTag();
 
-            Callback playCallCallback = new PlayCallCallback(call);
+            Callback playCallCallback = new PlayCallCallback(MainActivity.this, call, MainActivity.this, mediaPlayer);
 
             if (Application.getInstance().isAuthenticated()) {
                 playCallCallback.execute(null);
@@ -599,37 +584,6 @@ public class MainActivity extends SecuredActivity
     @Override
     public int getAudioSessionId() {
         return 0;
-    }
-
-    private class PlayCallCallback implements Callback {
-        private final Call call;
-
-        public PlayCallCallback(Call call) {
-            this.call = call;
-        }
-
-        @Override
-        public void execute(String password) {
-            destroyMedia();
-
-            byte[] callData = FileCallDao.getInstance().getDecryptedCall(call, Application.getInstance().getAuthMan());
-
-            String base64EncodedString = Base64.encodeToString(callData, Base64.DEFAULT);
-            mediaController = new MyMediaController(MainActivity.this);
-            try {
-                String url = "data:audio/amr;base64,"+base64EncodedString;
-                mediaPlayer = new MediaPlayer();
-                mediaPlayer.setDataSource(url);
-                mediaPlayer.setOnPreparedListener(MainActivity.this);
-                mediaPlayer.prepareAsync();
-            } catch(Exception e){
-                Log.e(this.getClass().getSimpleName(),
-                        "Error during playing preparing MediaPlayer at MainActivity", e);
-                Toast.makeText(Application.getInstance(),
-                        Application.getInstance().getString(R.string.toast_media_player_failed_init),
-                        Toast.LENGTH_SHORT).show();
-            }
-        }
     }
 
     private class ExportCallCallback implements Callback {

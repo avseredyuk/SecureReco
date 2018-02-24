@@ -31,7 +31,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class MainActivityMenuTest {
-    public static final String TYPED_PASSWORD = "123";
+    private static final String TYPED_PASSWORD = "123";
 
     @Rule
     public IntentsTestRule<MainActivity> mActivityTestRule = new IntentsTestRule<>(MainActivity.class);
@@ -96,6 +96,5 @@ public class MainActivityMenuTest {
         onView(withText(R.string.menu_item_deauthenticate))
                 .check(matches(isDisplayed()));
     }
-
 
 }

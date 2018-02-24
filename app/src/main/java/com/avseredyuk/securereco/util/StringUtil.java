@@ -45,7 +45,11 @@ public class StringUtil {
     }
 
     public static String formatTimeInterval(Date d1, Date d2) {
-        long s = (d2.getTime() - d1.getTime()) / 1000;
+        return formatTimeInterval(d1.getTime(), d2.getTime());
+    }
+
+    public static String formatTimeInterval(long l1, long l2) {
+        long s = (l2 - l1) / 1000;
         long sec = s % 60;
         long min = (s % 3600) / 60;
         long hour = s / 3600;

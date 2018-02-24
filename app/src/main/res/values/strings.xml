@@ -72,5 +72,6 @@
     <string name="notification_start_record_name_format">Call: %s</string>
     <string name="notification_record_started_header">Record started</string>
     <string name="notification_record_finished_header">Recording finished</string>
+    <string name="toast_record_deleted">Record deleted</string>
 
 </resources>

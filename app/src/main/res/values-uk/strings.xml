@@ -35,7 +35,7 @@
     </string-array>
     <string-array name="notification_colors">
         <item>День</item>
-        <item>Нічь</item>
+        <item>Ніч</item>
     </string-array>
     <string name="toast_keys_regen_changed">Ключі змінено. Оновлюємо усі записи дзвінків...</string>
     <string name="toast_keys_regen_update_nothing">Відсутні записи дзвінків для оновлення</string>
@@ -72,4 +72,5 @@
     <string name="notification_start_record_name_format">Дзвінок: %s</string>
     <string name="notification_record_started_header">Запис почався</string>
     <string name="notification_record_finished_header">Запис завершено</string>
+    <string name="toast_record_deleted">Запис видалено</string>
 </resources>
