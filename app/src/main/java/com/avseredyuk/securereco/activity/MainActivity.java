@@ -315,7 +315,7 @@ public class MainActivity extends SecuredActivity
         private Filter filter;
 
         CallArrayAdapter(Context context, List<Call> calls) {
-            super(context, R.layout.list_item, calls);
+            super(context, R.layout.list_item_v2, calls);
         }
 
         @Override
@@ -325,7 +325,7 @@ public class MainActivity extends SecuredActivity
             if (convertView == null) {
                 viewHolder = new ViewHolder();
                 LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                convertView = inflater.inflate(R.layout.list_item, parent, false);
+                convertView = inflater.inflate(R.layout.list_item_v2, parent, false);
 
                 viewHolder.separator = (TextView) convertView.findViewById(R.id.separator);
                 viewHolder.firstLine = (TextView) convertView.findViewById(R.id.contactName);
@@ -400,7 +400,7 @@ public class MainActivity extends SecuredActivity
             Call checkBoxCall = (Call) buttonView.getTag();
             checkBoxCall.setChecked(isChecked);
 
-            View listItemView = (View) buttonView.getParent();
+            View listItemView = (View) buttonView.getParent().getParent();
             View dateHeaderTextView = listItemView.findViewById(R.id.separator);
             if (isChecked) {
                 buttonView.setButtonDrawable(R.drawable.ic_check_black_24dp);
