@@ -20,7 +20,6 @@ import java.nio.channels.FileChannel;
  * Created by lenfer on 2/20/17.
  */
 public class IOUtil {
-    /** Filter which accepts every file */
     public static final String FILTER_ALLOW_ALL = "*.*";
     private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
 
@@ -44,15 +43,6 @@ public class IOUtil {
         }
     }
 
-    /**
-     * This method checks that the file is accepted by the filter
-     *
-     * @param file
-     *            - file that will be checked if there is a specific type
-     * @param filter
-     *            - criterion - the file type(for example ".jpg")
-     * @return true - if file meets the criterion - false otherwise.
-     */
     public static boolean accept(final File file, final String filter) {
         if (filter.compareTo(FILTER_ALLOW_ALL) == 0) {
             return true;

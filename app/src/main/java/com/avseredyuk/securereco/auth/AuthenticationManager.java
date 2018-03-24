@@ -31,7 +31,7 @@ public class AuthenticationManager {
     }
 
     public static AuthenticationManager newAuthManInitialKeyGenWithAuthentication(String password) throws AuthenticationException {
-        return new AuthenticationManager().createKeys(password).authenticate(password);
+        return new AuthenticationManager().createKeys(password).makeEnabled().authenticate(password);
     }
 
     public static AuthenticationManager newAuthManWithAuthentication(String password) throws AuthenticationException {
@@ -66,6 +66,12 @@ public class AuthenticationManager {
         return this;
     }
 
+    private AuthenticationManager makeEnabled() {
+        Application.getInstance().getConfiguration()
+                .setEnabled(true);
+        return this;
+    }
+
     private AuthenticationManager createKeys(String password) {
         try {
             KeyPair keyPair = RSA.generateKeyPair();
@@ -81,8 +87,7 @@ public class AuthenticationManager {
                     .setPrivateKeyEncoded(privateKeyEncoded)
                     .setPrivateKeyHMAC(hmacFromPassword)
                     .setPrivateKeyIV(privateKeyIV)
-                    .setPublicKey(keyPair.getPublic().getEncoded())
-                    .commit();
+                    .setPublicKey(keyPair.getPublic().getEncoded());
 
         } catch (CryptoException e) {
             Log.e(getClass().getSimpleName(), "Exception at crypto stuff", e);
@@ -109,8 +114,7 @@ public class AuthenticationManager {
             Application.getInstance().getConfiguration()
                     .setPrivateKeyEncoded(privateKeyEncoded)
                     .setPrivateKeyHMAC(hmacFromPassword)
-                    .setPrivateKeyIV(privateKeyIV)
-                    .commit();
+                    .setPrivateKeyIV(privateKeyIV);
 
             return true;
         } catch (CryptoException e) {

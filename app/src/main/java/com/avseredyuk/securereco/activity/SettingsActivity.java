@@ -52,8 +52,7 @@ public class SettingsActivity extends SecuredActivity {
         @Override
         public void onItemSelectedCustomHandler(AdapterView<?> adapterView, int position) {
             Application.getInstance().getConfiguration().
-                    setNotificationColor(NotificationColor.values()[position])
-                    .commit();
+                    setNotificationColor(NotificationColor.values()[position]);
         }
     }
 
@@ -61,8 +60,7 @@ public class SettingsActivity extends SecuredActivity {
         @Override
         public void onItemSelectedCustomHandler(AdapterView<?> adapterView, int position) {
             Application.getInstance().getConfiguration().
-                    setResetAuthenticationStrategy(ResetAuthenticationStrategy.valueOf(position))
-                    .commit();
+                    setResetAuthenticationStrategy(ResetAuthenticationStrategy.valueOf(position));
         }
     }
 
@@ -70,9 +68,7 @@ public class SettingsActivity extends SecuredActivity {
         @Override
         public void onItemSelectedCustomHandler(AdapterView<?> adapterView, int position) {
             Application.getInstance().getConfiguration()
-                    .setAudioSource(AudioSourceEnum.valueOf(
-                            adapterView.getItemAtPosition(position).toString()))
-                    .commit();
+                    .setAudioSource(AudioSourceEnum.valueOf(adapterView.getItemAtPosition(position).toString()));
         }
     }
 
@@ -219,8 +215,7 @@ public class SettingsActivity extends SecuredActivity {
     public void changeFolder(Context context, String newFolder) {
         String oldCallDir = Application.getInstance().getConfiguration().getCallDir();
         Application.getInstance().getConfiguration()
-                .setCallDir(newFolder)
-                .commit();
+                .setCallDir(newFolder);
         context.startService(new Intent(context, BackgroundWorkIntentService.class)
                 .putExtra(BWIS_ACTION, BWIS_DESTINATION_CHANGE_FOLDER)
                 .putExtra(OLD_FOLDER_PATH, oldCallDir)

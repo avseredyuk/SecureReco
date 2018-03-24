@@ -5,7 +5,6 @@ package com.avseredyuk.securereco.util;
  */
 public class Constant {
     public static final String APP_DIRECTORY = "SecureRecoApp";
-    public static final String CONFIG_FILE = "configuration.json";
     public static final String PRIVATE_KEY_HMAC = "privateKeyHMAC";
     public static final String PUBLIC_KEY = "publicKey";
     public static final String PRIVATE_KEY_ENCODED = "privateKeyEncoded";

@@ -253,14 +253,12 @@ public class MainActivity extends SecuredActivity
 
     private void menuItemOnOff() {
         Application.getInstance().getConfiguration()
-                .setEnabled(!Application.getInstance().getConfiguration().isEnabled())
-                .commit();
+                .setEnabled(!Application.getInstance().getConfiguration().isEnabled());
     }
 
     private void menuItemNotificationOnOff() {
         Application.getInstance().getConfiguration()
-                .setNotificationOn(!Application.getInstance().getConfiguration().isNotificationOn())
-                .commit();
+                .setNotificationOn(!Application.getInstance().getConfiguration().isNotificationOn());
     }
 
     private void menuItemDeleteSelected() {

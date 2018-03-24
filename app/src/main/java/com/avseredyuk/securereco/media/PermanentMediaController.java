@@ -11,7 +11,6 @@ import android.widget.MediaController;
 public class PermanentMediaController extends MediaController {
     private final MediaDestroyer mediaDestroyer;
 
-    //todo: refactor this as it consumes 2 params and those are the same class
     public PermanentMediaController(Context context, MediaDestroyer mediaDestroyer) {
         super(context);
         this.mediaDestroyer = mediaDestroyer;

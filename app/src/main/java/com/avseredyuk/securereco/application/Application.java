@@ -42,7 +42,7 @@ public class Application extends android.app.Application {
     private static Application instance;
     private final Map<String, Bitmap> contactPhotoCache = new HashMap<>();
     private final Map<String, String> contactNameCache = new HashMap<>();
-    private final Configuration configuration = new Configuration();
+    private Configuration configuration;
     private AuthenticationManager authMan = null;
     public final ReentrantLock authHolder = new ReentrantLock();
 
@@ -55,6 +55,7 @@ public class Application extends android.app.Application {
                         ImageUtil.drawableToBitmap(getResources().getDrawable(R.drawable.ic_person_outline_black_24dp))
                 )
         );
+        configuration = new Configuration(getApplicationContext());
     }
 
     public void resetDisconnectTimer(){
